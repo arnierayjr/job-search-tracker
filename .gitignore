@@ -1,0 +1,13 @@
+# Mac system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Temporary files
+*.tmp
+*~
+
+# Microsoft Office temp files
+~$*.docx
+~$*.xlsx
+~$*.pptx
