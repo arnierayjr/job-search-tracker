@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Tracer — Find Your Target Role. Land Your Shot.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111214;
+    --card: #16181c;
+    --border: #2a2d35;
+    --amber: #f5a623;
+    --amber-dim: #c47d0e;
+    --amber-glow: rgba(245,166,35,0.15);
+    --white: #f0ede8;
+    --muted: #7a7f8a;
+    --green: #3ddc84;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.08em;
+    color: var(--white);
+  }
+
+  .nav-logo span { color: var(--amber); }
+
+  .nav-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--amber);
+    border: 1px solid var(--amber);
+    padding: 0.25rem 0.6rem;
+    border-radius: 2px;
+    letter-spacing: 0.1em;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+    text-align: center;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(245,166,35,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,166,35,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
+  }
+
+  .archer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--amber-glow);
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 100px;
+    padding: 0.4rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--amber);
+    letter-spacing: 0.08em;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .archer-dot {
+    width: 6px; height: 6px;
+    background: var(--amber);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 12vw, 9rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease 0.1s both;
+  }
+
+  .hero h1 .line2 {
+    color: var(--amber);
+    display: block;
+    -webkit-text-stroke: 1px var(--amber);
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    font-weight: 300;
+    animation: fadeUp 0.6s ease 0.2s both;
+  }
+
+  .hero-sub strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  /* EMAIL FORM */
+  .signup-form {
+    display: flex;
+    gap: 0;
+    max-width: 440px;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    animation: fadeUp 0.6s ease 0.3s both;
+    transition: border-color 0.2s;
+  }
+
+  .signup-form:focus-within {
+    border-color: var(--amber);
+  }
+
+  .signup-form input {
+    flex: 1;
+    background: var(--card);
+    border: none;
+    outline: none;
+    padding: 0.9rem 1.2rem;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+  }
+
+  .signup-form input::placeholder { color: var(--muted); }
+
+  .signup-form button {
+    background: var(--amber);
+    color: var(--black);
+    border: none;
+    padding: 0.9rem 1.4rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .signup-form button:hover { background: var(--amber-dim); }
+
+  .form-note {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.75rem;
+    animation: fadeUp 0.6s ease 0.4s both;
+  }
+
+  /* ARCHER INTRO */
+  .archer-section {
+    padding: 5rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .archer-avatar {
+    width: 120px;
+    height: 120px;
+    background: var(--card);
+    border: 2px solid var(--amber);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 0 40px var(--amber-glow);
+  }
+
+  .archer-avatar::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,166,35,0.2);
+  }
+
+  .archer-text h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+
+  .archer-text h2 span { color: var(--amber); }
+
+  .archer-text p {
+    color: var(--muted);
+    line-height: 1.75;
+    font-weight: 300;
+    font-size: 1rem;
+  }
+
+  .archer-text p strong { color: var(--white); font-weight: 500; }
+
+  .powered-by {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .powered-by span {
+    color: var(--amber);
+  }
+
+  /* FEATURES */
+  .features {
+    padding: 4rem 2rem 6rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--amber);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .features h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 0.03em;
+    margin-bottom: 3rem;
+    line-height: 1;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .feature-card {
+    background: var(--dark);
+    padding: 2rem;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card:hover {
+    background: var(--card);
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--amber);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .feature-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .feature-icon {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    color: var(--white);
+  }
+
+  .feature-card p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* TIMELINE */
+  .timeline-section {
+    padding: 4rem 2rem 6rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 2.5rem 2rem;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+  .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+  .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+  .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -4px; top: 6px;
+    width: 8px; height: 8px;
+    background: var(--amber);
+    border-radius: 50%;
+  }
+
+  .timeline-item .step {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--amber);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.3rem;
+  }
+
+  .timeline-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .timeline-item p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* CTA BOTTOM */
+  .cta-bottom {
+    padding: 5rem 2rem;
+    text-align: center;
+    position: relative;
+    border-top: 1px solid var(--border);
+  }
+
+  .cta-bottom::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 300px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--amber), transparent);
+  }
+
+  .cta-bottom h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    letter-spacing: 0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .cta-bottom p {
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  footer span { color: var(--amber); }
+
+  /* SUCCESS STATE */
+  .success-msg {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--green);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.9rem 1.2rem;
+    background: rgba(61,220,132,0.08);
+    border: 1px solid rgba(61,220,132,0.2);
+    border-radius: 4px;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .archer-section { grid-template-columns: 1fr; text-align: center; }
+    .archer-avatar { margin: 0 auto; }
+    .signup-form { flex-direction: column; }
+    .signup-form button { width: 100%; padding: 0.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">JOB<span>TRACER</span></div>
+  <div class="nav-badge">🏹 EARLY ACCESS</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  
+  <div class="archer-badge">
+    <div class="archer-dot"></div>
+    MEET ARCHER — YOUR AI JOB SEARCH COMPANION
+  </div>
+
+  <h1>
+    FIND YOUR TARGET ROLE.
+    <span class="line2">LAND YOUR SHOT.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Job Tracer tracks your <strong>resumes, cover letters, applications, and contacts</strong> — all in one place, over your entire job search lifecycle. Powered by AI.
+  </p>
+
+  <div style="margin-bottom: 2.5rem; animation: fadeUp 0.6s ease 0.25s both;">
+    <p style="font-family:'Bebas Neue',sans-serif; font-size: clamp(1.2rem, 3vw, 1.7rem); letter-spacing: 0.08em; color: var(--amber);">
+      "Trace Your Path. Aim at the Right Opportunities."
+    </p>
+  </div>
+
+  <div class="signup-form" id="heroForm">
+    <input type="email" id="heroEmail" placeholder="Enter your email address" />
+    <button onclick="handleSignup('heroEmail', 'heroForm', 'heroSuccess')">GET EARLY ACCESS</button>
+  </div>
+  <div class="success-msg" id="heroSuccess">✓ &nbsp;You're on the list — Archer will be in touch.</div>
+  <p class="form-note">No spam. Just updates. Unsubscribe anytime.</p>
+</section>
+
+<!-- ARCHER INTRO -->
+<section class="archer-section">
+  <div class="archer-avatar">🏹</div>
+  <div class="archer-text">
+    <h2>Say hello to <span>Archer</span></h2>
+    <p>
+      Archer is your personal AI job search guide — built right into Job Tracer. 
+      He <strong>drafts your cover letters</strong>, helps you tailor your resume for each role, 
+      tracks every application you've sent, and remembers every contact you've made. 
+      The longer you use Job Tracer, the better Archer knows your voice, your goals, and what works for you.
+    </p>
+    <div class="powered-by">⚡ POWERED BY <span>CLAUDE</span> — BUILT BY ANTHROPIC</div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="section-label">// WHAT IT DOES</div>
+  <h2>YOUR ENTIRE JOB SEARCH.<br>ONE PLACE.</h2>
+
+  <div style="border-left: 3px solid var(--amber); padding: 1rem 1.5rem; margin-bottom: 3rem; background: var(--amber-glow); border-radius: 0 4px 4px 0;">
+    <p style="font-family:'Bebas Neue',sans-serif; font-size: clamp(1.3rem, 3vw, 1.9rem); letter-spacing: 0.06em; color: var(--white);">
+      "Find Your Target Role. Land Your Shot."
+    </p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📄</div>
+      <h3>Resume Tracker</h3>
+      <p>Version every resume you've ever made. See what changed, when, and which version got the callback.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✍️</div>
+      <h3>AI Cover Letters</h3>
+      <p>Archer drafts cover letters tailored to each job in your voice — not generic templates that scream AI.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Application Status</h3>
+      <p>Track every application from sent to offer. Know exactly where you stand at every company, every time.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤝</div>
+      <h3>Contact History</h3>
+      <p>Log every LinkedIn outreach, recruiter conversation, and follow-up. Never lose track of who you talked to.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="timeline-section">
+  <div class="section-label">// HOW IT WORKS</div>
+  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);letter-spacing:0.03em;margin-bottom:2.5rem;line-height:1;">FROM SEARCH<br>TO OFFER.</h2>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="step">STEP 01</div>
+      <h3>Add a job you're applying to</h3>
+      <p>Paste the job description and Job Tracer logs it with the date, company, and role.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="step">STEP 02</div>
+      <h3>Archer drafts your cover letter</h3>
+      <p>Tailored to the role, written in your voice. Edit it, save it, version it — all tracked automatically.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="step">STEP 03</div>
+      <h3>Track your outreach</h3>
+      <p>Log LinkedIn contacts, recruiter emails, and follow-ups. Archer reminds you when to follow up.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="step">STEP 04</div>
+      <h3>Watch your history build</h3>
+      <p>Every application, every version, every contact — one clean timeline of your entire job search journey.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="cta-bottom">
+  <h2>READY TO AIM<br>WITH PURPOSE?</h2>
+  <p>Join the early access list. Be first when Archer goes live.</p>
+
+  <div class="signup-form" id="ctaForm" style="margin: 0 auto;">
+    <input type="email" id="ctaEmail" placeholder="Your email address" />
+    <button onclick="handleSignup('ctaEmail', 'ctaForm', 'ctaSuccess')">JOIN THE LIST</button>
+  </div>
+  <div class="success-msg" id="ctaSuccess" style="margin: 0 auto;">✓ &nbsp;You're on the list — Archer will be in touch.</div>
+</section>
+
+<footer>
+  © 2026 <span>JOB TRACER</span> — POWERED BY ARCHER 🏹 — BUILT ON CLAUDE
+</footer>
+
+<script>
+  function handleSignup(inputId, formId, successId) {
+    const email = document.getElementById(inputId).value;
+    if (!email || !email.includes('@')) {
+      document.getElementById(inputId).style.borderBottom = '2px solid #ff4444';
+      document.getElementById(inputId).placeholder = 'Please enter a valid email';
+      return;
+    }
+    document.getElementById(formId).style.display = 'none';
+    const success = document.getElementById(successId);
+    success.style.display = 'flex';
+  }
+</script>
+
+</body>
+</html>
