@@ -1,24 +1,28 @@
-# Resume Version Tracker
+# Arnie Ray Jr — Job Application Tracker
 
-A Git-based system for managing and tracking resume versions over time.
+A personal version-control system for tracking job applications, resume versions, and cover letters over time.
 
-## Why I Built This
-Managing multiple resume versions across different folders became disorganized 
-and hard to track. This project solves that by using Git to maintain a clean, 
-documented history of every change.
+---
 
-## How It Works
-Instead of saving multiple copies (resume_v1, resume_v2_tech, etc.), this repo 
-tracks a single resume with descriptive commit messages for every update.
+## Application History
 
-## Usage
-After updating your resume, run:
-```bash
-./save.sh "description of what changed"
-```
+| Date | Company | Position | Resume Version | Cover Letter | Status |
+|------|---------|----------|---------------|--------------|--------|
+| 2026-03-07 | AJ Madison | Client Support Representative | — | v3 (Final) | Applied |
 
-## Skills Demonstrated
-- Git version control
-- Bash scripting and automation
-- Command line proficiency
-- Problem solving a real workflow issue
+---
+
+## Quick Links
+
+- [Resume Versions & Changelog](./resumes/changelog.md)
+- [Cover Letter Versions & Changelog](./cover_letters/changelog.md)
+
+---
+
+## How This Works
+
+Each application gets its own folder under `/applications/`. Inside you'll find:
+- `notes.md` — status updates, dates, contacts, interview notes
+- `links.md` — which resume and cover letter version was used
+
+Resumes and cover letters are versioned separately so you can always see what document went to which company and how your materials evolved over time.
