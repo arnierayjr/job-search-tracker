@@ -6,9 +6,9 @@ A personal version-control system for tracking job applications, resume versions
 
 ## Application History
 
-| Date | Company | Position | Resume Version | Cover Letter | Status |
-|------|---------|----------|---------------|--------------|--------|
-| 2026-03-07 | AJ Madison | Client Support Representative | — | v3 (Final) | Applied |
+| Date | Company | Position | Resume Version | Cover Letter | Contact Made | Status |
+|------|---------|----------|---------------|--------------|--------------|--------|
+| 2026-03-07 | AJ Madison | Client Support Representative | Arnie_Ray_CustomerService_Resume_v2 | v3 (Final) | No contact made | Applied |
 
 ---
 
