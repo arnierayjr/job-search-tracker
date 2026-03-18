@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Tracer — Your Foundation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --amber: #D97B1A;
+      --amber-dim: #BA7517;
+      --amber-bg: rgba(217,123,26,0.10);
+      --dark: #1A1410;
+      --surface: #211C16;
+      --muted: #8a7a66;
+      --text: #EDE3D4;
+      --text-secondary: #b5a890;
+      --border: rgba(217,123,26,0.2);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--dark); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; justify-content: center; }
+    .shell { padding: 40px 32px 52px; max-width: 540px; width: 100%; }
+    .wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--amber); letter-spacing: 0.08em; margin-bottom: 40px; }
+    .step-row { display: flex; gap: 8px; margin-bottom: 36px; }
+    .step-dot { height: 3px; border-radius: 2px; flex: 1; background: var(--border); }
+    .step-dot.active { background: var(--amber); }
+    .eyebrow { font-size: 11px; letter-spacing: 0.18em; color: var(--amber); text-transform: uppercase; font-weight: 500; margin-bottom: 10px; }
+    h1 { font-family: 'Bebas Neue', sans-serif; font-size: 46px; letter-spacing: 0.03em; color: var(--text); line-height: 1.05; margin-bottom: 20px; }
+    h1 span { color: var(--amber); }
+    .intro { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 36px; font-weight: 300; }
+    .divider { height: 1px; background: var(--border); margin-bottom: 32px; }
+    .pillar { display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-start; }
+    .pillar-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--amber-bg); border: 0.5px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .pillar-icon svg { width: 16px; height: 16px; }
+    .pillar-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .pillar-body { font-size: 13px; color: var(--text-secondary); line-height: 1.65; font-weight: 300; }
+    .promise-box { background: var(--surface); border: 0.5px solid var(--border); border-left: 2px solid var(--amber); border-radius: 12px; padding: 20px; margin: 28px 0 32px; }
+    .promise-label { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); font-weight: 500; margin-bottom: 10px; }
+    .promise-text { font-size: 14px; line-height: 1.7; color: var(--text); font-weight: 300; }
+    .promise-text strong { color: var(--amber); font-weight: 500; }
+    .cta-row { display: flex; gap: 12px; align-items: center; }
+    .btn-primary { background: var(--amber); color: #1A1410; border: none; border-radius: 8px; padding: 13px 28px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s; flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+    .btn-primary:hover { background: var(--amber-dim); }
+    .btn-ghost { background: transparent; color: var(--muted); border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; padding: 13px 4px; transition: color 0.15s; }
+    .btn-ghost:hover { color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="wordmark">JOB TRACER</div>
+
+    <div class="step-row">
+      <div class="step-dot active"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <p class="eyebrow">Your foundation</p>
+    <h1>This is a <span>safe space.</span><br>Not a shortcut.</h1>
+    <p class="intro">Job searching is hard work — and sometimes silence from employers has nothing to do with you. But showing up at your best? That part is yours to own.</p>
+
+    <div class="divider"></div>
+
+    <div class="pillar">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path d="M8 2L9.5 6H14L10.5 8.5L12 12.5L8 10L4 12.5L5.5 8.5L2 6H6.5L8 2Z" stroke="#D97B1A" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <p class="pillar-title">Their silence isn't your failure</p>
+        <p class="pillar-body">You followed up. You put yourself out there. If they didn't respond, that's on them — not your effort, not your worth. We'll help you track it and move forward.</p>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M8 3l5 5-5 5" stroke="#D97B1A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <p class="pillar-title">Tailored beats generic, every time</p>
+        <p class="pillar-body">Archer will help you write resumes and cover letters built for the role — not copy-paste boilerplate. You bring your story; we help you shape it.</p>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="5.5" stroke="#D97B1A" stroke-width="1.2"/>
+          <path d="M8 5v3.5l2 1.5" stroke="#D97B1A" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <p class="pillar-title">AI assists. You lead.</p>
+        <p class="pillar-body">Archer is your co-pilot — not your ghostwriter. The goal is to sound like you at your best, not like everyone else with the same prompt.</p>
+      </div>
+    </div>
+
+    <div class="promise-box">
+      <p class="promise-label">The Job Tracer commitment</p>
+      <p class="promise-text">We'll push you to <strong>bring your best</strong> — tailored applications, crafted follow-ups, and real effort. And when employers go quiet anyway? We won't let you spiral. We'll remind you that <strong>you did the work</strong>, and help you keep going.</p>
+    </div>
+
+    <div class="cta-row">
+      <a class="btn-primary" href="profile.html">I'm ready — let's go</a>
+      <button class="btn-ghost">Skip for now</button>
+    </div>
+  </div>
+</body>
+</html>
