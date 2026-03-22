@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../data.js"></script>
 <title>Job Tracer — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -695,7 +696,7 @@
     <h1>MY <span>DASHBOARD</span></h1>
     <div class="topbar-actions">
       <a class="btn-ghost" href="../contacts/index.html">+ ADD CONTACT</a>
-      <a class="btn-primary" href="../application-view/index.html">+ NEW APPLICATION 🏹</a>
+      <a class="btn-primary" href="../new-application/index.html">+ NEW APPLICATION 🏹</a>
     </div>
   </div>
 
@@ -706,7 +707,7 @@
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-label">// APPLICATIONS</div>
-        <div class="stat-value amber">1</div>
+        <div class="stat-value amber" id="statApps">0</div>
         <div class="stat-sub">Total submitted</div>
       </div>
       <div class="stat-card">
@@ -721,8 +722,8 @@
       </div>
       <div class="stat-card">
         <div class="stat-label">// CONTACTS MADE</div>
-        <div class="stat-value green">0</div>
-        <div class="stat-sub">LinkedIn outreach</div>
+        <div class="stat-value green" id="statContacts">0</div>
+        <div class="stat-sub">Network outreach</div>
       </div>
     </div>
 
@@ -736,31 +737,10 @@
             <div class="section-label">// RECENT</div>
             <div class="section-title">APPLICATIONS</div>
           </div>
-          <a class="view-all" href="../application-view/index.html">VIEW ALL →</a>
+          <a class="view-all" href="../applications/index.html">VIEW ALL →</a>
         </div>
 
-        <div class="app-list">
-          <a class="app-item" href="../application-view/index.html" style="text-decoration:none;color:inherit;">
-            <div class="app-company-icon">🏠</div>
-            <div class="app-info">
-              <div class="app-company">AJ Madison</div>
-              <div class="app-role">Client Support Representative</div>
-            </div>
-            <div class="app-meta">
-              <span class="status-badge status-applied">APPLIED</span>
-              <span class="app-date">2026-03-07</span>
-            </div>
-          </a>
-
-          <!-- Empty state hint -->
-          <div class="app-item" style="opacity:0.4; cursor:default;">
-            <div class="app-company-icon" style="border-style:dashed">+</div>
-            <div class="app-info">
-              <div class="app-company" style="color:var(--muted)">Add your next application</div>
-              <div class="app-role">Archer will help you craft the perfect cover letter</div>
-            </div>
-          </div>
-        </div>
+        <div class="app-list" id="dashAppList"></div>
       </div>
 
       <!-- ARCHER CHAT -->
@@ -882,6 +862,35 @@
 </main>
 
 <script>
+  // Load dynamic data
+  (function() {
+    const apps = DB.getApplications();
+    const contacts = DB.getContacts();
+    document.getElementById('statApps').textContent = apps.length;
+    document.getElementById('statContacts').textContent = contacts.length;
+
+    const list = document.getElementById('dashAppList');
+    const recent = apps.slice(0, 3);
+    if (recent.length === 0) {
+      list.innerHTML = `<a class="app-item" href="../new-application/index.html" style="text-decoration:none;color:inherit;opacity:0.5;">
+        <div class="app-company-icon" style="border-style:dashed">+</div>
+        <div class="app-info"><div class="app-company" style="color:var(--muted)">Add your first application</div>
+        <div class="app-role">Archer will help you craft the perfect cover letter</div></div></a>`;
+    } else {
+      list.innerHTML = recent.map(app => {
+        const s = DB.STATUS[app.status] || DB.STATUS.applied;
+        return `<a class="app-item" href="../application-view/index.html?id=${app.id}" style="text-decoration:none;color:inherit;">
+          <div class="app-company-icon">${app.icon || '🏢'}</div>
+          <div class="app-info"><div class="app-company">${app.company}</div>
+          <div class="app-role">${app.role}</div></div>
+          <div class="app-meta">
+            <span class="status-badge" style="background:${s.bg};color:${s.color};border:1px solid ${s.border};font-family:'DM Mono',monospace;font-size:0.6rem;padding:0.2rem 0.5rem;border-radius:100px;letter-spacing:0.06em">${s.label}</span>
+            <span class="app-date">${app.dateApplied}</span>
+          </div></a>`;
+      }).join('') + (apps.length > 3 ? `<a class="app-item" href="../applications/index.html" style="text-decoration:none;color:var(--muted);opacity:0.6;font-size:0.8rem;justify-content:center;">View all ${apps.length} applications →</a>` : '');
+    }
+  })();
+
   // Update this URL after deploying the backend to Render
   const ARCHER_API = 'https://job-tracer-archer.onrender.com';
 

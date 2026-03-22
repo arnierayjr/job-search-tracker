@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Tracer — Applications</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a; --dark: #111214; --card: #16181c; --card2: #1c1f24;
+    --border: #2a2d35; --amber: #f5a623; --amber-dim: #c47d0e;
+    --amber-glow: rgba(245,166,35,0.15); --amber-soft: rgba(245,166,35,0.07);
+    --white: #f0ede8; --muted: #7a7f8a; --green: #3ddc84;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; }
+  .sidebar { width: 240px; min-height: 100vh; background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 1.5rem 0; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+  .sidebar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.08em; padding: 0 1.5rem 1.5rem; border-bottom: 1px solid var(--border); }
+  .sidebar-logo span { color: var(--amber); }
+  .sidebar-user { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; }
+  .user-avatar { width: 36px; height: 36px; background: var(--amber-glow); border: 1px solid var(--amber); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--amber); font-family: 'DM Mono', monospace; }
+  .user-info p { font-size: 0.85rem; font-weight: 500; }
+  .user-info span { font-size: 0.65rem; color: var(--green); font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
+  .sidebar-nav { padding: 1rem 0; flex: 1; overflow-y: auto; }
+  .nav-label { font-size: 0.6rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; padding: 0.75rem 1.5rem 0.4rem; font-family: 'DM Mono', monospace; }
+  .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.5rem; font-size: 0.88rem; color: var(--muted); text-decoration: none; border-left: 3px solid transparent; transition: all 0.15s; }
+  .nav-item:hover { color: var(--white); background: var(--amber-soft); }
+  .nav-item.active { color: var(--amber); border-left-color: var(--amber); background: var(--amber-soft); }
+  .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+  .nav-badge { margin-left: auto; background: var(--amber); color: var(--black); font-family: 'DM Mono', monospace; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 100px; }
+  .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--dark); position: sticky; top: 0; z-index: 50; }
+  .topbar h1 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.08em; }
+  .topbar h1 span { color: var(--amber); }
+  .btn-primary { background: var(--amber); color: var(--black); border: none; border-radius: 6px; padding: 0.55rem 1.2rem; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.06em; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: background 0.15s; }
+  .btn-primary:hover { background: var(--amber-dim); }
+  .content { padding: 2rem; }
+  .filters { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .filter-btn { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 0.35rem 0.9rem; border-radius: 100px; font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em; cursor: pointer; transition: all 0.15s; }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--amber); color: var(--amber); background: var(--amber-soft); }
+  .app-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .app-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1.25rem; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; cursor: pointer; }
+  .app-card:hover { border-color: var(--amber); background: var(--card2); }
+  .app-icon { width: 44px; height: 44px; background: var(--card2); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+  .app-info { flex: 1; min-width: 0; }
+  .app-company { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.04em; margin-bottom: 0.2rem; }
+  .app-role { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .app-meta { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .app-date { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+  .app-arrow { color: var(--muted); font-size: 1rem; flex-shrink: 0; }
+  .empty-state { text-align: center; padding: 5rem 2rem; }
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+  .empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.75rem; }
+  .empty-body { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; }
+  .section-label { font-size: 0.62rem; letter-spacing: 0.12em; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 0.4rem; }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.06em; margin-bottom: 1.25rem; }
+</style>
+</head>
+<body>
+<script src="../data.js"></script>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">JOB<span>TRACER</span></div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="userInitials">AR</div>
+    <div class="user-info"><p id="userName">Arnie Ray Jr</p><span id="userStatus">🟢 ACTIVELY HUNTING</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a class="nav-item" href="../dashboard/index.html"><span class="icon">📊</span> Dashboard</a>
+    <a class="nav-item active" href="index.html"><span class="icon">📋</span> Applications<span class="nav-badge" id="appCount">0</span></a>
+    <a class="nav-item" href="../dashboard/index.html#archerMessages"><span class="icon">🏹</span> Ask Archer</a>
+    <div class="nav-label">Documents</div>
+    <a class="nav-item" href="../resumes/index.html"><span class="icon">📄</span> Resumes</a>
+    <a class="nav-item" href="../cover-letters/index.html"><span class="icon">✍️</span> Cover Letters</a>
+    <div class="nav-label">Network</div>
+    <a class="nav-item" href="../contacts/index.html"><span class="icon">🤝</span> Contacts</a>
+    <a class="nav-item" href="../follow-ups/index.html"><span class="icon">📅</span> Follow Ups</a>
+    <div class="nav-label">Account</div>
+    <a class="nav-item" href="../settings/index.html"><span class="icon">⚙️</span> Settings</a>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <h1>MY <span>APPLICATIONS</span></h1>
+    <a class="btn-primary" href="../new-application/index.html">+ NEW APPLICATION 🏹</a>
+  </div>
+  <div class="content">
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFilter('all', this)">ALL</button>
+      <button class="filter-btn" onclick="setFilter('applied', this)">APPLIED</button>
+      <button class="filter-btn" onclick="setFilter('phone-screen', this)">PHONE SCREEN</button>
+      <button class="filter-btn" onclick="setFilter('interview', this)">INTERVIEW</button>
+      <button class="filter-btn" onclick="setFilter('offer', this)">OFFER</button>
+      <button class="filter-btn" onclick="setFilter('rejected', this)">REJECTED</button>
+    </div>
+    <div class="section-label" id="listLabel">// ALL APPLICATIONS</div>
+    <div id="appList" class="app-list"></div>
+  </div>
+</main>
+
+<script>
+  let currentFilter = 'all';
+
+  function init() {
+    const user = DB.getUser();
+    document.getElementById('userInitials').textContent = user.initials;
+    document.getElementById('userName').textContent = user.name;
+    document.getElementById('userStatus').textContent = '🟢 ' + user.status;
+    render();
+  }
+
+  function setFilter(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('listLabel').textContent = '// ' + (filter === 'all' ? 'ALL' : filter.toUpperCase().replace('-', ' ')) + ' APPLICATIONS';
+    render();
+  }
+
+  function render() {
+    const apps = DB.getApplications();
+    const filtered = currentFilter === 'all' ? apps : apps.filter(a => a.status === currentFilter);
+    document.getElementById('appCount').textContent = apps.length;
+
+    const list = document.getElementById('appList');
+    if (filtered.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <div class="empty-title">${currentFilter === 'all' ? 'No applications yet' : 'None in this category'}</div>
+          <div class="empty-body">${currentFilter === 'all' ? 'Start tracking your job search by logging your first application.' : 'Switch filters or add a new application.'}</div>
+          ${currentFilter === 'all' ? '<a class="btn-primary" href="../new-application/index.html">+ LOG YOUR FIRST APPLICATION 🏹</a>' : ''}
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(app => {
+      const s = DB.STATUS[app.status] || DB.STATUS.applied;
+      return `
+        <a class="app-card" href="../application-view/index.html?id=${app.id}">
+          <div class="app-icon">${app.icon || '🏢'}</div>
+          <div class="app-info">
+            <div class="app-company">${app.company}</div>
+            <div class="app-role">${app.role}</div>
+            <div class="app-meta">
+              <span style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;padding:0.2rem 0.6rem;border-radius:100px;background:${s.bg};color:${s.color};border:1px solid ${s.border}">${s.label}</span>
+              <span class="app-date">${app.dateApplied}</span>
+            </div>
+          </div>
+          <div class="app-arrow">→</div>
+        </a>`;
+    }).join('');
+  }
+
+  init();
+</script>
+</body>
+</html>

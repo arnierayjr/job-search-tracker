@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #0a0a0a; --dark: #111214; --card: #16181c;
+    --black: #0a0a0a; --dark: #111214; --card: #16181c; --card2: #1c1f24;
     --border: #2a2d35; --amber: #f5a623; --amber-dim: #c47d0e;
     --amber-glow: rgba(245,166,35,0.15); --amber-soft: rgba(245,166,35,0.07);
     --white: #f0ede8; --muted: #7a7f8a; --green: #3ddc84;
@@ -23,37 +23,64 @@
   .user-info span { font-size: 0.65rem; color: var(--green); font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
   .sidebar-nav { padding: 1rem 0; flex: 1; overflow-y: auto; }
   .nav-label { font-size: 0.6rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; padding: 0.75rem 1.5rem 0.4rem; font-family: 'DM Mono', monospace; }
-  .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1.5rem; font-size: 0.82rem; color: var(--muted); text-decoration: none; border-left: 2px solid transparent; transition: all 0.15s; }
+  .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.5rem; font-size: 0.88rem; color: var(--muted); text-decoration: none; border-left: 3px solid transparent; transition: all 0.15s; }
   .nav-item:hover { color: var(--white); background: var(--amber-soft); }
   .nav-item.active { color: var(--amber); border-left-color: var(--amber); background: var(--amber-soft); }
   .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
-  .nav-badge { margin-left: auto; background: var(--amber); color: var(--black); font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 10px; font-family: 'DM Mono', monospace; }
+  .nav-badge { margin-left: auto; background: var(--amber); color: var(--black); font-family: 'DM Mono', monospace; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 100px; }
   .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-  .topbar { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--dark); }
+  .topbar { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--dark); position: sticky; top: 0; z-index: 50; }
   .topbar h1 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.08em; }
   .topbar h1 span { color: var(--amber); }
-  .btn-primary { background: var(--amber); color: var(--black); border: none; border-radius: 6px; padding: 0.5rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; letter-spacing: 0.05em; text-decoration: none; display: inline-flex; align-items: center; }
+  .btn-primary { background: var(--amber); color: var(--black); border: none; border-radius: 6px; padding: 0.55rem 1.2rem; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.06em; cursor: pointer; transition: background 0.15s; }
   .btn-primary:hover { background: var(--amber-dim); }
   .content { padding: 2rem; }
-  .empty-state { text-align: center; padding: 4rem 2rem; }
-  .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
-  .empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.5rem; }
-  .empty-body { font-size: 0.85rem; color: var(--muted); line-height: 1.6; max-width: 320px; margin: 0 auto; }
+  .add-form { background: var(--dark); border: 1px solid var(--amber); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; display: none; }
+  .add-form.visible { display: block; }
+  .add-form h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.06em; margin-bottom: 1rem; color: var(--amber); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .field label { display: block; font-size: 0.7rem; font-weight: 500; color: var(--muted); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .field input, .field select { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0.65rem 0.9rem; color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; outline: none; transition: border-color 0.15s; appearance: none; }
+  .field input:focus, .field select:focus { border-color: var(--amber); }
+  .field input::placeholder { color: var(--muted); }
+  .field select option { background: var(--card); }
+  .form-actions { display: flex; gap: 0.75rem; margin-top: 0.25rem; }
+  .btn-ghost { background: none; color: var(--muted); border: 1px solid var(--border); padding: 0.55rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+  .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
   .section-label { font-size: 0.62rem; letter-spacing: 0.12em; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 0.4rem; }
   .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.06em; margin-bottom: 1.25rem; }
+  .contact-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .contact-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; transition: border-color 0.15s; }
+  .contact-card:hover { border-color: var(--border); }
+  .contact-avatar { width: 40px; height: 40px; background: var(--amber-glow); border: 1px solid var(--amber); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--amber); font-weight: 600; flex-shrink: 0; }
+  .contact-info { flex: 1; min-width: 0; }
+  .contact-name { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.15rem; }
+  .contact-sub { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.3rem; }
+  .contact-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .contact-tag { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.06em; padding: 0.18rem 0.5rem; border-radius: 100px; background: var(--card2); color: var(--muted); border: 1px solid var(--border); }
+  .contact-tag.amber { background: var(--amber-soft); color: var(--amber); border-color: rgba(245,166,35,0.3); }
+  .contact-actions { display: flex; gap: 0.5rem; align-items: center; }
+  .delete-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 0.25rem; transition: color 0.15s; line-height: 1; }
+  .delete-btn:hover { color: #ff6b6b; }
+  .empty-state { text-align: center; padding: 5rem 2rem; }
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+  .empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.75rem; }
+  .empty-body { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; max-width: 340px; margin-left: auto; margin-right: auto; }
 </style>
 </head>
 <body>
+<script src="../data.js"></script>
+
 <aside class="sidebar">
   <div class="sidebar-logo">JOB<span>TRACER</span></div>
   <div class="sidebar-user">
-    <div class="user-avatar">AR</div>
-    <div class="user-info"><p>Arnie Ray Jr</p><span>🟢 ACTIVELY HUNTING</span></div>
+    <div class="user-avatar" id="userInitials">AR</div>
+    <div class="user-info"><p id="userName">Arnie Ray Jr</p><span>🟢 ACTIVELY HUNTING</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-label">Main</div>
     <a class="nav-item" href="../dashboard/index.html"><span class="icon">📊</span> Dashboard</a>
-    <a class="nav-item" href="../application-view/index.html"><span class="icon">📋</span> Applications<span class="nav-badge">1</span></a>
+    <a class="nav-item" href="../applications/index.html"><span class="icon">📋</span> Applications<span class="nav-badge" id="appCount">0</span></a>
     <a class="nav-item" href="../dashboard/index.html#archerMessages"><span class="icon">🏹</span> Ask Archer</a>
     <div class="nav-label">Documents</div>
     <a class="nav-item" href="../resumes/index.html"><span class="icon">📄</span> Resumes</a>
@@ -69,17 +96,135 @@
 <main class="main">
   <div class="topbar">
     <h1>MY <span>CONTACTS</span></h1>
-    <a class="btn-primary" href="#">+ ADD CONTACT</a>
+    <button class="btn-primary" onclick="toggleForm()">+ ADD CONTACT</button>
   </div>
   <div class="content">
-    <div class="section-label">// NETWORK</div>
-    <div class="section-title">ALL CONTACTS</div>
-    <div class="empty-state">
-      <div class="empty-icon">🤝</div>
-      <div class="empty-title">No contacts yet</div>
-      <div class="empty-body">Add recruiters, hiring managers, and LinkedIn connections here. Archer can help you draft outreach messages for each one.</div>
+
+    <div class="add-form" id="addForm">
+      <h3>NEW CONTACT</h3>
+      <div class="form-grid">
+        <div class="field"><label>Name *</label><input type="text" id="fName" placeholder="e.g. Sarah Jones" /></div>
+        <div class="field"><label>Title</label><input type="text" id="fTitle" placeholder="e.g. HR Manager, Recruiter" /></div>
+        <div class="field"><label>Company</label><input type="text" id="fCompany" placeholder="e.g. AJ Madison" /></div>
+        <div class="field"><label>Platform</label>
+          <select id="fPlatform">
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="Email">Email</option>
+            <option value="Phone">Phone</option>
+            <option value="In-Person">In-Person</option>
+            <option value="Referral">Referral</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Linked Application (optional)</label>
+        <select id="fApplication"><option value="">— None —</option></select>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" onclick="saveContact()">SAVE CONTACT</button>
+        <button class="btn-ghost" onclick="toggleForm()">CANCEL</button>
+      </div>
     </div>
+
+    <div class="section-label">// NETWORK</div>
+    <div class="section-title" id="contactTitle">ALL CONTACTS</div>
+    <div id="contactList"></div>
   </div>
 </main>
+
+<script>
+  function init() {
+    const user = DB.getUser();
+    document.getElementById('userInitials').textContent = user.initials;
+    document.getElementById('userName').textContent = user.name;
+    document.getElementById('appCount').textContent = DB.getApplications().length;
+
+    const apps = DB.getApplications();
+    const sel = document.getElementById('fApplication');
+    apps.forEach(a => {
+      const opt = document.createElement('option');
+      opt.value = a.id;
+      opt.textContent = `${a.company} — ${a.role}`;
+      sel.appendChild(opt);
+    });
+
+    render();
+  }
+
+  function toggleForm() {
+    const form = document.getElementById('addForm');
+    form.classList.toggle('visible');
+    if (form.classList.contains('visible')) document.getElementById('fName').focus();
+  }
+
+  function saveContact() {
+    const name = document.getElementById('fName').value.trim();
+    if (!name) { document.getElementById('fName').style.borderColor = '#ff6b6b'; return; }
+    document.getElementById('fName').style.borderColor = '';
+
+    const apps = DB.getApplications();
+    const appId = document.getElementById('fApplication').value;
+    const linkedApp = apps.find(a => a.id === appId);
+
+    DB.addContact({
+      name,
+      title: document.getElementById('fTitle').value.trim(),
+      company: document.getElementById('fCompany').value.trim() || (linkedApp ? linkedApp.company : ''),
+      platform: document.getElementById('fPlatform').value,
+      applicationId: appId || null
+    });
+
+    document.getElementById('fName').value = '';
+    document.getElementById('fTitle').value = '';
+    document.getElementById('fCompany').value = '';
+    document.getElementById('fApplication').value = '';
+    toggleForm();
+    render();
+  }
+
+  function deleteContact(id) {
+    if (!confirm('Remove this contact?')) return;
+    DB.deleteContact(id);
+    render();
+  }
+
+  function render() {
+    const contacts = DB.getContacts();
+    const apps = DB.getApplications();
+    const el = document.getElementById('contactList');
+    document.getElementById('contactTitle').textContent = `ALL CONTACTS (${contacts.length})`;
+
+    if (contacts.length === 0) {
+      el.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🤝</div>
+          <div class="empty-title">No contacts yet</div>
+          <div class="empty-body">Log recruiters, hiring managers, and connections. Archer can help you draft outreach messages for each one.</div>
+          <button class="btn-primary" onclick="toggleForm()">+ ADD YOUR FIRST CONTACT</button>
+        </div>`;
+      return;
+    }
+
+    el.innerHTML = `<div class="contact-list">${contacts.map(c => {
+      const linkedApp = c.applicationId ? apps.find(a => a.id === c.applicationId) : null;
+      return `
+        <div class="contact-card">
+          <div class="contact-avatar">${c.name.charAt(0).toUpperCase()}</div>
+          <div class="contact-info">
+            <div class="contact-name">${c.name}${c.title ? ` — ${c.title}` : ''}</div>
+            <div class="contact-sub">${c.company || ''}${c.company && c.dateAdded ? ' · ' : ''}${c.dateAdded || ''}</div>
+            <div class="contact-tags">
+              <span class="contact-tag amber">${c.platform}</span>
+              ${linkedApp ? `<a href="../application-view/index.html?id=${linkedApp.id}" style="text-decoration:none"><span class="contact-tag">${linkedApp.company}</span></a>` : ''}
+            </div>
+          </div>
+          <div class="contact-actions">
+            <button class="delete-btn" onclick="deleteContact('${c.id}')" title="Remove">✕</button>
+          </div>
+        </div>`;
+    }).join('')}</div>`;
+  }
+
+  init();
+</script>
 </body>
 </html>

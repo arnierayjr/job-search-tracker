@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Tracer — New Application</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a; --dark: #111214; --card: #16181c; --card2: #1c1f24;
+    --border: #2a2d35; --amber: #f5a623; --amber-dim: #c47d0e;
+    --amber-glow: rgba(245,166,35,0.15); --amber-soft: rgba(245,166,35,0.07);
+    --white: #f0ede8; --muted: #7a7f8a; --green: #3ddc84;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; }
+  .sidebar { width: 240px; min-height: 100vh; background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 1.5rem 0; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+  .sidebar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.08em; padding: 0 1.5rem 1.5rem; border-bottom: 1px solid var(--border); }
+  .sidebar-logo span { color: var(--amber); }
+  .sidebar-user { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; }
+  .user-avatar { width: 36px; height: 36px; background: var(--amber-glow); border: 1px solid var(--amber); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--amber); font-family: 'DM Mono', monospace; }
+  .user-info p { font-size: 0.85rem; font-weight: 500; }
+  .user-info span { font-size: 0.65rem; color: var(--green); font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
+  .sidebar-nav { padding: 1rem 0; flex: 1; overflow-y: auto; }
+  .nav-label { font-size: 0.6rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; padding: 0.75rem 1.5rem 0.4rem; font-family: 'DM Mono', monospace; }
+  .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.5rem; font-size: 0.88rem; color: var(--muted); text-decoration: none; border-left: 3px solid transparent; transition: all 0.15s; }
+  .nav-item:hover { color: var(--white); background: var(--amber-soft); }
+  .nav-item.active { color: var(--amber); border-left-color: var(--amber); background: var(--amber-soft); }
+  .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+  .nav-badge { margin-left: auto; background: var(--amber); color: var(--black); font-family: 'DM Mono', monospace; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 100px; }
+  .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar { padding: 1.2rem 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--dark); position: sticky; top: 0; z-index: 50; }
+  .topbar-left { display: flex; align-items: center; gap: 1rem; }
+  .back-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 0.4rem 0.8rem; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.08em; border-radius: 4px; cursor: pointer; text-decoration: none; transition: all 0.15s; }
+  .back-btn:hover { border-color: var(--amber); color: var(--amber); }
+  .breadcrumb { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.06em; }
+  .breadcrumb span { color: var(--amber); }
+  .content { padding: 2rem; max-width: 700px; }
+  .form-card { background: var(--dark); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; }
+  .form-section { margin-bottom: 2rem; }
+  .form-section-title { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 1rem; }
+  .field { margin-bottom: 1.25rem; }
+  .field label { display: block; font-size: 0.75rem; font-weight: 500; color: var(--muted); margin-bottom: 0.5rem; letter-spacing: 0.05em; text-transform: uppercase; }
+  .field input, .field select, .field textarea {
+    width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.75rem 1rem; color: var(--white); font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem; outline: none; transition: border-color 0.15s; appearance: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--amber); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--muted); }
+  .field select option { background: var(--card); color: var(--white); }
+  .field textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+  .icon-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.5rem; }
+  .icon-btn { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0.6rem; font-size: 1.2rem; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .icon-btn:hover, .icon-btn.selected { border-color: var(--amber); background: var(--amber-soft); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .btn-primary { background: var(--amber); color: var(--black); border: none; border-radius: 6px; padding: 0.75rem 2rem; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.06em; cursor: pointer; transition: background 0.15s; width: 100%; margin-top: 0.5rem; }
+  .btn-primary:hover { background: var(--amber-dim); }
+  .err { color: #ff6b6b; font-size: 0.78rem; margin-top: 0.4rem; display: none; }
+</style>
+</head>
+<body>
+<script src="../data.js"></script>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">JOB<span>TRACER</span></div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="userInitials">AR</div>
+    <div class="user-info"><p id="userName">Arnie Ray Jr</p><span>🟢 ACTIVELY HUNTING</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a class="nav-item" href="../dashboard/index.html"><span class="icon">📊</span> Dashboard</a>
+    <a class="nav-item active" href="../applications/index.html"><span class="icon">📋</span> Applications<span class="nav-badge" id="appCount">0</span></a>
+    <a class="nav-item" href="../dashboard/index.html#archerMessages"><span class="icon">🏹</span> Ask Archer</a>
+    <div class="nav-label">Documents</div>
+    <a class="nav-item" href="../resumes/index.html"><span class="icon">📄</span> Resumes</a>
+    <a class="nav-item" href="../cover-letters/index.html"><span class="icon">✍️</span> Cover Letters</a>
+    <div class="nav-label">Network</div>
+    <a class="nav-item" href="../contacts/index.html"><span class="icon">🤝</span> Contacts</a>
+    <a class="nav-item" href="../follow-ups/index.html"><span class="icon">📅</span> Follow Ups</a>
+    <div class="nav-label">Account</div>
+    <a class="nav-item" href="../settings/index.html"><span class="icon">⚙️</span> Settings</a>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <a class="back-btn" href="../applications/index.html">← BACK</a>
+      <div class="breadcrumb">APPLICATIONS / <span>NEW</span></div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="form-card">
+      <div class="form-section">
+        <div class="form-section-title">// COMPANY & ROLE</div>
+        <div class="field">
+          <label>Company Name *</label>
+          <input type="text" id="company" placeholder="e.g. Amazon, Target, Johns Hopkins" />
+          <div class="err" id="err-company">Company name is required.</div>
+        </div>
+        <div class="field">
+          <label>Role / Position *</label>
+          <input type="text" id="role" placeholder="e.g. IT Help Desk Technician, Customer Support Specialist" />
+          <div class="err" id="err-role">Role is required.</div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Date Applied *</label>
+            <input type="date" id="dateApplied" />
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select id="status">
+              <option value="applied">Applied</option>
+              <option value="phone-screen">Phone Screen</option>
+              <option value="interview">Interview</option>
+              <option value="offer">Offer</option>
+              <option value="rejected">Rejected</option>
+              <option value="withdrawn">Withdrawn</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">// COMPANY ICON</div>
+        <div class="icon-grid" id="iconGrid">
+          🏢 🏠 🏥 🏦 🏪 🏭 🖥️ 📦 🚗 ✈️ 🎓 🏗️ 💊 🛒 📡 🎮
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">// DOCUMENTS USED</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Resume Version</label>
+            <input type="text" id="resumeVersion" placeholder="e.g. CustomerService_v2, IT_Resume" />
+          </div>
+          <div class="field">
+            <label>Cover Letter Version</label>
+            <input type="text" id="coverLetterVersion" placeholder="e.g. v1, v2 (Final)" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">// NOTES</div>
+        <div class="field">
+          <label>Notes (optional)</label>
+          <textarea id="notes" placeholder="Anything relevant — job posting details, contacts, how you found the role..."></textarea>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="submit()">LOG APPLICATION 🏹</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  const ICONS = ['🏢','🏠','🏥','🏦','🏪','🏭','🖥️','📦','🚗','✈️','🎓','🏗️','💊','🛒','📡','🎮'];
+  let selectedIcon = '🏢';
+
+  function init() {
+    const user = DB.getUser();
+    document.getElementById('userInitials').textContent = user.initials;
+    document.getElementById('userName').textContent = user.name;
+    document.getElementById('appCount').textContent = DB.getApplications().length;
+    document.getElementById('dateApplied').value = new Date().toISOString().split('T')[0];
+
+    const grid = document.getElementById('iconGrid');
+    grid.innerHTML = ICONS.map((icon, i) =>
+      `<button class="icon-btn${i === 0 ? ' selected' : ''}" onclick="selectIcon(this, '${icon}')">${icon}</button>`
+    ).join('');
+  }
+
+  function selectIcon(btn, icon) {
+    document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedIcon = icon;
+  }
+
+  function submit() {
+    let valid = true;
+    const company = document.getElementById('company').value.trim();
+    const role = document.getElementById('role').value.trim();
+    const dateApplied = document.getElementById('dateApplied').value;
+
+    if (!company) { document.getElementById('err-company').style.display = 'block'; valid = false; }
+    else document.getElementById('err-company').style.display = 'none';
+
+    if (!role) { document.getElementById('err-role').style.display = 'block'; valid = false; }
+    else document.getElementById('err-role').style.display = 'none';
+
+    if (!valid) return;
+
+    const app = DB.addApplication({
+      company,
+      role,
+      icon: selectedIcon,
+      dateApplied: dateApplied || new Date().toISOString().split('T')[0],
+      status: document.getElementById('status').value,
+      resumeVersion: document.getElementById('resumeVersion').value.trim(),
+      coverLetterVersion: document.getElementById('coverLetterVersion').value.trim(),
+      notes: document.getElementById('notes').value.trim()
+    });
+
+    window.location.href = `../application-view/index.html?id=${app.id}`;
+  }
+
+  init();
+</script>
+</body>
+</html>

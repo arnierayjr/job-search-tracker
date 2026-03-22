@@ -3,1044 +3,446 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Job Tracer — AJ Madison Application</title>
+<title>Job Tracer — Application</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #0a0a0a;
-    --dark: #111214;
-    --card: #16181c;
-    --card2: #1c1f24;
-    --border: #2a2d35;
-    --amber: #f5a623;
-    --amber-dim: #c47d0e;
-    --amber-glow: rgba(245,166,35,0.15);
-    --amber-soft: rgba(245,166,35,0.07);
-    --white: #f0ede8;
-    --muted: #7a7f8a;
-    --green: #3ddc84;
-    --green-soft: rgba(61,220,132,0.1);
-    --red: #ff6b6b;
-    --red-soft: rgba(255,107,107,0.1);
-    --blue: #60a5fa;
-    --blue-soft: rgba(96,165,250,0.1);
-    --yellow: #fbbf24;
-    --yellow-soft: rgba(251,191,36,0.1);
+    --black: #0a0a0a; --dark: #111214; --card: #16181c; --card2: #1c1f24;
+    --border: #2a2d35; --amber: #f5a623; --amber-dim: #c47d0e;
+    --amber-glow: rgba(245,166,35,0.15); --amber-soft: rgba(245,166,35,0.07);
+    --white: #f0ede8; --muted: #7a7f8a; --green: #3ddc84;
+    --green-soft: rgba(61,220,132,0.1); --red: #ff6b6b; --red-soft: rgba(255,107,107,0.1);
+    --blue: #60a5fa; --blue-soft: rgba(96,165,250,0.1);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    display: flex;
-  }
-
-  /* SIDEBAR */
-  .sidebar {
-    width: 240px;
-    min-height: 100vh;
-    background: var(--dark);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem 0;
-    position: fixed;
-    top: 0; left: 0; bottom: 0;
-    z-index: 100;
-  }
-
-  .sidebar-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.5rem;
-    letter-spacing: 0.08em;
-    padding: 0 1.5rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; }
+  .sidebar { width: 240px; min-height: 100vh; background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 1.5rem 0; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+  .sidebar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.08em; padding: 0 1.5rem 1.5rem; border-bottom: 1px solid var(--border); }
   .sidebar-logo span { color: var(--amber); }
-
-  .sidebar-user {
-    padding: 1.2rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .user-avatar {
-    width: 36px; height: 36px;
-    background: var(--amber-glow);
-    border: 1px solid var(--amber);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--amber);
-    flex-shrink: 0;
-  }
-
+  .sidebar-user { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; }
+  .user-avatar { width: 36px; height: 36px; background: var(--amber-glow); border: 1px solid var(--amber); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; color: var(--amber); flex-shrink: 0; }
   .user-info p { font-size: 0.85rem; font-weight: 500; }
-  .user-info span {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--green);
-    letter-spacing: 0.08em;
-  }
-
+  .user-info span { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--green); letter-spacing: 0.08em; }
   .sidebar-nav { padding: 1rem 0; flex: 1; }
-
-  .nav-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    padding: 0.75rem 1.5rem 0.4rem;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.65rem 1.5rem;
-    font-size: 0.88rem;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.15s;
-    border-left: 3px solid transparent;
-    text-decoration: none;
-  }
-
+  .nav-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); letter-spacing: 0.15em; padding: 0.75rem 1.5rem 0.4rem; }
+  .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.5rem; font-size: 0.88rem; color: var(--muted); cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent; text-decoration: none; }
   .nav-item:hover { color: var(--white); background: var(--amber-soft); }
   .nav-item.active { color: var(--amber); border-left-color: var(--amber); background: var(--amber-soft); }
   .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
-
-  .nav-badge {
-    margin-left: auto;
-    background: var(--amber);
-    color: var(--black);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    padding: 0.15rem 0.4rem;
-    border-radius: 100px;
-  }
-
-  .archer-widget {
-    margin: 1rem;
-    background: var(--amber-soft);
-    border: 1px solid rgba(245,166,35,0.2);
-    border-radius: 8px;
-    padding: 1rem;
-  }
-
-  .archer-widget-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.6rem;
-  }
-
-  .archer-dot {
-    width: 6px; height: 6px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-
+  .nav-badge { margin-left: auto; background: var(--amber); color: var(--black); font-family: 'DM Mono', monospace; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 100px; }
+  .archer-widget { margin: 1rem; background: var(--amber-soft); border: 1px solid rgba(245,166,35,0.2); border-radius: 8px; padding: 1rem; }
+  .archer-widget-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; }
+  .archer-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-  .archer-widget-header span {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--amber);
-    letter-spacing: 0.08em;
-  }
-
+  .archer-widget-header span { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--amber); letter-spacing: 0.08em; }
   .archer-widget p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
   .archer-widget p strong { color: var(--white); }
-
-  .archer-ask-btn {
-    margin-top: 0.75rem;
-    width: 100%;
-    background: var(--amber);
-    color: var(--black);
-    border: none;
-    padding: 0.5rem;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.08em;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
+  .archer-ask-btn { margin-top: 0.75rem; width: 100%; background: var(--amber); color: var(--black); border: none; padding: 0.5rem; font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.08em; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
   .archer-ask-btn:hover { background: var(--amber-dim); }
-
-  /* MAIN */
   .main { margin-left: 240px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
-
-  .topbar {
-    padding: 1.2rem 2rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(10,10,10,0.8);
-    backdrop-filter: blur(12px);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
+  .topbar { padding: 1.2rem 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: rgba(10,10,10,0.9); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50; }
   .topbar-left { display: flex; align-items: center; gap: 1rem; }
-
-  .back-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 0.4rem 0.8rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
+  .back-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 0.4rem 0.8rem; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.08em; border-radius: 4px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
   .back-btn:hover { border-color: var(--amber); color: var(--amber); }
-
-  .breadcrumb {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-    letter-spacing: 0.06em;
-  }
-
+  .breadcrumb { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.06em; }
   .breadcrumb span { color: var(--amber); }
-
   .topbar-actions { display: flex; gap: 0.75rem; }
-
-  .btn-primary {
-    background: var(--amber);
-    color: var(--black);
-    border: none;
-    padding: 0.55rem 1.2rem;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.9rem;
-    letter-spacing: 0.08em;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
+  .btn-primary { background: var(--amber); color: var(--black); border: none; padding: 0.55rem 1.2rem; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
   .btn-primary:hover { background: var(--amber-dim); }
-
-  .btn-ghost {
-    background: none;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    padding: 0.55rem 1.2rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
+  .btn-ghost { background: none; color: var(--muted); border: 1px solid var(--border); padding: 0.55rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
   .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
-
   .content { padding: 2rem; flex: 1; }
-
-  /* APP HEADER CARD */
-  .app-header-card {
-    background: var(--dark);
-    border: 1px solid var(--border);
-    padding: 2rem;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    animation: fadeUp 0.4s ease both;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .app-header-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(to right, var(--amber), transparent);
-  }
-
+  .app-header-card { background: var(--dark); border: 1px solid var(--border); padding: 2rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; position: relative; overflow: hidden; }
+  .app-header-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(to right, var(--amber), transparent); }
   .app-header-left { display: flex; align-items: center; gap: 1.5rem; }
-
-  .company-logo {
-    width: 64px; height: 64px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    flex-shrink: 0;
-  }
-
-  .app-header-info h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
-    letter-spacing: 0.04em;
-    line-height: 1;
-    margin-bottom: 0.3rem;
-  }
-
-  .app-header-info h2 {
-    font-size: 1rem;
-    font-weight: 400;
-    color: var(--muted);
-    margin-bottom: 0.75rem;
-  }
-
+  .company-logo { width: 64px; height: 64px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; }
+  .app-header-info h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.04em; line-height: 1; margin-bottom: 0.3rem; }
+  .app-header-info h2 { font-size: 1rem; font-weight: 400; color: var(--muted); margin-bottom: 0.75rem; }
   .app-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
-  .tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
-    padding: 0.25rem 0.65rem;
-    border-radius: 100px;
-  }
-
-  .tag-blue { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
-  .tag-amber { background: var(--amber-soft); color: var(--amber); border: 1px solid rgba(245,166,35,0.2); }
+  .tag { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; padding: 0.25rem 0.65rem; border-radius: 100px; }
   .tag-muted { background: var(--card); color: var(--muted); border: 1px solid var(--border); }
-
   .app-header-right { text-align: right; flex-shrink: 0; }
-
-  .app-header-right .big-status {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem;
-    letter-spacing: 0.06em;
-    color: var(--blue);
-    margin-bottom: 0.3rem;
-  }
-
-  .app-header-right .date {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--muted);
-  }
-
-  /* TIMELINE */
-  .timeline-track {
-    background: var(--dark);
-    border: 1px solid var(--border);
-    padding: 1.5rem 2rem;
-    margin-bottom: 1.5rem;
-    animation: fadeUp 0.4s ease 0.05s both;
-  }
-
-  .timeline-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.12em;
-    margin-bottom: 1.2rem;
-  }
-
-  .timeline-steps {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    position: relative;
-  }
-
-  .timeline-step {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-  }
-
-  .timeline-step::before {
-    content: '';
-    position: absolute;
-    top: 14px;
-    left: 50%;
-    right: -50%;
-    height: 2px;
-    background: var(--border);
-    z-index: 0;
-  }
-
-  .timeline-step:last-child::before { display: none; }
-
-  .timeline-step.done::before { background: var(--amber); }
-  .timeline-step.active::before { background: var(--border); }
-
-  .step-dot {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    z-index: 1;
-    margin-bottom: 0.5rem;
-    border: 2px solid var(--border);
-    background: var(--dark);
-    transition: all 0.2s;
-  }
-
-  .timeline-step.done .step-dot {
-    background: var(--amber);
-    border-color: var(--amber);
-    color: var(--black);
-    box-shadow: 0 0 12px var(--amber-glow);
-  }
-
-  .timeline-step.active .step-dot {
-    border-color: var(--amber);
-    color: var(--amber);
-    box-shadow: 0 0 12px var(--amber-glow);
-  }
-
-  .step-name {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-align: center;
-  }
-
-  .timeline-step.done .step-name, .timeline-step.active .step-name { color: var(--amber); }
-
-  .step-date {
-    font-size: 0.68rem;
-    color: var(--muted);
-    margin-top: 0.2rem;
-    text-align: center;
-  }
-
-  /* THREE COL GRID */
-  .three-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .info-card {
-    background: var(--dark);
-    border: 1px solid var(--border);
-    padding: 1.4rem;
-    animation: fadeUp 0.4s ease both;
-  }
-
-  .info-card:nth-child(1) { animation-delay: 0.1s; }
-  .info-card:nth-child(2) { animation-delay: 0.15s; }
-  .info-card:nth-child(3) { animation-delay: 0.2s; }
-
-  .info-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .info-card-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.95rem;
-    letter-spacing: 0.06em;
-    color: var(--white);
-  }
-
+  .big-status { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.06em; margin-bottom: 0.3rem; }
+  .app-date-label { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+  .info-card { background: var(--dark); border: 1px solid var(--border); padding: 1.4rem; border-radius: 6px; }
+  .info-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+  .info-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 0.06em; }
   .info-card-icon { font-size: 1rem; }
-
-  /* Document row */
-  .doc-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .doc-row:last-child { border-bottom: none; }
-
+  .doc-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0; border-bottom: 1px solid var(--border); }
+  .doc-row:last-of-type { border-bottom: none; }
   .doc-row-icon { font-size: 1.1rem; flex-shrink: 0; }
-
   .doc-row-info { flex: 1; min-width: 0; }
-
-  .doc-row-name {
-    font-size: 0.82rem;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 0.1rem;
-  }
-
-  .doc-row-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--muted);
-  }
-
-  .doc-row-version {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--amber);
-    background: var(--amber-soft);
-    padding: 0.15rem 0.45rem;
-    border-radius: 100px;
-    flex-shrink: 0;
-  }
-
-  /* Contact row */
-  .contact-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem 0;
-    gap: 0.5rem;
-  }
-
-  .contact-empty .empty-icon { font-size: 1.8rem; opacity: 0.3; }
-
-  .contact-empty p {
-    font-size: 0.8rem;
-    color: var(--muted);
-    text-align: center;
-    line-height: 1.5;
-  }
-
-  .contact-empty button {
-    margin-top: 0.25rem;
-    background: none;
-    border: 1px dashed var(--border);
-    color: var(--amber);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .contact-empty button:hover { border-color: var(--amber); background: var(--amber-soft); }
-
-  /* BOTTOM TWO COL */
-  .bottom-two {
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 1.5rem;
-    animation: fadeUp 0.4s ease 0.25s both;
-  }
-
-  /* NOTES */
-  .notes-card {
-    background: var(--dark);
-    border: 1px solid var(--border);
-    padding: 1.4rem;
-  }
-
-  .notes-textarea {
-    width: 100%;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 0.9rem 1rem;
-    color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    line-height: 1.7;
-    resize: vertical;
-    min-height: 140px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
+  .doc-row-name { font-size: 0.82rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.1rem; }
+  .doc-row-meta { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); }
+  .doc-row-version { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--amber); background: var(--amber-soft); padding: 0.15rem 0.45rem; border-radius: 100px; flex-shrink: 0; }
+  .contact-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .contact-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+  .contact-item:last-child { border-bottom: none; }
+  .contact-avatar { width: 28px; height: 28px; background: var(--amber-glow); border: 1px solid var(--amber); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: var(--amber); flex-shrink: 0; }
+  .contact-info { flex: 1; min-width: 0; }
+  .contact-name { font-size: 0.82rem; font-weight: 500; }
+  .contact-meta { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); }
+  .add-contact-form { margin-top: 0.75rem; display: none; flex-direction: column; gap: 0.5rem; }
+  .add-contact-form.visible { display: flex; }
+  .add-contact-form input { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.75rem; color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; outline: none; }
+  .add-contact-form input:focus { border-color: var(--amber); }
+  .add-contact-form input::placeholder { color: var(--muted); }
+  .sug-btn { background: var(--amber); color: var(--black); border: none; padding: 0.35rem 0.75rem; font-family: 'Bebas Neue', sans-serif; font-size: 0.75rem; letter-spacing: 0.06em; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+  .sug-btn:hover { background: var(--amber-dim); }
+  .sug-btn-ghost { background: none; color: var(--muted); border: 1px solid var(--border); padding: 0.35rem 0.75rem; font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+  .sug-btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
+  .empty-contact { text-align: center; padding: 1rem 0; }
+  .empty-contact p { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.75rem; }
+  .bottom-two { display: grid; grid-template-columns: 1fr 380px; gap: 1.5rem; }
+  .notes-card { background: var(--dark); border: 1px solid var(--border); padding: 1.4rem; border-radius: 6px; }
+  .notes-textarea { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 0.9rem 1rem; color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; line-height: 1.7; resize: vertical; min-height: 160px; outline: none; transition: border-color 0.2s; }
   .notes-textarea:focus { border-color: var(--amber); }
   .notes-textarea::placeholder { color: var(--muted); }
-
-  .notes-save {
-    margin-top: 0.75rem;
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
+  .notes-save { margin-top: 0.75rem; background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
   .notes-save:hover { border-color: var(--amber); color: var(--amber); }
-
-  /* ARCHER SUGGESTIONS */
-  .archer-card {
-    background: var(--dark);
-    border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .archer-card-header {
-    padding: 1rem 1.4rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  .archer-card-header .icon {
-    width: 32px; height: 32px;
-    background: var(--amber-glow);
-    border: 1px solid var(--amber);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-  }
-
-  .archer-card-header h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem;
-    letter-spacing: 0.06em;
-  }
-
-  .archer-card-header p {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--green);
-  }
-
+  .archer-card { background: var(--dark); border: 1px solid var(--border); display: flex; flex-direction: column; border-radius: 6px; }
+  .archer-card-header { padding: 1rem 1.4rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
+  .archer-card-header .icon { width: 32px; height: 32px; background: var(--amber-glow); border: 1px solid var(--amber); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+  .archer-card-header h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.06em; }
+  .archer-card-header p { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--green); }
   .archer-suggestions { padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
-
-  .suggestion {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--amber);
-    border-radius: 0 8px 8px 8px;
-    padding: 0.9rem 1rem;
-    font-size: 0.82rem;
-    line-height: 1.6;
-    color: var(--white);
-  }
-
+  .suggestion { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--amber); border-radius: 0 8px 8px 8px; padding: 0.9rem 1rem; font-size: 0.82rem; line-height: 1.6; color: var(--white); }
   .suggestion strong { color: var(--amber); }
-
-  .suggestion-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.6rem;
-  }
-
-  .sug-btn {
-    background: var(--amber);
-    color: var(--black);
-    border: none;
-    padding: 0.35rem 0.75rem;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .sug-btn:hover { background: var(--amber-dim); }
-
-  .sug-btn-ghost {
-    background: none;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    padding: 0.35rem 0.75rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .sug-btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @media (max-width: 1100px) {
-    .three-col { grid-template-columns: 1fr 1fr; }
-    .bottom-two { grid-template-columns: 1fr; }
-  }
-
-  @media (max-width: 768px) {
-    .sidebar { display: none; }
-    .main { margin-left: 0; }
-    .three-col { grid-template-columns: 1fr; }
-    .app-header-card { flex-direction: column; align-items: flex-start; }
-  }
+  .suggestion-actions { display: flex; gap: 0.5rem; margin-top: 0.6rem; }
+  /* STATUS MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; }
+  .modal-overlay.visible { display: flex; }
+  .modal { background: var(--dark); border: 1px solid var(--border); border-radius: 10px; padding: 2rem; width: 100%; max-width: 420px; }
+  .modal h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.06em; margin-bottom: 1.25rem; }
+  .modal select, .modal textarea { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem 1rem; color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; outline: none; appearance: none; margin-bottom: 0.75rem; }
+  .modal select:focus, .modal textarea:focus { border-color: var(--amber); }
+  .modal select option { background: var(--card); }
+  .modal textarea { resize: vertical; min-height: 80px; }
+  .modal-actions { display: flex; gap: 0.75rem; }
+  .modal-actions .btn-primary { flex: 1; }
+  .status-log { margin-top: 1.5rem; }
+  .status-log-title { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 0.75rem; }
+  .log-item { display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.6rem; }
+  .log-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); flex-shrink: 0; margin-top: 5px; }
+  .log-date { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); flex-shrink: 0; width: 85px; }
+  .log-text { font-size: 0.82rem; color: var(--white); }
+  .log-note { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; }
+  @media (max-width: 1100px) { .three-col { grid-template-columns: 1fr 1fr; } .bottom-two { grid-template-columns: 1fr; } }
+  @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; } .three-col { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
+<script src="../data.js"></script>
 
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">JOB<span>TRACER</span></div>
   <div class="sidebar-user">
-    <div class="user-avatar">AR</div>
-    <div class="user-info">
-      <p>Arnie Ray Jr</p>
-      <span>🟢 ACTIVELY HUNTING</span>
-    </div>
+    <div class="user-avatar" id="userInitials">AR</div>
+    <div class="user-info"><p id="userName">Arnie Ray Jr</p><span id="userStatus">🟢 ACTIVELY HUNTING</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-label">Main</div>
-    <a class="nav-item" href="../dashboard/index.html">
-      <span class="icon">📊</span> Dashboard
-    </a>
-    <a class="nav-item active" href="index.html">
-      <span class="icon">📋</span> Applications
-      <span class="nav-badge">1</span>
-    </a>
-    <a class="nav-item" href="../dashboard/index.html#archerMessages">
-      <span class="icon">🏹</span> Ask Archer
-    </a>
+    <a class="nav-item" href="../dashboard/index.html"><span class="icon">📊</span> Dashboard</a>
+    <a class="nav-item active" href="../applications/index.html"><span class="icon">📋</span> Applications<span class="nav-badge" id="appCount">0</span></a>
+    <a class="nav-item" href="../dashboard/index.html#archerMessages"><span class="icon">🏹</span> Ask Archer</a>
     <div class="nav-label">Documents</div>
-    <a class="nav-item" href="../resumes/index.html">
-      <span class="icon">📄</span> Resumes
-    </a>
-    <a class="nav-item" href="../cover-letters/index.html">
-      <span class="icon">✍️</span> Cover Letters
-    </a>
+    <a class="nav-item" href="../resumes/index.html"><span class="icon">📄</span> Resumes</a>
+    <a class="nav-item" href="../cover-letters/index.html"><span class="icon">✍️</span> Cover Letters</a>
     <div class="nav-label">Network</div>
-    <a class="nav-item" href="../contacts/index.html">
-      <span class="icon">🤝</span> Contacts
-    </a>
-    <a class="nav-item" href="../follow-ups/index.html">
-      <span class="icon">📅</span> Follow Ups
-    </a>
+    <a class="nav-item" href="../contacts/index.html"><span class="icon">🤝</span> Contacts</a>
+    <a class="nav-item" href="../follow-ups/index.html"><span class="icon">📅</span> Follow Ups</a>
     <div class="nav-label">Account</div>
-    <a class="nav-item" href="../settings/index.html">
-      <span class="icon">⚙️</span> Settings
-    </a>
+    <a class="nav-item" href="../settings/index.html"><span class="icon">⚙️</span> Settings</a>
   </nav>
   <div class="archer-widget">
-    <div class="archer-widget-header">
-      <div class="archer-dot"></div>
-      <span>ARCHER SAYS</span>
-    </div>
-    <p>It's been <strong>10 days</strong> since you applied to AJ Madison. Time to follow up?</p>
-    <button class="archer-ask-btn">DRAFT FOLLOW UP 🏹</button>
+    <div class="archer-widget-header"><div class="archer-dot"></div><span>ARCHER SAYS</span></div>
+    <p id="archerWidgetMsg">Loading your application...</p>
+    <button class="archer-ask-btn" onclick="draftFollowUp()">DRAFT FOLLOW UP 🏹</button>
   </div>
 </aside>
 
-<!-- MAIN -->
-<main class="main">
+<!-- STATUS MODAL -->
+<div class="modal-overlay" id="statusModal">
+  <div class="modal">
+    <h3>UPDATE STATUS</h3>
+    <select id="newStatus">
+      <option value="applied">Applied</option>
+      <option value="phone-screen">Phone Screen</option>
+      <option value="interview">Interview</option>
+      <option value="offer">Offer</option>
+      <option value="rejected">Rejected</option>
+      <option value="withdrawn">Withdrawn</option>
+    </select>
+    <textarea id="statusNote" placeholder="Add a note about this update (optional)..."></textarea>
+    <div class="modal-actions">
+      <button class="sug-btn-ghost" onclick="closeModal()">CANCEL</button>
+      <button class="btn-primary" onclick="saveStatus()">SAVE STATUS</button>
+    </div>
+  </div>
+</div>
 
-  <!-- TOPBAR -->
+<main class="main">
   <div class="topbar">
     <div class="topbar-left">
-      <a class="back-btn" href="../dashboard/index.html">← BACK</a>
-      <div class="breadcrumb">APPLICATIONS / <span>AJ MADISON</span></div>
+      <a class="back-btn" href="../applications/index.html">← BACK</a>
+      <div class="breadcrumb">APPLICATIONS / <span id="breadcrumbCompany">...</span></div>
     </div>
     <div class="topbar-actions">
-      <button class="btn-ghost">UPDATE STATUS</button>
-      <button class="btn-primary">ASK ARCHER 🏹</button>
+      <button class="btn-ghost" onclick="openModal()">UPDATE STATUS</button>
+      <button class="btn-primary" onclick="draftFollowUp()">ASK ARCHER 🏹</button>
     </div>
   </div>
 
   <div class="content">
-
     <!-- APP HEADER -->
     <div class="app-header-card">
       <div class="app-header-left">
-        <div class="company-logo">🏠</div>
+        <div class="company-logo" id="companyIcon">🏢</div>
         <div class="app-header-info">
-          <h1>AJ MADISON</h1>
-          <h2>Client Support Representative</h2>
-          <div class="app-tags">
-            <span class="tag tag-blue">APPLIED</span>
-            <span class="tag tag-amber">CUSTOMER SERVICE</span>
-            <span class="tag tag-muted">FULL TIME</span>
-            <span class="tag tag-muted">REMOTE FRIENDLY</span>
-          </div>
+          <h1 id="companyName">...</h1>
+          <h2 id="companyRole">...</h2>
+          <div class="app-tags" id="appTags"></div>
         </div>
       </div>
       <div class="app-header-right">
-        <div class="big-status">● APPLIED</div>
-        <div class="date">DATE APPLIED — 2026-03-07</div>
-        <div class="date" style="margin-top:0.2rem;color:var(--amber)">10 DAYS AGO</div>
+        <div class="big-status" id="headerStatus">...</div>
+        <div class="app-date-label">DATE APPLIED — <span id="headerDate">...</span></div>
       </div>
     </div>
 
-    <!-- STATUS TIMELINE -->
-    <div class="timeline-track">
-      <div class="timeline-label">// APPLICATION LIFECYCLE</div>
-      <div class="timeline-steps">
-
-        <div class="timeline-step done">
-          <div class="step-dot">✓</div>
-          <div class="step-name">APPLIED</div>
-          <div class="step-date">Mar 7</div>
-        </div>
-
-        <div class="timeline-step active">
-          <div class="step-dot">→</div>
-          <div class="step-name">FOLLOW UP</div>
-          <div class="step-date">Pending</div>
-        </div>
-
-        <div class="timeline-step">
-          <div class="step-dot">📞</div>
-          <div class="step-name">PHONE SCREEN</div>
-          <div class="step-date">—</div>
-        </div>
-
-        <div class="timeline-step">
-          <div class="step-dot">🤝</div>
-          <div class="step-name">INTERVIEW</div>
-          <div class="step-date">—</div>
-        </div>
-
-        <div class="timeline-step">
-          <div class="step-dot">📋</div>
-          <div class="step-name">FINAL ROUND</div>
-          <div class="step-date">—</div>
-        </div>
-
-        <div class="timeline-step">
-          <div class="step-dot">🎯</div>
-          <div class="step-name">OFFER</div>
-          <div class="step-date">—</div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- THREE COL: RESUME, COVER LETTER, CONTACTS -->
+    <!-- THREE COL -->
     <div class="three-col">
-
-      <!-- RESUME USED -->
+      <!-- RESUME -->
       <div class="info-card">
-        <div class="info-card-header">
-          <div class="info-card-title">RESUME USED</div>
-          <div class="info-card-icon">📄</div>
-        </div>
-        <div class="doc-row">
-          <div class="doc-row-icon">📄</div>
-          <div class="doc-row-info">
-            <div class="doc-row-name">Arnie_Ray_CustomerService_Resume_v2</div>
-            <div class="doc-row-meta">Submitted · 2026-03-07</div>
+        <div class="info-card-header"><div class="info-card-title">RESUME USED</div><div class="info-card-icon">📄</div></div>
+        <div id="resumeSection">
+          <div class="doc-row">
+            <div class="doc-row-icon">📄</div>
+            <div class="doc-row-info">
+              <div class="doc-row-name" id="resumeName">—</div>
+              <div class="doc-row-meta" id="resumeMeta">Not specified</div>
+            </div>
           </div>
-          <div class="doc-row-version">v2</div>
-        </div>
-        <div style="margin-top:1rem;display:flex;gap:0.5rem;">
-          <button class="sug-btn" style="flex:1">VIEW</button>
-          <button class="sug-btn-ghost" style="flex:1">SWAP VERSION</button>
         </div>
       </div>
 
-      <!-- COVER LETTER USED -->
+      <!-- COVER LETTER -->
       <div class="info-card">
-        <div class="info-card-header">
-          <div class="info-card-title">COVER LETTER</div>
-          <div class="info-card-icon">✍️</div>
-        </div>
-        <div class="doc-row">
-          <div class="doc-row-icon">✍️</div>
-          <div class="doc-row-info">
-            <div class="doc-row-name">AJMadison_CoverLetter_Final</div>
-            <div class="doc-row-meta">Submitted · 2026-03-07</div>
-          </div>
-          <div class="doc-row-version">v3</div>
-        </div>
-        <div style="margin-top:0.5rem;">
-          <div class="doc-row" style="padding:0.5rem 0;border-bottom:none;">
-            <div class="doc-row-icon" style="font-size:0.8rem;opacity:0.5">✍️</div>
+        <div class="info-card-header"><div class="info-card-title">COVER LETTER</div><div class="info-card-icon">✍️</div></div>
+        <div id="coverLetterSection">
+          <div class="doc-row">
+            <div class="doc-row-icon">✍️</div>
             <div class="doc-row-info">
-              <div class="doc-row-name" style="font-size:0.75rem;color:var(--muted)">v2 — Human Rewrite</div>
+              <div class="doc-row-name" id="clName">—</div>
+              <div class="doc-row-meta" id="clMeta">Not specified</div>
             </div>
           </div>
-          <div class="doc-row" style="padding:0.5rem 0;border-bottom:none;">
-            <div class="doc-row-icon" style="font-size:0.8rem;opacity:0.3">✍️</div>
-            <div class="doc-row-info">
-              <div class="doc-row-name" style="font-size:0.75rem;color:var(--muted)">v1 — Initial Draft</div>
-            </div>
-          </div>
-        </div>
-        <div style="margin-top:0.5rem;display:flex;gap:0.5rem;">
-          <button class="sug-btn" style="flex:1">VIEW</button>
-          <button class="sug-btn-ghost" style="flex:1">COMPARE</button>
         </div>
       </div>
 
       <!-- CONTACTS -->
       <div class="info-card">
-        <div class="info-card-header">
-          <div class="info-card-title">CONTACTS MADE</div>
-          <div class="info-card-icon">🤝</div>
+        <div class="info-card-header"><div class="info-card-title">CONTACTS MADE</div><div class="info-card-icon">🤝</div></div>
+        <div id="contactsSection"></div>
+        <div class="add-contact-form" id="addContactForm">
+          <input type="text" id="contactName" placeholder="Name & title (e.g. Sarah Jones, HR)" />
+          <input type="text" id="contactPlatform" placeholder="Platform (LinkedIn, Email, Phone...)" />
+          <div style="display:flex;gap:0.5rem">
+            <button class="sug-btn" style="flex:1" onclick="saveContact()">SAVE</button>
+            <button class="sug-btn-ghost" onclick="toggleAddContact()">CANCEL</button>
+          </div>
         </div>
-        <div class="contact-empty">
-          <div class="empty-icon">🤝</div>
-          <p>No contacts made yet for this application.<br>Reaching out can significantly improve your chances.</p>
-          <button onclick="addContact()">+ LOG A CONTACT</button>
-        </div>
+        <button class="sug-btn-ghost" style="width:100%;margin-top:0.75rem" id="addContactBtn" onclick="toggleAddContact()">+ LOG A CONTACT</button>
       </div>
-
     </div>
 
-    <!-- NOTES + ARCHER SUGGESTIONS -->
+    <!-- NOTES + ARCHER -->
     <div class="bottom-two">
-
-      <!-- NOTES -->
       <div class="notes-card">
         <div class="info-card-header" style="margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);">
-          <div class="info-card-title">NOTES & INTEL</div>
-          <div class="info-card-icon">📝</div>
+          <div class="info-card-title">NOTES & INTEL</div><div class="info-card-icon">📝</div>
         </div>
-        <textarea class="notes-textarea" placeholder="Add notes about this application — recruiter info, interview prep, things to remember, anything relevant...
-
-Example:
-- Applied via company website
-- Job description emphasized cross-departmental collaboration
-- Company is a leading appliance retailer, focus on premium customer experience
-- Follow up after 2 weeks if no response"></textarea>
-        <button class="notes-save" onclick="saveNotes()">SAVE NOTES</button>
+        <textarea class="notes-textarea" id="notesField" placeholder="Add notes about this application — recruiter info, interview prep, anything relevant..."></textarea>
+        <button class="notes-save" id="notesBtn" onclick="saveNotes()">SAVE NOTES</button>
+        <div class="status-log" id="statusLog"></div>
       </div>
 
-      <!-- ARCHER SUGGESTIONS -->
       <div class="archer-card">
         <div class="archer-card-header">
           <div class="icon">🏹</div>
-          <div>
-            <h3>Archer's Take</h3>
-            <p>🟢 POWERED BY CLAUDE</p>
-          </div>
+          <div><h3>Archer's Take</h3><p>🟢 POWERED BY CLAUDE</p></div>
         </div>
-        <div class="archer-suggestions">
-
-          <div class="suggestion">
-            It's been <strong>10 days</strong> since you applied. A well-timed follow up email can set you apart. Want me to draft one in your voice?
+        <div class="archer-suggestions" id="archerSuggestions">
+          <div class="suggestion" id="followUpSuggestion">
+            Want me to draft a follow-up email for this application?
             <div class="suggestion-actions">
               <button class="sug-btn" onclick="draftFollowUp()">DRAFT IT 🏹</button>
-              <button class="sug-btn-ghost">NOT YET</button>
+              <button class="sug-btn-ghost" onclick="this.closest('.suggestion').style.display='none'">NOT YET</button>
             </div>
           </div>
-
-          <div class="suggestion">
-            You have <strong>no contacts</strong> logged at AJ Madison. Even connecting with a current employee on LinkedIn can open doors.
+          <div class="suggestion" id="outreachSuggestion">
+            No contacts logged yet. Want me to draft a LinkedIn outreach message?
             <div class="suggestion-actions">
               <button class="sug-btn" onclick="draftOutreach()">DRAFT OUTREACH 🏹</button>
-              <button class="sug-btn-ghost">SKIP</button>
+              <button class="sug-btn-ghost" onclick="this.closest('.suggestion').style.display='none'">SKIP</button>
             </div>
           </div>
-
-          <div class="suggestion">
-            Your cover letter's strongest line — <strong>"taken care of, not just processed"</strong> — is exactly the kind of thing that sticks. If you get an interview, lead with that philosophy.
-          </div>
-
         </div>
       </div>
-
     </div>
-
   </div>
 </main>
 
 <script>
-  function addContact() {
-    const name = prompt("Contact name and title? (e.g. Sarah Jones, HR Manager)");
-    if (name) {
-      const card = document.querySelector('.contact-empty').parentElement;
-      card.innerHTML = `
-        <div class="info-card-header">
-          <div class="info-card-title">CONTACTS MADE</div>
-          <div class="info-card-icon">🤝</div>
-        </div>
-        <div class="doc-row">
-          <div class="doc-row-icon">👤</div>
-          <div class="doc-row-info">
-            <div class="doc-row-name">${name}</div>
-            <div class="doc-row-meta">LinkedIn · ${new Date().toLocaleDateString()}</div>
+  const ARCHER_API = 'https://job-tracer-archer.onrender.com';
+  const params = new URLSearchParams(window.location.search);
+  const appId = params.get('id');
+  let app = null;
+
+  function init() {
+    if (!appId) { window.location.href = '../applications/index.html'; return; }
+    app = DB.getApplication(appId);
+    if (!app) { window.location.href = '../applications/index.html'; return; }
+
+    const user = DB.getUser();
+    document.getElementById('userInitials').textContent = user.initials;
+    document.getElementById('userName').textContent = user.name;
+    document.getElementById('appCount').textContent = DB.getApplications().length;
+
+    document.title = `Job Tracer — ${app.company}`;
+    document.getElementById('breadcrumbCompany').textContent = app.company.toUpperCase();
+    document.getElementById('companyIcon').textContent = app.icon || '🏢';
+    document.getElementById('companyName').textContent = app.company.toUpperCase();
+    document.getElementById('companyRole').textContent = app.role;
+    document.getElementById('headerDate').textContent = app.dateApplied;
+
+    const s = DB.STATUS[app.status] || DB.STATUS.applied;
+    document.getElementById('headerStatus').textContent = '● ' + s.label;
+    document.getElementById('headerStatus').style.color = s.color;
+    document.getElementById('appTags').innerHTML = DB.statusBadge(app.status) + `<span class="tag tag-muted">FULL TIME</span>`;
+
+    document.getElementById('resumeName').textContent = app.resumeVersion || 'Not specified';
+    document.getElementById('resumeMeta').textContent = app.resumeVersion ? `Submitted · ${app.dateApplied}` : 'No resume version logged';
+    document.getElementById('clName').textContent = app.coverLetterVersion || 'Not specified';
+    document.getElementById('clMeta').textContent = app.coverLetterVersion ? `Submitted · ${app.dateApplied}` : 'No cover letter version logged';
+
+    document.getElementById('notesField').value = app.notes || '';
+    document.getElementById('newStatus').value = app.status;
+
+    const daysSince = Math.floor((new Date() - new Date(app.dateApplied)) / 86400000);
+    document.getElementById('archerWidgetMsg').innerHTML = `It's been <strong>${daysSince} day${daysSince !== 1 ? 's' : ''}</strong> since you applied to <strong>${app.company}</strong>. Time to follow up?`;
+
+    renderContacts();
+    renderStatusLog();
+  }
+
+  function renderContacts() {
+    const appContacts = DB.getContacts().filter(c => c.applicationId === appId);
+    const el = document.getElementById('contactsSection');
+    if (appContacts.length === 0) {
+      el.innerHTML = `<div class="empty-contact"><p>No contacts logged yet.<br>Reaching out can significantly improve your chances.</p></div>`;
+      document.getElementById('outreachSuggestion').style.display = '';
+    } else {
+      el.innerHTML = `<div class="contact-list">${appContacts.map(c => `
+        <div class="contact-item">
+          <div class="contact-avatar">${c.name.charAt(0).toUpperCase()}</div>
+          <div class="contact-info">
+            <div class="contact-name">${c.name}</div>
+            <div class="contact-meta">${c.platform} · ${c.dateAdded}</div>
           </div>
-          <span class="tag tag-amber" style="font-size:0.58rem;padding:0.2rem 0.5rem;border-radius:100px;">REACHED OUT</span>
-        </div>
-        <div style="margin-top:1rem;display:flex;gap:0.5rem;">
-          <button class="sug-btn" style="flex:1" onclick="draftOutreach()">DRAFT FOLLOW UP 🏹</button>
-        </div>
-      `;
+        </div>`).join('')}</div>`;
+      document.getElementById('outreachSuggestion').style.display = 'none';
     }
   }
 
+  function renderStatusLog() {
+    if (!app.statusLog || app.statusLog.length === 0) return;
+    const el = document.getElementById('statusLog');
+    el.innerHTML = `<div class="status-log-title">// STATUS HISTORY</div>` +
+      [...app.statusLog].reverse().map(entry => {
+        const s = DB.STATUS[entry.status] || DB.STATUS.applied;
+        return `<div class="log-item">
+          <div class="log-dot" style="background:${s.color}"></div>
+          <div class="log-date">${entry.date}</div>
+          <div><div class="log-text">${s.label}</div>${entry.notes ? `<div class="log-note">${entry.notes}</div>` : ''}</div>
+        </div>`;
+      }).join('');
+  }
+
+  function toggleAddContact() {
+    const form = document.getElementById('addContactForm');
+    form.classList.toggle('visible');
+    document.getElementById('addContactBtn').style.display = form.classList.contains('visible') ? 'none' : '';
+  }
+
+  function saveContact() {
+    const name = document.getElementById('contactName').value.trim();
+    const platform = document.getElementById('contactPlatform').value.trim() || 'LinkedIn';
+    if (!name) return;
+    DB.addContact({ name, platform, applicationId: appId, company: app.company });
+    document.getElementById('contactName').value = '';
+    document.getElementById('contactPlatform').value = '';
+    toggleAddContact();
+    renderContacts();
+  }
+
   function saveNotes() {
-    const btn = document.querySelector('.notes-save');
+    app.notes = document.getElementById('notesField').value;
+    DB.saveApplication(app);
+    const btn = document.getElementById('notesBtn');
     btn.textContent = '✓ SAVED';
     btn.style.color = 'var(--green)';
     btn.style.borderColor = 'var(--green)';
-    setTimeout(() => {
-      btn.textContent = 'SAVE NOTES';
-      btn.style.color = '';
-      btn.style.borderColor = '';
-    }, 2000);
+    setTimeout(() => { btn.textContent = 'SAVE NOTES'; btn.style.color = ''; btn.style.borderColor = ''; }, 2000);
   }
 
-  // Update this URL after deploying the backend to Render
-  const ARCHER_API = 'https://job-tracer-archer.onrender.com';
+  function openModal() { document.getElementById('statusModal').classList.add('visible'); }
+  function closeModal() { document.getElementById('statusModal').classList.remove('visible'); }
+
+  function saveStatus() {
+    const newStatus = document.getElementById('newStatus').value;
+    const note = document.getElementById('statusNote').value.trim();
+    app.status = newStatus;
+    if (!app.statusLog) app.statusLog = [];
+    app.statusLog.push({ date: new Date().toISOString().split('T')[0], status: newStatus, notes: note });
+    DB.saveApplication(app);
+    closeModal();
+    document.getElementById('statusNote').value = '';
+    const s = DB.STATUS[newStatus] || DB.STATUS.applied;
+    document.getElementById('headerStatus').textContent = '● ' + s.label;
+    document.getElementById('headerStatus').style.color = s.color;
+    document.getElementById('appTags').innerHTML = DB.statusBadge(newStatus) + `<span class="tag tag-muted">FULL TIME</span>`;
+    renderStatusLog();
+  }
 
   async function callArcher(prompt, targetEl) {
     const original = targetEl.innerHTML;
     targetEl.innerHTML = '<em style="opacity:0.5">Archer is drafting...</em>';
-
     try {
       const res = await fetch(`${ARCHER_API}/api/archer`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: prompt }]
-        })
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
       });
       const data = await res.json();
-      const reply = data.content || data.error || 'Something went wrong.';
-      targetEl.innerHTML = reply.replace(/\n/g, '<br>');
-    } catch (err) {
-      targetEl.innerHTML = original;
-      alert('Archer is temporarily unavailable. Try again shortly.');
-    }
+      targetEl.innerHTML = (data.content || data.error || 'Something went wrong.').replace(/\n/g, '<br>');
+    } catch(e) { targetEl.innerHTML = original; alert('Archer is temporarily unavailable.'); }
   }
 
   function draftFollowUp() {
-    const suggestionEl = event.target.closest('.suggestion');
-    callArcher(
-      'Draft a short, professional follow-up email for Arnie to send to AJ Madison. He applied for Client Support Representative on March 7, 2026 and hasn\'t heard back. It\'s now been over 2 weeks. Write it in his voice — confident and human, not desperate.',
-      suggestionEl
-    );
+    const el = document.getElementById('followUpSuggestion');
+    const daysSince = Math.floor((new Date() - new Date(app.dateApplied)) / 86400000);
+    callArcher(`Draft a short, professional follow-up email for Arnie to send to ${app.company}. He applied for ${app.role} on ${app.dateApplied} (${daysSince} days ago) and hasn't heard back. Write it in his voice — confident and human, not desperate.`, el);
   }
 
   function draftOutreach() {
-    const suggestionEl = event.target.closest('.suggestion');
-    callArcher(
-      'Draft a short LinkedIn connection message for Arnie to send to someone at AJ Madison. He applied for Client Support Representative. Keep it brief (under 300 characters), genuine, and not salesy.',
-      suggestionEl
-    );
+    const el = document.getElementById('outreachSuggestion');
+    callArcher(`Draft a short LinkedIn connection message for Arnie to send to someone at ${app.company}. He applied for ${app.role}. Keep it brief (under 300 characters), genuine, and not salesy.`, el);
   }
-</script>
 
+  document.getElementById('statusModal').addEventListener('click', e => { if (e.target === document.getElementById('statusModal')) closeModal(); });
+
+  init();
+</script>
 </body>
 </html>
