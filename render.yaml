@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: job-tracer-archer
+    env: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false

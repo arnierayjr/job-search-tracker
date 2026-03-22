@@ -882,39 +882,56 @@
 </main>
 
 <script>
-  const responses = [
-    "Great question! Based on your profile, I'd suggest targeting IT Help Desk and Customer Service roles — your 10+ years of experience is a major asset. Want me to help tailor your resume for a specific role? 🏹",
-    "I noticed you haven't made any LinkedIn contacts yet for AJ Madison. Want me to draft an outreach message to someone on their team? It could make a real difference. 🏹",
-    "Your cover letter for AJ Madison is strong — especially the line about making customers feel taken care of, not just processed. That's the kind of thing that stands out. 🏹",
-    "You've got 3 resume versions tracked already. That's exactly how it should work — each version tells part of your story. Keep going. 🏹",
-    "Tracing your path and aiming at the right opportunities — that's what we're here for. What's your next target role? 🏹"
-  ];
+  // Update this URL after deploying the backend to Render
+  const ARCHER_API = 'https://job-tracer-archer.onrender.com';
 
-  let responseIndex = 0;
+  const conversationHistory = [];
 
-  function sendToArcher() {
+  async function sendToArcher() {
     const input = document.getElementById('archerInput');
-    const messages = document.getElementById('archerMessages');
+    const messagesEl = document.getElementById('archerMessages');
     const val = input.value.trim();
-    if (!val) return;
+    if (!val || input.disabled) return;
 
-    // User message
+    // Show user message
     const uMsg = document.createElement('div');
     uMsg.className = 'u-msg';
     uMsg.textContent = val;
-    messages.appendChild(uMsg);
+    messagesEl.appendChild(uMsg);
     input.value = '';
-    messages.scrollTop = messages.scrollHeight;
+    input.disabled = true;
+    messagesEl.scrollTop = messagesEl.scrollHeight;
 
-    // Archer response
-    setTimeout(() => {
-      const aMsg = document.createElement('div');
-      aMsg.className = 'a-msg';
-      aMsg.innerHTML = responses[responseIndex % responses.length];
-      responseIndex++;
-      messages.appendChild(aMsg);
-      messages.scrollTop = messages.scrollHeight;
-    }, 800);
+    // Add to history
+    conversationHistory.push({ role: 'user', content: val });
+
+    // Loading indicator
+    const loading = document.createElement('div');
+    loading.className = 'a-msg';
+    loading.style.opacity = '0.5';
+    loading.textContent = 'Archer is thinking...';
+    messagesEl.appendChild(loading);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    try {
+      const res = await fetch(`${ARCHER_API}/api/archer`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: conversationHistory })
+      });
+      const data = await res.json();
+      const reply = data.content || data.error || 'Something went wrong. Try again.';
+      loading.style.opacity = '1';
+      loading.innerHTML = reply.replace(/\n/g, '<br>');
+      conversationHistory.push({ role: 'assistant', content: reply });
+    } catch (err) {
+      loading.style.opacity = '1';
+      loading.textContent = 'Archer is temporarily unavailable. Try again shortly. 🏹';
+    }
+
+    input.disabled = false;
+    input.focus();
+    messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
   document.getElementById('archerInput').addEventListener('keydown', e => {

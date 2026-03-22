@@ -1001,12 +1001,44 @@ Example:
     }, 2000);
   }
 
+  // Update this URL after deploying the backend to Render
+  const ARCHER_API = 'https://job-tracer-archer.onrender.com';
+
+  async function callArcher(prompt, targetEl) {
+    const original = targetEl.innerHTML;
+    targetEl.innerHTML = '<em style="opacity:0.5">Archer is drafting...</em>';
+
+    try {
+      const res = await fetch(`${ARCHER_API}/api/archer`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      const data = await res.json();
+      const reply = data.content || data.error || 'Something went wrong.';
+      targetEl.innerHTML = reply.replace(/\n/g, '<br>');
+    } catch (err) {
+      targetEl.innerHTML = original;
+      alert('Archer is temporarily unavailable. Try again shortly.');
+    }
+  }
+
   function draftFollowUp() {
-    alert("Archer is drafting your follow up email... 🏹\n\n(This will connect to the Claude API in the full app)");
+    const suggestionEl = event.target.closest('.suggestion');
+    callArcher(
+      'Draft a short, professional follow-up email for Arnie to send to AJ Madison. He applied for Client Support Representative on March 7, 2026 and hasn\'t heard back. It\'s now been over 2 weeks. Write it in his voice — confident and human, not desperate.',
+      suggestionEl
+    );
   }
 
   function draftOutreach() {
-    alert("Archer is drafting your LinkedIn outreach... 🏹\n\n(This will connect to the Claude API in the full app)");
+    const suggestionEl = event.target.closest('.suggestion');
+    callArcher(
+      'Draft a short LinkedIn connection message for Arnie to send to someone at AJ Madison. He applied for Client Support Representative. Keep it brief (under 300 characters), genuine, and not salesy.',
+      suggestionEl
+    );
   }
 </script>
 
