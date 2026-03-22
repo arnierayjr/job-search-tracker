@@ -636,10 +636,10 @@
   <div class="sidebar-logo">JOB<span>TRACER</span></div>
 
   <div class="sidebar-user">
-    <div class="user-avatar">AR</div>
+    <div class="user-avatar" id="userInitials">?</div>
     <div class="user-info">
-      <p>Arnie Ray Jr</p>
-      <span>🟢 ACTIVELY HUNTING</span>
+      <p id="userName">Loading...</p>
+      <span id="userStatus">🟢 ACTIVELY HUNTING</span>
     </div>
   </div>
 
@@ -648,9 +648,9 @@
     <a class="nav-item active" href="index.html">
       <span class="icon">📊</span> Dashboard
     </a>
-    <a class="nav-item" href="../application-view/index.html">
+    <a class="nav-item" href="../applications/index.html">
       <span class="icon">📋</span> Applications
-      <span class="nav-badge">1</span>
+      <span class="nav-badge" id="appCount">0</span>
     </a>
     <a class="nav-item" href="#archerMessages">
       <span class="icon">🏹</span> Ask Archer
@@ -763,8 +763,8 @@
           </div>
 
           <div class="archer-messages" id="archerMessages">
-            <div class="a-msg">
-              Hey Arnie 👋 — you've got <strong>1 application</strong> tracked so far. You applied to <strong>AJ Madison</strong> on March 7th.<br><br>Want me to help you follow up, find your next target role, or draft something new?
+            <div class="a-msg" id="archerIntro">
+              Hey 👋 — I'm <strong>Archer</strong>, your job search guide. Ask me anything — I can help you follow up, draft cover letters, or find your next target role. 🏹
             </div>
           </div>
 
@@ -790,30 +790,13 @@
           <a class="view-all" href="../resumes/index.html">VIEW ALL →</a>
         </div>
 
-        <div class="doc-list">
-          <div class="doc-item">
+        <div class="doc-list" id="resumeList">
+          <div class="doc-item" style="opacity:0.5;pointer-events:none">
             <div class="doc-icon">📄</div>
             <div class="doc-info">
-              <div class="doc-name">Arnie_Ray_CustomerService_Resume_v2</div>
-              <div class="doc-meta">Used → AJ Madison · 2026-03-07</div>
+              <div class="doc-name">Add your resume versions here</div>
+              <div class="doc-meta">Track versions per role</div>
             </div>
-            <div class="doc-version">v2</div>
-          </div>
-          <div class="doc-item">
-            <div class="doc-icon">📄</div>
-            <div class="doc-info">
-              <div class="doc-name">Arnie_Ray_IT_Resume</div>
-              <div class="doc-meta">Last updated · 2026-03-06</div>
-            </div>
-            <div class="doc-version">v1</div>
-          </div>
-          <div class="doc-item">
-            <div class="doc-icon">📄</div>
-            <div class="doc-info">
-              <div class="doc-name">Arnie_Ray_Data_Steward_Resume</div>
-              <div class="doc-meta">Added · 2026-03-08</div>
-            </div>
-            <div class="doc-version">v1</div>
           </div>
         </div>
       </div>
@@ -828,30 +811,13 @@
           <a class="view-all" href="../cover-letters/index.html">VIEW ALL →</a>
         </div>
 
-        <div class="doc-list">
-          <div class="doc-item">
+        <div class="doc-list" id="coverLetterList">
+          <div class="doc-item" style="opacity:0.5;pointer-events:none">
             <div class="doc-icon">✍️</div>
             <div class="doc-info">
-              <div class="doc-name">AJMadison_CoverLetter_Final</div>
-              <div class="doc-meta">Used → AJ Madison · 2026-03-07</div>
+              <div class="doc-name">Draft your first cover letter with Archer</div>
+              <div class="doc-meta">Tailored to each job</div>
             </div>
-            <div class="doc-version">v3</div>
-          </div>
-          <div class="doc-item">
-            <div class="doc-icon">✍️</div>
-            <div class="doc-info">
-              <div class="doc-name">AJMadison_CoverLetter_v2</div>
-              <div class="doc-meta">Human rewrite · 2026-03-07</div>
-            </div>
-            <div class="doc-version">v2</div>
-          </div>
-          <div class="doc-item">
-            <div class="doc-icon">✍️</div>
-            <div class="doc-info">
-              <div class="doc-name">AJMadison_CoverLetter</div>
-              <div class="doc-meta">Initial draft · 2026-03-07</div>
-            </div>
-            <div class="doc-version">v1</div>
           </div>
         </div>
       </div>
@@ -862,12 +828,26 @@
 </main>
 
 <script>
+  // Auth guard
+  const currentUser = AUTH.requireAuth();
+  if (!currentUser) throw new Error('Not authenticated');
+
   // Load dynamic data
   (function() {
+    // Load user info in sidebar
+    const user = DB.getUser();
+    const displayName = user.name || currentUser.name || 'User';
+    const initials = user.initials || displayName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || 'U';
+    document.getElementById('userInitials').textContent = initials;
+    document.getElementById('userName').textContent = displayName;
+    document.getElementById('userStatus').textContent = '🟢 ' + (user.status || 'ACTIVELY HUNTING');
+
+    // Personalize Archer's greeting
     const apps = DB.getApplications();
     const contacts = DB.getContacts();
     document.getElementById('statApps').textContent = apps.length;
     document.getElementById('statContacts').textContent = contacts.length;
+    document.getElementById('appCount').textContent = apps.length;
 
     const list = document.getElementById('dashAppList');
     const recent = apps.slice(0, 3);

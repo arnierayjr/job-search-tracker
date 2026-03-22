@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Tracer — Sign In</title>
+<script src="../data.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a; --dark: #111214; --card: #16181c;
+    --border: #2a2d35; --amber: #f5a623; --amber-dim: #c47d0e;
+    --amber-glow: rgba(245,166,35,0.15); --amber-soft: rgba(245,166,35,0.07);
+    --white: #f0ede8; --muted: #7a7f8a; --green: #3ddc84;
+    --red: #ff6b6b; --red-soft: rgba(255,107,107,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--black); color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 2rem;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.5;
+  }
+  .bg-grid {
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(245,166,35,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,166,35,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
+    pointer-events: none;
+  }
+  .auth-card {
+    background: var(--dark); border: 1px solid var(--border);
+    border-radius: 12px; padding: 2.5rem; width: 100%; max-width: 420px;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.5s ease both;
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem;
+    letter-spacing: 0.08em; text-align: center; margin-bottom: 0.4rem;
+  }
+  .logo span { color: var(--amber); }
+  .logo-sub {
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    color: var(--muted); letter-spacing: 0.1em; text-align: center;
+    margin-bottom: 2rem;
+  }
+  .tabs {
+    display: flex; border: 1px solid var(--border); border-radius: 6px;
+    overflow: hidden; margin-bottom: 1.75rem;
+  }
+  .tab {
+    flex: 1; padding: 0.65rem; text-align: center;
+    font-family: 'DM Mono', monospace; font-size: 0.72rem;
+    letter-spacing: 0.08em; cursor: pointer;
+    background: var(--card); color: var(--muted);
+    border: none; transition: all 0.15s;
+  }
+  .tab.active { background: var(--amber); color: var(--black); font-weight: 600; }
+  .field { margin-bottom: 1rem; }
+  .field label {
+    display: block; font-size: 0.7rem; font-weight: 500;
+    color: var(--muted); margin-bottom: 0.4rem;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .field input {
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.75rem 1rem; color: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    outline: none; transition: border-color 0.15s;
+  }
+  .field input:focus { border-color: var(--amber); }
+  .field input::placeholder { color: var(--muted); }
+  .btn-submit {
+    width: 100%; background: var(--amber); color: var(--black);
+    border: none; border-radius: 6px; padding: 0.85rem;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem;
+    letter-spacing: 0.08em; cursor: pointer; transition: background 0.15s;
+    margin-top: 0.5rem;
+  }
+  .btn-submit:hover { background: var(--amber-dim); }
+  .error-msg {
+    display: none; background: var(--red-soft); border: 1px solid rgba(255,107,107,0.3);
+    border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1rem;
+    font-size: 0.82rem; color: var(--red); font-family: 'DM Mono', monospace;
+  }
+  .divider {
+    text-align: center; margin: 1.25rem 0 0;
+    font-size: 0.75rem; color: var(--muted);
+  }
+  .divider a { color: var(--amber); text-decoration: none; cursor: pointer; }
+  .divider a:hover { text-decoration: underline; }
+  .back-link {
+    display: block; text-align: center; margin-top: 1.5rem;
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    color: var(--muted); text-decoration: none; letter-spacing: 0.06em;
+  }
+  .back-link:hover { color: var(--amber); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<div class="auth-card">
+  <div class="logo">JOB<span>TRACER</span></div>
+  <div class="logo-sub">🏹 POWERED BY ARCHER</div>
+
+  <div class="tabs">
+    <button class="tab active" id="tabSignup" onclick="switchTab('signup')">CREATE ACCOUNT</button>
+    <button class="tab" id="tabSignin" onclick="switchTab('signin')">SIGN IN</button>
+  </div>
+
+  <div id="errorMsg" class="error-msg"></div>
+
+  <!-- SIGN UP FORM -->
+  <div id="signupForm">
+    <div class="field">
+      <label>Your Name</label>
+      <input type="text" id="signupName" placeholder="First and last name" autocomplete="name" />
+    </div>
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email" />
+    </div>
+    <button class="btn-submit" onclick="handleSignup()">CREATE MY ACCOUNT 🏹</button>
+    <div class="divider">Already have an account? <a onclick="switchTab('signin')">Sign in</a></div>
+  </div>
+
+  <!-- SIGN IN FORM -->
+  <div id="signinForm" style="display:none">
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="signinEmail" placeholder="you@example.com" autocomplete="email" />
+    </div>
+    <button class="btn-submit" onclick="handleSignin()">SIGN IN →</button>
+    <div class="divider">New here? <a onclick="switchTab('signup')">Create an account</a></div>
+  </div>
+</div>
+
+<a href="/" class="back-link">← BACK TO JOBTRACER.APP</a>
+
+<script>
+  // If already signed in, go to dashboard
+  (function() {
+    const user = AUTH.getCurrentUser();
+    if (user) window.location.href = '/app/dashboard/index.html';
+  })();
+
+  // Pre-fill email from URL param
+  const params = new URLSearchParams(window.location.search);
+  const preEmail = params.get('email') || '';
+  const mode = params.get('mode') || 'signup';
+
+  if (preEmail) {
+    document.getElementById('signupEmail').value = preEmail;
+    document.getElementById('signinEmail').value = preEmail;
+
+    // If they have an existing account, switch to sign-in
+    if (AUTH.hasAccount(preEmail) && mode !== 'signup') {
+      switchTab('signin');
+    }
+  }
+
+  if (mode === 'signin') switchTab('signin');
+
+  function switchTab(tab) {
+    document.getElementById('signupForm').style.display = tab === 'signup' ? 'block' : 'none';
+    document.getElementById('signinForm').style.display = tab === 'signin' ? 'block' : 'none';
+    document.getElementById('tabSignup').classList.toggle('active', tab === 'signup');
+    document.getElementById('tabSignin').classList.toggle('active', tab === 'signin');
+    hideError();
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function hideError() {
+    document.getElementById('errorMsg').style.display = 'none';
+  }
+
+  function handleSignup() {
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+
+    if (!name) return showError('Please enter your name.');
+    if (!email || !email.includes('@')) return showError('Please enter a valid email address.');
+    if (AUTH.hasAccount(email)) {
+      showError('An account with that email already exists. Sign in instead.');
+      return;
+    }
+
+    const user = AUTH.signIn(email, name);
+
+    // Seed their DB with name and initials
+    const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    DB.saveUser({ name, initials });
+
+    window.location.href = '/app/onboarding/landing.html';
+  }
+
+  function handleSignin() {
+    const email = document.getElementById('signinEmail').value.trim();
+
+    if (!email || !email.includes('@')) return showError('Please enter your email address.');
+    if (!AUTH.hasAccount(email)) {
+      showError('No account found for that email. Create one instead.');
+      return;
+    }
+
+    AUTH.signIn(email);
+    window.location.href = '/app/dashboard/index.html';
+  }
+
+  // Enter key support
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const isSignup = document.getElementById('signupForm').style.display !== 'none';
+      if (isSignup) handleSignup();
+      else handleSignin();
+    }
+  });
+</script>
+</body>
+</html>

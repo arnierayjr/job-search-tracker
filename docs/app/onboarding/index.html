@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Job Tracer — Meet Archer</title>
+<script src="../data.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -675,6 +676,17 @@
   }
 
   function goToDashboard() {
+    // Save profile data collected during onboarding
+    const currentUser = AUTH.getCurrentUser();
+    if (currentUser && userData.name) {
+      const initials = userData.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+      DB.saveUser({
+        name: userData.name,
+        initials,
+        status: 'ACTIVELY HUNTING',
+        targetRole: Array.isArray(userData.roles) ? userData.roles.join(', ') : (userData.roles || ''),
+      });
+    }
     window.location.href = '/app/dashboard/index.html';
   }
 

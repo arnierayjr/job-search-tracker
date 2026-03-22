@@ -1,5 +1,45 @@
+const AUTH = {
+  SESSION_KEY: 'jobtrace_session',
+
+  getCurrentUser() {
+    try {
+      const s = localStorage.getItem(this.SESSION_KEY);
+      return s ? JSON.parse(s) : null;
+    } catch(e) { return null; }
+  },
+
+  signIn(email, name) {
+    const id = btoa(email.toLowerCase().trim()).replace(/=/g, '');
+    const user = { email: email.toLowerCase().trim(), name: name || '', id };
+    localStorage.setItem(this.SESSION_KEY, JSON.stringify(user));
+    return user;
+  },
+
+  signOut() {
+    localStorage.removeItem(this.SESSION_KEY);
+    window.location.href = '/app/auth/index.html';
+  },
+
+  requireAuth() {
+    const user = this.getCurrentUser();
+    if (!user) {
+      window.location.href = '/app/auth/index.html';
+      return null;
+    }
+    return user;
+  },
+
+  hasAccount(email) {
+    const id = btoa(email.toLowerCase().trim()).replace(/=/g, '');
+    return !!localStorage.getItem('jobtrace_v1_' + id);
+  }
+};
+
 const DB = {
-  KEY: 'jobtrace_v1',
+  get KEY() {
+    const user = AUTH.getCurrentUser();
+    return user ? 'jobtrace_v1_' + user.id : 'jobtrace_v1';
+  },
 
   get() {
     try {
@@ -65,6 +105,11 @@ const DB = {
 
   // User
   getUser() { return this.get().user; },
+  saveUser(user) {
+    const data = this.get();
+    data.user = { ...data.user, ...user };
+    this.save(data);
+  },
 
   // Status config
   STATUS: {

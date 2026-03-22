@@ -490,7 +490,7 @@
 
 <nav>
   <div class="nav-logo">JOB<span>TRACER</span></div>
-  <div class="nav-badge">🏹 EARLY ACCESS</div>
+  <a href="/app/auth/index.html?mode=signin" style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--amber);border:1px solid var(--amber);padding:0.25rem 0.6rem;border-radius:2px;letter-spacing:0.1em;text-decoration:none;">SIGN IN →</a>
 </nav>
 
 <!-- HERO -->
@@ -622,7 +622,7 @@
 
 <script>
   function handleSignup(inputId, formId, successId) {
-    const email = document.getElementById(inputId).value;
+    const email = document.getElementById(inputId).value.trim();
     if (!email || !email.includes('@')) {
       document.getElementById(inputId).style.borderBottom = '2px solid #ff4444';
       document.getElementById(inputId).placeholder = 'Please enter a valid email';
@@ -631,7 +631,9 @@
     document.getElementById(formId).style.display = 'none';
     const success = document.getElementById(successId);
     success.style.display = 'flex';
-      setTimeout(function() { window.location.href = '/app/onboarding/landing.html'; }, 1500);
+    setTimeout(function() {
+      window.location.href = '/app/auth/index.html?email=' + encodeURIComponent(email);
+    }, 1200);
   }
 </script>
 

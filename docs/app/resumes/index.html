@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Job Tracer — Resumes</title>
+<script src="../data.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -51,13 +52,13 @@
 <aside class="sidebar">
   <div class="sidebar-logo">JOB<span>TRACER</span></div>
   <div class="sidebar-user">
-    <div class="user-avatar">AR</div>
-    <div class="user-info"><p>Arnie Ray Jr</p><span>🟢 ACTIVELY HUNTING</span></div>
+    <div class="user-avatar" id="userInitials">?</div>
+    <div class="user-info"><p id="userName">Loading...</p><span id="userStatus">🟢 ACTIVELY HUNTING</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-label">Main</div>
     <a class="nav-item" href="../dashboard/index.html"><span class="icon">📊</span> Dashboard</a>
-    <a class="nav-item" href="../applications/index.html"><span class="icon">📋</span> Applications<span class="nav-badge">1</span></a>
+    <a class="nav-item" href="../applications/index.html"><span class="icon">📋</span> Applications<span class="nav-badge" id="appCount">0</span></a>
     <a class="nav-item" href="../dashboard/index.html#archerMessages"><span class="icon">🏹</span> Ask Archer</a>
     <div class="nav-label">Documents</div>
     <a class="nav-item active" href="index.html"><span class="icon">📄</span> Resumes</a>
@@ -78,41 +79,31 @@
   <div class="content">
     <div class="section-label">// VERSION HISTORY</div>
     <div class="section-title">ALL RESUME VERSIONS</div>
-    <div class="doc-list">
-      <div class="doc-item">
+    <div class="doc-list" id="resumeList">
+      <div class="doc-item" style="opacity:0.5;pointer-events:none">
         <div class="doc-icon">📄</div>
         <div class="doc-info">
-          <div class="doc-name">Arnie_Ray_CustomerService_Resume_v2</div>
-          <div class="doc-meta">Used → AJ Madison · 2026-03-07</div>
+          <div class="doc-name">Upload your resume to track versions</div>
+          <div class="doc-meta">Coming soon — resume version tracking</div>
         </div>
-        <div class="doc-version">v2</div>
-      </div>
-      <div class="doc-item">
-        <div class="doc-icon">📄</div>
-        <div class="doc-info">
-          <div class="doc-name">Arnie_Ray_CustomerService_Resume</div>
-          <div class="doc-meta">First draft · 2026-03-05</div>
-        </div>
-        <div class="doc-version">v1</div>
-      </div>
-      <div class="doc-item">
-        <div class="doc-icon">📄</div>
-        <div class="doc-info">
-          <div class="doc-name">Arnie_Ray_IT_Resume</div>
-          <div class="doc-meta">Last updated · 2026-03-06</div>
-        </div>
-        <div class="doc-version">v1</div>
-      </div>
-      <div class="doc-item">
-        <div class="doc-icon">📄</div>
-        <div class="doc-info">
-          <div class="doc-name">Arnie_Ray_Data_Steward_Resume</div>
-          <div class="doc-meta">Added · 2026-03-08</div>
-        </div>
-        <div class="doc-version">v1</div>
       </div>
     </div>
   </div>
 </main>
+
+<script>
+  const currentUser = AUTH.requireAuth();
+  if (!currentUser) throw new Error('Not authenticated');
+
+  (function() {
+    const user = DB.getUser();
+    const displayName = user.name || currentUser.name || 'User';
+    const initials = user.initials || displayName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || 'U';
+    document.getElementById('userInitials').textContent = initials;
+    document.getElementById('userName').textContent = displayName;
+    document.getElementById('userStatus').textContent = '🟢 ' + (user.status || 'ACTIVELY HUNTING');
+    document.getElementById('appCount').textContent = DB.getApplications().length;
+  })();
+</script>
 </body>
 </html>

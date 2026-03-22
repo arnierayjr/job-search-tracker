@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Job Tracer — Follow Ups</title>
+<script src="../data.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -51,13 +52,13 @@
 <aside class="sidebar">
   <div class="sidebar-logo">JOB<span>TRACER</span></div>
   <div class="sidebar-user">
-    <div class="user-avatar">AR</div>
-    <div class="user-info"><p>Arnie Ray Jr</p><span>🟢 ACTIVELY HUNTING</span></div>
+    <div class="user-avatar" id="userInitials">?</div>
+    <div class="user-info"><p id="userName">Loading...</p><span id="userStatus">🟢 ACTIVELY HUNTING</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-label">Main</div>
     <a class="nav-item" href="../dashboard/index.html"><span class="icon">📊</span> Dashboard</a>
-    <a class="nav-item" href="../applications/index.html"><span class="icon">📋</span> Applications<span class="nav-badge">1</span></a>
+    <a class="nav-item" href="../applications/index.html"><span class="icon">📋</span> Applications<span class="nav-badge" id="appCount">0</span></a>
     <a class="nav-item" href="../dashboard/index.html#archerMessages"><span class="icon">🏹</span> Ask Archer</a>
     <div class="nav-label">Documents</div>
     <a class="nav-item" href="../resumes/index.html"><span class="icon">📄</span> Resumes</a>
@@ -78,15 +79,48 @@
   <div class="content">
     <div class="section-label">// PENDING</div>
     <div class="section-title">FOLLOW UP REMINDERS</div>
-    <div class="followup-item">
-      <div class="followup-dot"></div>
-      <div class="followup-info">
-        <div class="followup-company">AJ Madison — Client Support Representative</div>
-        <div class="followup-note">Applied 2026-03-07 · No response yet</div>
-      </div>
-      <div class="followup-date">⏰ FOLLOW UP DUE</div>
-    </div>
+    <div id="followUpList"></div>
   </div>
 </main>
+
+<script>
+  const currentUser = AUTH.requireAuth();
+  if (!currentUser) throw new Error('Not authenticated');
+
+  (function() {
+    const user = DB.getUser();
+    const displayName = user.name || currentUser.name || 'User';
+    const initials = user.initials || displayName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || 'U';
+    document.getElementById('userInitials').textContent = initials;
+    document.getElementById('userName').textContent = displayName;
+    document.getElementById('userStatus').textContent = '🟢 ' + (user.status || 'ACTIVELY HUNTING');
+
+    const apps = DB.getApplications();
+    document.getElementById('appCount').textContent = apps.length;
+
+    const list = document.getElementById('followUpList');
+    const today = new Date();
+    const pending = apps.filter(a => a.status === 'applied');
+
+    if (pending.length === 0) {
+      list.innerHTML = `<div style="text-align:center;padding:3rem 2rem;color:var(--muted);font-size:0.88rem;">
+        No follow-ups pending. Add applications to track them here.
+      </div>`;
+    } else {
+      list.innerHTML = pending.map(app => {
+        const applied = new Date(app.dateApplied);
+        const daysSince = Math.floor((today - applied) / (1000 * 60 * 60 * 24));
+        return `<div class="followup-item">
+          <div class="followup-dot"></div>
+          <div class="followup-info">
+            <div class="followup-company"><a href="../application-view/index.html?id=${app.id}" style="color:inherit;text-decoration:none">${app.company} — ${app.role}</a></div>
+            <div class="followup-note">Applied ${app.dateApplied} · ${daysSince} day${daysSince !== 1 ? 's' : ''} ago</div>
+          </div>
+          <div class="followup-date">⏰ FOLLOW UP DUE</div>
+        </div>`;
+      }).join('');
+    }
+  })();
+</script>
 </body>
 </html>

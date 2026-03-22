@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Job Tracer — Settings</title>
+<script src="../data.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -45,13 +46,13 @@
 <aside class="sidebar">
   <div class="sidebar-logo">JOB<span>TRACER</span></div>
   <div class="sidebar-user">
-    <div class="user-avatar">AR</div>
-    <div class="user-info"><p>Arnie Ray Jr</p><span>🟢 ACTIVELY HUNTING</span></div>
+    <div class="user-avatar" id="userInitials">?</div>
+    <div class="user-info"><p id="userName">Loading...</p><span id="userStatus">🟢 ACTIVELY HUNTING</span></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-label">Main</div>
     <a class="nav-item" href="../dashboard/index.html"><span class="icon">📊</span> Dashboard</a>
-    <a class="nav-item" href="../applications/index.html"><span class="icon">📋</span> Applications<span class="nav-badge">1</span></a>
+    <a class="nav-item" href="../applications/index.html"><span class="icon">📋</span> Applications<span class="nav-badge" id="appCount">0</span></a>
     <a class="nav-item" href="../dashboard/index.html#archerMessages"><span class="icon">🏹</span> Ask Archer</a>
     <div class="nav-label">Documents</div>
     <a class="nav-item" href="../resumes/index.html"><span class="icon">📄</span> Resumes</a>
@@ -73,15 +74,19 @@
       <div class="settings-group-label">// Profile</div>
       <div class="settings-row">
         <div><div class="settings-row-label">Name</div><div class="settings-row-sub">Your display name</div></div>
-        <div class="settings-value">Arnie Ray Jr</div>
+        <div class="settings-value" id="settingName">—</div>
+      </div>
+      <div class="settings-row">
+        <div><div class="settings-row-label">Email</div><div class="settings-row-sub">Your account email</div></div>
+        <div class="settings-value" id="settingEmail">—</div>
       </div>
       <div class="settings-row">
         <div><div class="settings-row-label">Job Search Status</div><div class="settings-row-sub">Shown in sidebar</div></div>
-        <div class="settings-value">🟢 ACTIVELY HUNTING</div>
+        <div class="settings-value" id="settingStatus">🟢 ACTIVELY HUNTING</div>
       </div>
       <div class="settings-row">
         <div><div class="settings-row-label">Target Role</div><div class="settings-row-sub">Your primary job target</div></div>
-        <div class="settings-value">Customer Support / IT</div>
+        <div class="settings-value" id="settingRole">—</div>
       </div>
     </div>
     <div class="settings-group">
@@ -91,7 +96,34 @@
         <div class="settings-value">ENABLED</div>
       </div>
     </div>
+    <div class="settings-group">
+      <div class="settings-group-label">// Account</div>
+      <div class="settings-row">
+        <div><div class="settings-row-label">Sign Out</div><div class="settings-row-sub">Sign out of your account on this device</div></div>
+        <button onclick="AUTH.signOut()" style="background:none;border:1px solid #ff6b6b;color:#ff6b6b;padding:0.35rem 0.9rem;border-radius:4px;font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.06em;cursor:pointer;">SIGN OUT</button>
+      </div>
+    </div>
   </div>
 </main>
+
+<script>
+  const currentUser = AUTH.requireAuth();
+  if (!currentUser) throw new Error('Not authenticated');
+
+  (function() {
+    const user = DB.getUser();
+    const displayName = user.name || currentUser.name || 'User';
+    const initials = user.initials || displayName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || 'U';
+    document.getElementById('userInitials').textContent = initials;
+    document.getElementById('userName').textContent = displayName;
+    document.getElementById('userStatus').textContent = '🟢 ' + (user.status || 'ACTIVELY HUNTING');
+    document.getElementById('appCount').textContent = DB.getApplications().length;
+
+    document.getElementById('settingName').textContent = displayName;
+    document.getElementById('settingEmail').textContent = currentUser.email || '—';
+    document.getElementById('settingStatus').textContent = '🟢 ' + (user.status || 'ACTIVELY HUNTING');
+    document.getElementById('settingRole').textContent = user.targetRole || '—';
+  })();
+</script>
 </body>
 </html>
