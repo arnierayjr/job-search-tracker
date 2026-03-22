@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Tracer — Meet Archer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --amber: #D97B1A;
+      --amber-dim: #BA7517;
+      --amber-bg: rgba(217,123,26,0.10);
+      --dark: #1A1410;
+      --surface: #211C16;
+      --muted: #8a7a66;
+      --text: #EDE3D4;
+      --text-secondary: #b5a890;
+      --border: rgba(217,123,26,0.2);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--dark); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; justify-content: center; }
+    .shell { padding: 40px 32px 52px; max-width: 540px; width: 100%; }
+    .wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--amber); letter-spacing: 0.08em; margin-bottom: 40px; }
+    .step-row { display: flex; gap: 8px; margin-bottom: 48px; }
+    .step-dot { height: 3px; border-radius: 2px; flex: 1; background: var(--border); }
+    .step-dot.active { background: var(--amber); }
+    .archer-intro { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 44px; }
+    .archer-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--amber-bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; position: relative; }
+    .archer-avatar::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 0.5px solid var(--border); }
+    .archer-avatar svg { width: 32px; height: 32px; }
+    .archer-name { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.2em; color: var(--amber); margin-bottom: 10px; }
+    h1 { font-family: 'Bebas Neue', sans-serif; font-size: 40px; letter-spacing: 0.03em; color: var(--text); line-height: 1.05; margin-bottom: 12px; }
+    .archer-desc { font-size: 14px; color: var(--text-secondary); font-weight: 300; line-height: 1.7; max-width: 380px; }
+    .divider { height: 1px; background: var(--border); margin: 0 0 32px; }
+    .cap-label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 18px; }
+    .cap-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+    .cap-item { display: flex; gap: 14px; align-items: flex-start; background: var(--surface); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; transition: border-color 0.15s; }
+    .cap-item:hover { border-color: rgba(217,123,26,0.45); }
+    .cap-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); margin-top: 6px; flex-shrink: 0; }
+    .cap-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .cap-body { font-size: 12px; color: var(--text-secondary); font-weight: 300; line-height: 1.55; }
+    .honesty-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 32px; display: flex; gap: 12px; align-items: flex-start; }
+    .honesty-icon { font-size: 16px; margin-top: 1px; flex-shrink: 0; color: var(--amber); line-height: 1; }
+    .honesty-text { font-size: 13px; color: var(--text-secondary); font-weight: 300; line-height: 1.65; font-style: italic; }
+    .honesty-text strong { color: var(--text); font-style: normal; font-weight: 500; }
+    .cta-row { display: flex; gap: 12px; align-items: center; }
+    .btn-primary { background: var(--amber); color: #1A1410; border: none; border-radius: 8px; padding: 13px 28px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s; flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+    .btn-primary:hover { background: var(--amber-dim); }
+    .btn-back { background: transparent; color: var(--muted); border: 0.5px solid var(--border); border-radius: 8px; padding: 13px 18px; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: color 0.15s; text-decoration: none; display: flex; align-items: center; }
+    .btn-back:hover { color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="wordmark">JOB TRACER</div>
+
+    <div class="step-row">
+      <div class="step-dot active"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot active"></div>
+    </div>
+
+    <div class="archer-intro">
+      <div class="archer-avatar">
+        <svg viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="11" r="5" stroke="#D97B1A" stroke-width="1.2"/>
+          <path d="M6 27c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="#D97B1A" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="16" cy="11" r="2" fill="#D97B1A" opacity="0.4"/>
+        </svg>
+      </div>
+      <p class="archer-name">Meet Archer</p>
+      <h1>Your co-pilot.<br>Not your ghostwriter.</h1>
+      <p class="archer-desc">Archer is powered by AI and built to help you put your best self on every application — while making sure it still sounds like <em>you</em>.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="cap-label">What Archer can do</p>
+
+    <div class="cap-list">
+      <div class="cap-item">
+        <div class="cap-dot"></div>
+        <div>
+          <p class="cap-title">Tailor your resume for each role</p>
+          <p class="cap-body">Archer reads the job posting and helps you align your experience to what they're actually asking for — no generic templates.</p>
+        </div>
+      </div>
+      <div class="cap-item">
+        <div class="cap-dot"></div>
+        <div>
+          <p class="cap-title">Draft and refine cover letters</p>
+          <p class="cap-body">You give Archer the role and your angle. It drafts. You shape it until it sounds like you at your most confident.</p>
+        </div>
+      </div>
+      <div class="cap-item">
+        <div class="cap-dot"></div>
+        <div>
+          <p class="cap-title">Craft follow-up messages</p>
+          <p class="cap-body">Archer helps you follow up professionally — without sounding desperate or copy-pasted. Timing and tone matter.</p>
+        </div>
+      </div>
+      <div class="cap-item">
+        <div class="cap-dot"></div>
+        <div>
+          <p class="cap-title">Keep you grounded when it's quiet</p>
+          <p class="cap-body">When employers go silent, Archer won't let you spiral. It'll remind you what you did right and what to do next.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="honesty-box">
+      <div class="honesty-icon">—</div>
+      <p class="honesty-text">Archer is a tool, not a crutch. <strong>The effort is still yours.</strong> The more you bring to it, the more it gives back. Think of it as your most prepared friend in your corner.</p>
+    </div>
+
+    <div class="cta-row">
+      <a class="btn-back" href="profile.html">← Back</a>
+      <a class="btn-primary" href="../dashboard/index.html">Let's get to work →</a>
+    </div>
+  </div>
+</body>
+</html>
