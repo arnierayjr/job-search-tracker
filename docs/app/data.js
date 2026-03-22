@@ -15,28 +15,13 @@ const DB = {
   _seed() {
     const data = {
       user: {
-        name: 'Arnie Ray Jr',
-        initials: 'AR',
+        name: '',
+        initials: '',
         status: 'ACTIVELY HUNTING',
-        targetRole: 'Customer Support / IT',
-        location: 'Maryland / DC'
+        targetRole: '',
+        location: ''
       },
-      applications: [
-        {
-          id: 'ajmadison-001',
-          company: 'AJ Madison',
-          role: 'Client Support Representative',
-          icon: '🏠',
-          dateApplied: '2026-03-07',
-          status: 'applied',
-          resumeVersion: 'Arnie_Ray_CustomerService_Resume_v2',
-          coverLetterVersion: 'v3 (Final)',
-          notes: '',
-          statusLog: [
-            { date: '2026-03-07', status: 'applied', notes: 'Cover letter finalized and submitted' }
-          ]
-        }
-      ],
+      applications: [],
       contacts: []
     };
     this.save(data);
