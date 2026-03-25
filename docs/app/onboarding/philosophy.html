@@ -4,51 +4,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Job Tracer — Your Foundation</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --amber: #D97B1A;
-      --amber-dim: #BA7517;
-      --amber-bg: rgba(217,123,26,0.10);
-      --dark: #1A1410;
-      --surface: #211C16;
-      --muted: #8a7a66;
-      --text: #EDE3D4;
-      --text-secondary: #b5a890;
-      --border: rgba(217,123,26,0.2);
+      --bg: #f0f4f9; --surface: #ffffff; --border: #e1e7f0;
+      --blue: #3b7dd8; --blue-dark: #2563eb; --blue-light: #eff6ff;
+      --text: #111827; --muted: #64748b;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--dark); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; justify-content: center; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; justify-content: center; }
     .shell { padding: 40px 32px 52px; max-width: 540px; width: 100%; }
-    .wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--amber); letter-spacing: 0.08em; margin-bottom: 40px; }
+    .wordmark { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: 0.04em; margin-bottom: 40px; }
+    .wordmark span { color: var(--blue); }
     .step-row { display: flex; gap: 8px; margin-bottom: 36px; }
     .step-dot { height: 3px; border-radius: 2px; flex: 1; background: var(--border); }
-    .step-dot.active { background: var(--amber); }
-    .eyebrow { font-size: 11px; letter-spacing: 0.18em; color: var(--amber); text-transform: uppercase; font-weight: 500; margin-bottom: 10px; }
-    h1 { font-family: 'Bebas Neue', sans-serif; font-size: 46px; letter-spacing: 0.03em; color: var(--text); line-height: 1.05; margin-bottom: 20px; }
-    h1 span { color: var(--amber); }
-    .intro { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 36px; font-weight: 300; }
+    .step-dot.active { background: var(--blue); }
+    .eyebrow { font-size: 11px; letter-spacing: 0.18em; color: var(--blue); text-transform: uppercase; font-weight: 600; margin-bottom: 10px; }
+    h1 { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 16px; }
+    h1 span { color: var(--blue); }
+    .intro { font-size: 15px; line-height: 1.7; color: var(--muted); margin-bottom: 36px; }
     .divider { height: 1px; background: var(--border); margin-bottom: 32px; }
     .pillar { display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-start; }
-    .pillar-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--amber-bg); border: 0.5px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .pillar-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--blue-light); border: 1px solid rgba(59,125,216,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
     .pillar-icon svg { width: 16px; height: 16px; }
-    .pillar-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-    .pillar-body { font-size: 13px; color: var(--text-secondary); line-height: 1.65; font-weight: 300; }
-    .promise-box { background: var(--surface); border: 0.5px solid var(--border); border-left: 2px solid var(--amber); border-radius: 12px; padding: 20px; margin: 28px 0 32px; }
-    .promise-label { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); font-weight: 500; margin-bottom: 10px; }
-    .promise-text { font-size: 14px; line-height: 1.7; color: var(--text); font-weight: 300; }
-    .promise-text strong { color: var(--amber); font-weight: 500; }
+    .pillar-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .pillar-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
+    .promise-box { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--blue); border-radius: 12px; padding: 20px; margin: 28px 0 32px; }
+    .promise-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue); font-weight: 600; margin-bottom: 10px; }
+    .promise-text { font-size: 14px; line-height: 1.7; color: var(--text); }
+    .promise-text strong { color: var(--blue); font-weight: 600; }
     .cta-row { display: flex; gap: 12px; align-items: center; }
-    .btn-primary { background: var(--amber); color: #1A1410; border: none; border-radius: 8px; padding: 13px 28px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s; flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; }
-    .btn-primary:hover { background: var(--amber-dim); }
-    .btn-ghost { background: transparent; color: var(--muted); border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; padding: 13px 4px; transition: color 0.15s; }
-    .btn-ghost:hover { color: var(--text-secondary); }
+    .btn-primary { background: var(--blue); color: #000; border: none; border-radius: 8px; padding: 13px 28px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.15s; flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+    .btn-primary:hover { background: var(--blue-dark); }
+    .btn-ghost { background: transparent; color: var(--muted); border: none; font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; padding: 13px 4px; transition: color 0.15s; }
+    .btn-ghost:hover { color: var(--text); }
   </style>
 </head>
 <body>
   <div class="shell">
-    <div class="wordmark">JOB TRACER</div>
+    <div class="wordmark">JOB<span>TRACER</span></div>
 
     <div class="step-row">
       <div class="step-dot active"></div>
@@ -67,7 +61,7 @@
     <div class="pillar">
       <div class="pillar-icon">
         <svg viewBox="0 0 16 16" fill="none">
-          <path d="M8 2L9.5 6H14L10.5 8.5L12 12.5L8 10L4 12.5L5.5 8.5L2 6H6.5L8 2Z" stroke="#D97B1A" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M8 2L9.5 6H14L10.5 8.5L12 12.5L8 10L4 12.5L5.5 8.5L2 6H6.5L8 2Z" stroke="#3b7dd8" stroke-width="1.2" stroke-linejoin="round"/>
         </svg>
       </div>
       <div>
@@ -79,7 +73,7 @@
     <div class="pillar">
       <div class="pillar-icon">
         <svg viewBox="0 0 16 16" fill="none">
-          <path d="M3 8h10M8 3l5 5-5 5" stroke="#D97B1A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 8h10M8 3l5 5-5 5" stroke="#3b7dd8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
       <div>
@@ -91,8 +85,8 @@
     <div class="pillar">
       <div class="pillar-icon">
         <svg viewBox="0 0 16 16" fill="none">
-          <circle cx="8" cy="8" r="5.5" stroke="#D97B1A" stroke-width="1.2"/>
-          <path d="M8 5v3.5l2 1.5" stroke="#D97B1A" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="8" cy="8" r="5.5" stroke="#3b7dd8" stroke-width="1.2"/>
+          <path d="M8 5v3.5l2 1.5" stroke="#3b7dd8" stroke-width="1.2" stroke-linecap="round"/>
         </svg>
       </div>
       <div>

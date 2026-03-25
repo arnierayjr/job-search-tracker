@@ -113,16 +113,16 @@ const DB = {
 
   // Status config
   STATUS: {
-    applied:      { label: 'APPLIED',       color: '#f5a623', bg: 'rgba(245,166,35,0.1)',   border: 'rgba(245,166,35,0.25)' },
-    'phone-screen':{ label: 'PHONE SCREEN', color: '#60a5fa', bg: 'rgba(96,165,250,0.1)',   border: 'rgba(96,165,250,0.25)' },
-    interview:    { label: 'INTERVIEW',      color: '#60a5fa', bg: 'rgba(96,165,250,0.1)',   border: 'rgba(96,165,250,0.25)' },
-    offer:        { label: 'OFFER',          color: '#3ddc84', bg: 'rgba(61,220,132,0.1)',   border: 'rgba(61,220,132,0.25)' },
-    rejected:     { label: 'REJECTED',       color: '#ff6b6b', bg: 'rgba(255,107,107,0.1)', border: 'rgba(255,107,107,0.25)' },
-    withdrawn:    { label: 'WITHDRAWN',      color: '#7a7f8a', bg: 'rgba(122,127,138,0.1)', border: 'rgba(122,127,138,0.25)' }
+    applied:       { label: 'Applied',       color: '#2563eb', bg: 'rgba(59,130,246,0.08)',  border: 'rgba(59,130,246,0.2)' },
+    'phone-screen':{ label: 'Phone Screen',  color: '#0891b2', bg: 'rgba(8,145,178,0.08)',   border: 'rgba(8,145,178,0.2)' },
+    interview:     { label: 'Interview',     color: '#7c3aed', bg: 'rgba(124,58,237,0.08)',  border: 'rgba(124,58,237,0.2)' },
+    offer:         { label: 'Offer',         color: '#16a34a', bg: 'rgba(22,163,74,0.08)',   border: 'rgba(22,163,74,0.2)' },
+    rejected:      { label: 'Rejected',      color: '#dc2626', bg: 'rgba(220,38,38,0.08)',   border: 'rgba(220,38,38,0.2)' },
+    withdrawn:     { label: 'Withdrawn',     color: '#64748b', bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.2)' }
   },
 
   statusBadge(status) {
     const s = this.STATUS[status] || this.STATUS.applied;
-    return `<span style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;padding:0.25rem 0.65rem;border-radius:100px;background:${s.bg};color:${s.color};border:1px solid ${s.border}">${s.label}</span>`;
+    return `<span style="font-family:'Inter',sans-serif;font-size:0.68rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:100px;background:${s.bg};color:${s.color};border:1px solid ${s.border}">${s.label}</span>`;
   }
 };

@@ -5,59 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Job Tracer — New Application</title>
 <script src="../data.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared.css">
 <style>
-  :root {
-    --black: #0a0a0a; --dark: #111214; --card: #16181c; --card2: #1c1f24;
-    --border: #2a2d35; --amber: #f5a623; --amber-dim: #c47d0e;
-    --amber-glow: rgba(245,166,35,0.15); --amber-soft: rgba(245,166,35,0.07);
-    --white: #f0ede8; --muted: #7a7f8a; --green: #3ddc84;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; }
-  .sidebar { width: 240px; min-height: 100vh; background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 1.5rem 0; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
-  .sidebar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.08em; padding: 0 1.5rem 1.5rem; border-bottom: 1px solid var(--border); }
-  .sidebar-logo span { color: var(--amber); }
-  .sidebar-user { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; }
-  .user-avatar { width: 36px; height: 36px; background: var(--amber-glow); border: 1px solid var(--amber); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--amber); font-family: 'DM Mono', monospace; }
-  .user-info p { font-size: 0.85rem; font-weight: 500; }
-  .user-info span { font-size: 0.65rem; color: var(--green); font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
-  .sidebar-nav { padding: 1rem 0; flex: 1; overflow-y: auto; }
-  .nav-label { font-size: 0.6rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; padding: 0.75rem 1.5rem 0.4rem; font-family: 'DM Mono', monospace; }
-  .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.5rem; font-size: 0.88rem; color: var(--muted); text-decoration: none; border-left: 3px solid transparent; transition: all 0.15s; }
-  .nav-item:hover { color: var(--white); background: var(--amber-soft); }
-  .nav-item.active { color: var(--amber); border-left-color: var(--amber); background: var(--amber-soft); }
-  .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
-  .nav-badge { margin-left: auto; background: var(--amber); color: var(--black); font-family: 'DM Mono', monospace; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 100px; }
-  .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-  .topbar { padding: 1.2rem 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--dark); position: sticky; top: 0; z-index: 50; }
   .topbar-left { display: flex; align-items: center; gap: 1rem; }
-  .back-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 0.4rem 0.8rem; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.08em; border-radius: 4px; cursor: pointer; text-decoration: none; transition: all 0.15s; }
-  .back-btn:hover { border-color: var(--amber); color: var(--amber); }
-  .breadcrumb { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.06em; }
-  .breadcrumb span { color: var(--amber); }
+  .back-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 0.4rem 0.8rem; font-size: 0.72rem; font-weight: 500; border-radius: 4px; cursor: pointer; text-decoration: none; transition: all 0.15s; }
+  .back-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .breadcrumb { font-size: 0.72rem; color: var(--muted); }
+  .breadcrumb span { color: var(--blue); font-weight: 600; }
   .content { padding: 2rem; max-width: 700px; }
-  .form-card { background: var(--dark); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; }
+  .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
   .form-section { margin-bottom: 2rem; }
-  .form-section-title { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 1rem; }
+  .form-section-title { font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted); font-weight: 600; text-transform: uppercase; margin-bottom: 1rem; }
   .field { margin-bottom: 1.25rem; }
-  .field label { display: block; font-size: 0.75rem; font-weight: 500; color: var(--muted); margin-bottom: 0.5rem; letter-spacing: 0.05em; text-transform: uppercase; }
+  .field label { display: block; font-size: 0.72rem; font-weight: 600; color: var(--muted); margin-bottom: 0.45rem; letter-spacing: 0.05em; text-transform: uppercase; }
   .field input, .field select, .field textarea {
-    width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 6px;
-    padding: 0.75rem 1rem; color: var(--white); font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem; outline: none; transition: border-color 0.15s; appearance: none;
+    width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.7rem 1rem; color: var(--text); font-family: 'Inter', sans-serif;
+    font-size: 0.88rem; outline: none; transition: border-color 0.15s, box-shadow 0.15s; appearance: none;
   }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--amber); }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.08); }
   .field input::placeholder, .field textarea::placeholder { color: var(--muted); }
-  .field select option { background: var(--card); color: var(--white); }
+  .field select option { background: var(--surface); color: var(--text); }
   .field textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
   .icon-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.5rem; }
-  .icon-btn { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0.6rem; font-size: 1.2rem; cursor: pointer; text-align: center; transition: all 0.15s; }
-  .icon-btn:hover, .icon-btn.selected { border-color: var(--amber); background: var(--amber-soft); }
+  .icon-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.6rem; font-size: 1.2rem; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .icon-btn:hover, .icon-btn.selected { border-color: var(--blue); background: var(--blue-light); }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .btn-primary { background: var(--amber); color: var(--black); border: none; border-radius: 6px; padding: 0.75rem 2rem; font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.06em; cursor: pointer; transition: background 0.15s; width: 100%; margin-top: 0.5rem; }
-  .btn-primary:hover { background: var(--amber-dim); }
-  .err { color: #ff6b6b; font-size: 0.78rem; margin-top: 0.4rem; display: none; }
+  .btn-primary { background: var(--blue); color: #000; border: none; border-radius: 6px; padding: 0.75rem 2rem; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s; width: 100%; margin-top: 0.5rem; }
+  .btn-primary:hover { background: var(--blue-dark); }
+  .err { color: var(--red); font-size: 0.78rem; margin-top: 0.4rem; display: none; }
 </style>
 </head>
 <body>

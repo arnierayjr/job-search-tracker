@@ -5,67 +5,92 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Job Tracer — Contacts</title>
 <script src="../data.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared.css">
 <style>
-  :root {
-    --black: #0a0a0a; --dark: #111214; --card: #16181c; --card2: #1c1f24;
-    --border: #2a2d35; --amber: #f5a623; --amber-dim: #c47d0e;
-    --amber-glow: rgba(245,166,35,0.15); --amber-soft: rgba(245,166,35,0.07);
-    --white: #f0ede8; --muted: #7a7f8a; --green: #3ddc84;
+  .add-form {
+    background: var(--surface);
+    border: 1px solid rgba(59,125,216,0.4);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: none;
+    box-shadow: 0 2px 8px rgba(59,125,216,0.06);
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; }
-  .sidebar { width: 240px; min-height: 100vh; background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 1.5rem 0; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
-  .sidebar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.08em; padding: 0 1.5rem 1.5rem; border-bottom: 1px solid var(--border); }
-  .sidebar-logo span { color: var(--amber); }
-  .sidebar-user { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; }
-  .user-avatar { width: 36px; height: 36px; background: var(--amber-glow); border: 1px solid var(--amber); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--amber); font-family: 'DM Mono', monospace; }
-  .user-info p { font-size: 0.85rem; font-weight: 500; }
-  .user-info span { font-size: 0.65rem; color: var(--green); font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
-  .sidebar-nav { padding: 1rem 0; flex: 1; overflow-y: auto; }
-  .nav-label { font-size: 0.6rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; padding: 0.75rem 1.5rem 0.4rem; font-family: 'DM Mono', monospace; }
-  .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.5rem; font-size: 0.88rem; color: var(--muted); text-decoration: none; border-left: 3px solid transparent; transition: all 0.15s; }
-  .nav-item:hover { color: var(--white); background: var(--amber-soft); }
-  .nav-item.active { color: var(--amber); border-left-color: var(--amber); background: var(--amber-soft); }
-  .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
-  .nav-badge { margin-left: auto; background: var(--amber); color: var(--black); font-family: 'DM Mono', monospace; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 100px; }
-  .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-  .topbar { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--dark); position: sticky; top: 0; z-index: 50; }
-  .topbar h1 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.08em; }
-  .topbar h1 span { color: var(--amber); }
-  .btn-primary { background: var(--amber); color: var(--black); border: none; border-radius: 6px; padding: 0.55rem 1.2rem; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.06em; cursor: pointer; transition: background 0.15s; }
-  .btn-primary:hover { background: var(--amber-dim); }
-  .content { padding: 2rem; }
-  .add-form { background: var(--dark); border: 1px solid var(--amber); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; display: none; }
   .add-form.visible { display: block; }
-  .add-form h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.06em; margin-bottom: 1rem; color: var(--amber); }
+  .add-form h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: var(--blue); }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
   .field label { display: block; font-size: 0.7rem; font-weight: 500; color: var(--muted); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.05em; }
-  .field input, .field select { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 0.65rem 0.9rem; color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; outline: none; transition: border-color 0.15s; appearance: none; }
-  .field input:focus, .field select:focus { border-color: var(--amber); }
+  .field input, .field select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.65rem 0.9rem;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--blue); }
   .field input::placeholder { color: var(--muted); }
-  .field select option { background: var(--card); }
+  .field select option { background: var(--surface); color: var(--text); }
   .form-actions { display: flex; gap: 0.75rem; margin-top: 0.25rem; }
-  .btn-ghost { background: none; color: var(--muted); border: 1px solid var(--border); padding: 0.55rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
-  .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
-  .section-label { font-size: 0.62rem; letter-spacing: 0.12em; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 0.4rem; }
-  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.06em; margin-bottom: 1.25rem; }
+  .section-label { font-size: 0.62rem; letter-spacing: 0.12em; color: var(--muted); font-weight: 500; margin-bottom: 0.4rem; }
+  .section-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 1.25rem; }
   .contact-list { display: flex; flex-direction: column; gap: 0.75rem; }
-  .contact-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; transition: border-color 0.15s; }
-  .contact-card:hover { border-color: var(--border); }
-  .contact-avatar { width: 40px; height: 40px; background: var(--amber-glow); border: 1px solid var(--amber); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--amber); font-weight: 600; flex-shrink: 0; }
+  .contact-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .contact-card:hover { border-color: var(--blue); box-shadow: 0 2px 8px rgba(59,125,216,0.08); }
+  .contact-avatar {
+    width: 40px; height: 40px;
+    background: var(--blue-light);
+    border: 1px solid rgba(59,125,216,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--blue);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
   .contact-info { flex: 1; min-width: 0; }
-  .contact-name { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.15rem; }
+  .contact-name { font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 0.15rem; }
   .contact-sub { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.3rem; }
   .contact-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-  .contact-tag { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.06em; padding: 0.18rem 0.5rem; border-radius: 100px; background: var(--card2); color: var(--muted); border: 1px solid var(--border); }
-  .contact-tag.amber { background: var(--amber-soft); color: var(--amber); border-color: rgba(245,166,35,0.3); }
+  .contact-tag {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 0.18rem 0.5rem;
+    border-radius: 100px;
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .contact-tag.blue {
+    background: var(--blue-light);
+    color: var(--blue);
+    border-color: rgba(59,125,216,0.3);
+  }
   .contact-actions { display: flex; gap: 0.5rem; align-items: center; }
   .delete-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 0.25rem; transition: color 0.15s; line-height: 1; }
-  .delete-btn:hover { color: #ff6b6b; }
+  .delete-btn:hover { color: #dc2626; }
   .empty-state { text-align: center; padding: 5rem 2rem; }
   .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
-  .empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.75rem; }
+  .empty-title { font-size: 1.4rem; font-weight: 700; color: var(--muted); margin-bottom: 0.75rem; }
   .empty-body { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; max-width: 340px; margin-left: auto; margin-right: auto; }
 </style>
 </head>
@@ -162,7 +187,7 @@
 
   function saveContact() {
     const name = document.getElementById('fName').value.trim();
-    if (!name) { document.getElementById('fName').style.borderColor = '#ff6b6b'; return; }
+    if (!name) { document.getElementById('fName').style.borderColor = '#dc2626'; return; }
     document.getElementById('fName').style.borderColor = '';
 
     const apps = DB.getApplications();
@@ -217,7 +242,7 @@
             <div class="contact-name">${c.name}${c.title ? ` — ${c.title}` : ''}</div>
             <div class="contact-sub">${c.company || ''}${c.company && c.dateAdded ? ' · ' : ''}${c.dateAdded || ''}</div>
             <div class="contact-tags">
-              <span class="contact-tag amber">${c.platform}</span>
+              <span class="contact-tag blue">${c.platform}</span>
               ${linkedApp ? `<a href="../application-view/index.html?id=${linkedApp.id}" style="text-decoration:none"><span class="contact-tag">${linkedApp.company}</span></a>` : ''}
             </div>
           </div>
