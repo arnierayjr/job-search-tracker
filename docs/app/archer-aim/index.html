@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Tracer — Aim Assessment</title>
+<script src="../data.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared.css">
+<style>
+  /* ---- PAGE LAYOUT ---- */
+  .aim-content {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* ---- PHASE PANELS ---- */
+  .phase { display: none; }
+  .phase.active { display: block; }
+
+  /* ---- FORM PHASE ---- */
+  .form-intro {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    box-shadow: 0 2px 8px rgba(59,125,216,0.06);
+  }
+  .archer-icon {
+    font-size: 3rem;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .form-intro-text h2 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+  .form-intro-text h2 span { color: var(--blue); }
+  .form-intro-text p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 560px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .form-grid .field-full { grid-column: 1 / -1; }
+  .form-grid .field { margin-bottom: 0; }
+
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .form-card-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .btn-aim {
+    background: var(--blue);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 2rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .btn-aim:hover { background: var(--blue-dark); transform: translateY(-1px); }
+  .btn-aim:active { transform: translateY(0); }
+
+  /* ---- LOADING PHASE ---- */
+  .loading-scene {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+    gap: 2rem;
+  }
+  .loading-target {
+    position: relative;
+    width: 160px;
+    height: 160px;
+  }
+  .loading-target svg {
+    width: 160px;
+    height: 160px;
+    animation: targetPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes targetPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.85; }
+  }
+  .loading-arrow {
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    transform: translateY(-50%) rotate(-35deg);
+    animation: arrowFly 1.8s ease-in-out infinite;
+  }
+  @keyframes arrowFly {
+    0% { left: -60px; opacity: 0; }
+    30% { opacity: 1; }
+    70% { left: 40%; opacity: 1; }
+    100% { left: 45%; opacity: 0; }
+  }
+  .loading-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .loading-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: -1.2rem;
+  }
+  .loading-dots span {
+    animation: dotBlink 1.2s ease-in-out infinite;
+    opacity: 0;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.3s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.6s; }
+  @keyframes dotBlink {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+
+  /* ---- RESULTS PHASE ---- */
+  .results-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* Target panel */
+  .target-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(59,125,216,0.08);
+  }
+  .target-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  .target-panel-header h2 {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .target-panel-header h2 span { color: var(--blue); }
+  .overall-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--blue-light);
+    border: 1px solid rgba(59,125,216,0.25);
+    border-radius: 8px;
+    padding: 0.4rem 0.9rem;
+  }
+  .overall-score {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--blue);
+    line-height: 1;
+  }
+  .overall-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .target-svg-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+  }
+  .target-svg-wrap svg {
+    max-width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .tagline-card {
+    margin-top: 1.5rem;
+    background: var(--blue-light);
+    border: 1px solid rgba(59,125,216,0.2);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--text);
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .tagline-card::before { content: '"'; font-size: 1.4rem; color: var(--blue); line-height: 0; vertical-align: -0.25em; margin-right: 0.2rem; }
+  .tagline-card::after { content: '"'; font-size: 1.4rem; color: var(--blue); line-height: 0; vertical-align: -0.25em; margin-left: 0.2rem; }
+
+  /* Quiver panel */
+  .quiver-panel {
+    background: linear-gradient(160deg, #1e2a3a 0%, #2d3e55 30%, #243349 70%, #1e2a3a 100%);
+    border: 1px solid rgba(59,125,216,0.25);
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.07);
+    position: sticky;
+    top: 80px;
+  }
+  .quiver-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .quiver-icon { font-size: 1.5rem; }
+  .quiver-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .quiver-subtitle {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.95);
+    letter-spacing: -0.01em;
+  }
+  .quiver-arrows { display: flex; flex-direction: column; gap: 0.9rem; }
+  .quiver-arrow {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    animation: fadeUp 0.4s ease both;
+  }
+  .quiver-arrow-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .quiver-arrow-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+  }
+  .quiver-arrow-icon { font-size: 0.85rem; }
+  .quiver-arrow-score {
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .quiver-bar-track {
+    height: 5px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .quiver-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .quiver-highlight {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.4;
+    font-style: italic;
+  }
+
+  /* Assessment card */
+  .assessment-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-top: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .assessment-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .assessment-body {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.75;
+  }
+  .strengths-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+  .strength-pill {
+    background: var(--blue-light);
+    border: 1px solid rgba(59,125,216,0.2);
+    border-radius: 100px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--blue);
+  }
+
+  .results-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  /* Arrow tooltip */
+  .arrow-label-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    fill: var(--text, #111827);
+    text-anchor: middle;
+  }
+  .arrow-score-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    fill: var(--blue, #3b7dd8);
+    text-anchor: middle;
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">JOB<span>TRACER</span></div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="userInitials">?</div>
+    <div class="user-info">
+      <p id="userName">Loading...</p>
+      <span id="userStatus">🟢 ACTIVELY HUNTING</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a class="nav-item" href="../dashboard/index.html"><span class="icon">📊</span> Dashboard</a>
+    <a class="nav-item" href="../applications/index.html"><span class="icon">📋</span> Applications<span class="nav-badge" id="appCount">0</span></a>
+    <a class="nav-item" href="../dashboard/index.html#archerMessages"><span class="icon">🏹</span> Ask Archer</a>
+    <a class="nav-item active" href="index.html"><span class="icon">🎯</span> Aim Assessment</a>
+    <div class="nav-label">Documents</div>
+    <a class="nav-item" href="../resumes/index.html"><span class="icon">📄</span> Resumes</a>
+    <a class="nav-item" href="../cover-letters/index.html"><span class="icon">✍️</span> Cover Letters</a>
+    <div class="nav-label">Network</div>
+    <a class="nav-item" href="../contacts/index.html"><span class="icon">🤝</span> Contacts</a>
+    <a class="nav-item" href="../follow-ups/index.html"><span class="icon">📅</span> Follow Ups</a>
+    <div class="nav-label">Account</div>
+    <a class="nav-item" href="../settings/index.html"><span class="icon">⚙️</span> Settings</a>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <h1>AIM <span>ASSESSMENT</span></h1>
+    <span style="font-size:0.78rem;color:var(--muted);font-weight:500;">🏹 Powered by Archer</span>
+  </div>
+
+  <div class="aim-content">
+
+    <!-- ==================== PHASE: FORM ==================== -->
+    <div class="phase active" id="phaseForm">
+
+      <div class="form-intro">
+        <div class="archer-icon">🎯</div>
+        <div class="form-intro-text">
+          <h2>NOCK YOUR <span>ARROW</span></h2>
+          <p>Archer analyzes your professional profile and fires 7 arrows at the target — one for each dimension of what makes a great candidate. The closer each arrow hits to the bullseye, the stronger you are in that area. Fill out your details and let Archer take aim.</p>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title">📋 Your Profile</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Target Role</label>
+            <input type="text" id="fRole" placeholder="e.g. Senior Software Engineer" />
+          </div>
+          <div class="field">
+            <label>Years of Experience</label>
+            <input type="text" id="fYears" placeholder="e.g. 5 years" />
+          </div>
+          <div class="field">
+            <label>Industry / Field</label>
+            <input type="text" id="fIndustry" placeholder="e.g. FinTech, Healthcare, SaaS" />
+          </div>
+          <div class="field">
+            <label>Education</label>
+            <input type="text" id="fEducation" placeholder="e.g. B.S. Computer Science, UCLA" />
+          </div>
+          <div class="field field-full">
+            <label>Core Skills</label>
+            <input type="text" id="fSkills" placeholder="e.g. Python, React, AWS, Team Leadership, Agile" />
+          </div>
+          <div class="field field-full">
+            <label>Professional Accomplishments</label>
+            <textarea id="fAccomplishments" rows="3" placeholder="e.g. Led migration that cut infrastructure costs 40%, shipped mobile app with 50K+ downloads, managed a team of 8..."></textarea>
+          </div>
+          <div class="field field-full">
+            <label>Leadership &amp; Soft Skills</label>
+            <input type="text" id="fLeadership" placeholder="e.g. Cross-functional collaboration, mentoring junior devs, stakeholder communication" />
+          </div>
+          <div class="field field-full">
+            <label>What Makes You Stand Out?</label>
+            <textarea id="fStandout" rows="2" placeholder="e.g. I bridge the gap between engineering and product — I speak both languages fluently..."></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-aim" onclick="runAimAssessment()">
+            🏹 TAKE AIM
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /phaseForm -->
+
+    <!-- ==================== PHASE: LOADING ==================== -->
+    <div class="phase" id="phaseLoading">
+      <div class="loading-scene">
+        <div class="loading-target">
+          <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="80" cy="80" r="75" fill="#f1f5f9" stroke="#e1e7f0" stroke-width="1.5"/>
+            <circle cx="80" cy="80" r="60" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1"/>
+            <circle cx="80" cy="80" r="45" fill="#93c5fd" stroke="#60a5fa" stroke-width="1"/>
+            <circle cx="80" cy="80" r="30" fill="#dc2626" stroke="#b91c1c" stroke-width="1"/>
+            <circle cx="80" cy="80" r="15" fill="#f59e0b" stroke="#d97706" stroke-width="1"/>
+            <circle cx="80" cy="80" r="4" fill="#ffffff" opacity="0.8"/>
+          </svg>
+        </div>
+        <div>
+          <div class="loading-text">Archer is taking aim<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></div>
+          <div class="loading-sub" style="margin-top:0.4rem;">Analyzing your profile across 7 dimensions</div>
+        </div>
+      </div>
+    </div><!-- /phaseLoading -->
+
+    <!-- ==================== PHASE: RESULTS ==================== -->
+    <div class="phase" id="phaseResults">
+
+      <div class="results-layout">
+
+        <!-- Left: Target + Assessment -->
+        <div>
+          <div class="target-panel">
+            <div class="target-panel-header">
+              <div>
+                <div class="section-label">// AIM ASSESSMENT</div>
+                <h2>YOUR <span>TARGET</span></h2>
+              </div>
+              <div class="overall-badge">
+                <div>
+                  <div class="overall-score" id="overallScore">—</div>
+                  <div class="overall-label">Overall<br>Score</div>
+                </div>
+              </div>
+            </div>
+            <div class="target-svg-wrap" id="targetSvgWrap">
+              <!-- SVG injected by JS -->
+            </div>
+            <div class="tagline-card" id="taglineCard">Loading...</div>
+          </div>
+
+          <div class="assessment-card">
+            <div class="assessment-label">🏹 Archer's Assessment</div>
+            <div class="assessment-body" id="assessmentBody">Loading...</div>
+            <div class="strengths-list" id="strengthsList"></div>
+          </div>
+
+          <div class="results-actions">
+            <button class="btn-aim" onclick="showPhase('phaseForm')" style="background:var(--surface);color:var(--text);border:1px solid var(--border);">
+              ← Retake Assessment
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Quiver -->
+        <div class="quiver-panel">
+          <div class="quiver-header">
+            <div class="quiver-icon">🪶</div>
+            <div>
+              <div class="quiver-title">The Quiver</div>
+              <div class="quiver-subtitle">Your 7 Arrows</div>
+            </div>
+          </div>
+          <div class="quiver-arrows" id="quiverArrows">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /phaseResults -->
+
+  </div><!-- /aim-content -->
+</main>
+
+<script>
+// ---- Auth + sidebar init ----
+const currentUser = AUTH.requireAuth();
+if (!currentUser) throw new Error('Not authenticated');
+
+(function() {
+  const user = DB.getUser();
+  const displayName = user.name || currentUser.name || 'User';
+  const initials = user.initials || displayName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || 'U';
+  document.getElementById('userInitials').textContent = initials;
+  document.getElementById('userName').textContent = displayName;
+  document.getElementById('userStatus').textContent = '🟢 ' + (user.status || 'ACTIVELY HUNTING');
+  document.getElementById('appCount').textContent = DB.getApplications().length;
+})();
+
+// ---- Category definitions ----
+const CATEGORIES = [
+  { id: 'skills',    name: 'Core Skills',        shortName: 'Skills',        icon: '⚡', color: '#3b7dd8' },
+  { id: 'exp',       name: 'Experience',          shortName: 'Experience',    icon: '🏗️', color: '#0891b2' },
+  { id: 'accoms',    name: 'Accomplishments',     shortName: 'Wins',          icon: '🏆', color: '#16a34a' },
+  { id: 'lead',      name: 'Leadership',          shortName: 'Leadership',    icon: '👑', color: '#7c3aed' },
+  { id: 'edu',       name: 'Education',           shortName: 'Education',     icon: '🎓', color: '#d97706' },
+  { id: 'industry',  name: 'Industry Knowledge',  shortName: 'Industry',      icon: '🏭', color: '#dc2626' },
+  { id: 'growth',    name: 'Growth Potential',    shortName: 'Growth',        icon: '🌱', color: '#059669' }
+];
+
+// ---- Phase management ----
+function showPhase(id) {
+  document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ---- Main assessment runner ----
+async function runAimAssessment() {
+  const role         = document.getElementById('fRole').value.trim();
+  const years        = document.getElementById('fYears').value.trim();
+  const industry     = document.getElementById('fIndustry').value.trim();
+  const education    = document.getElementById('fEducation').value.trim();
+  const skills       = document.getElementById('fSkills').value.trim();
+  const accoms       = document.getElementById('fAccomplishments').value.trim();
+  const leadership   = document.getElementById('fLeadership').value.trim();
+  const standout     = document.getElementById('fStandout').value.trim();
+
+  if (!role) { alert('Please enter your target role.'); return; }
+  if (!skills && !accoms) { alert('Please describe your skills or accomplishments.'); return; }
+
+  showPhase('phaseLoading');
+
+  const prompt = `You are Archer, an elite career coach. A job seeker has provided their profile below.
+Analyze them as a candidate and return a JSON object (no markdown, no code fences — just raw JSON) with EXACTLY this structure:
+
+{
+  "overall": <number 1-10>,
+  "tagline": "<one punchy sentence about this candidate>",
+  "assessment": "<2-3 paragraph narrative assessment of this candidate's strengths and areas to develop>",
+  "strengths": ["<strength 1>", "<strength 2>", "<strength 3>", "<strength 4>", "<strength 5>"],
+  "categories": {
+    "skills":   { "score": <1-10>, "highlights": ["<highlight 1>", "<highlight 2>"], "insight": "<one sentence>" },
+    "exp":      { "score": <1-10>, "highlights": ["<highlight 1>", "<highlight 2>"], "insight": "<one sentence>" },
+    "accoms":   { "score": <1-10>, "highlights": ["<highlight 1>", "<highlight 2>"], "insight": "<one sentence>" },
+    "lead":     { "score": <1-10>, "highlights": ["<highlight 1>", "<highlight 2>"], "insight": "<one sentence>" },
+    "edu":      { "score": <1-10>, "highlights": ["<highlight 1>", "<highlight 2>"], "insight": "<one sentence>" },
+    "industry": { "score": <1-10>, "highlights": ["<highlight 1>", "<highlight 2>"], "insight": "<one sentence>" },
+    "growth":   { "score": <1-10>, "highlights": ["<highlight 1>", "<highlight 2>"], "insight": "<one sentence>" }
+  }
+}
+
+CANDIDATE PROFILE:
+- Target Role: ${role || 'Not specified'}
+- Years of Experience: ${years || 'Not specified'}
+- Industry: ${industry || 'Not specified'}
+- Education: ${education || 'Not specified'}
+- Core Skills: ${skills || 'Not specified'}
+- Professional Accomplishments: ${accoms || 'Not specified'}
+- Leadership & Soft Skills: ${leadership || 'Not specified'}
+- What Makes Them Stand Out: ${standout || 'Not specified'}
+
+Be honest, specific, and encouraging. Score generously where evidence supports it but flag real gaps. Return ONLY the JSON.`;
+
+  let result = null;
+
+  try {
+    const response = await fetch('https://job-tracer-archer.onrender.com/api/archer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: prompt }),
+      signal: AbortSignal.timeout(30000)
+    });
+    if (!response.ok) throw new Error('API error');
+    const data = await response.json();
+    const raw = (data.reply || data.message || data.response || '').trim();
+    // Strip code fences if model wrapped anyway
+    const cleaned = raw.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/i, '').trim();
+    result = JSON.parse(cleaned);
+  } catch(e) {
+    // Fallback: generate mock result with a note
+    result = buildFallbackResult(role, skills, years);
+  }
+
+  renderResults(result);
+  showPhase('phaseResults');
+}
+
+// ---- Fallback if API is unavailable ----
+function buildFallbackResult(role, skills, years) {
+  const baseScore = 7;
+  const cats = {};
+  CATEGORIES.forEach(c => {
+    cats[c.id] = {
+      score: Math.min(10, Math.max(4, baseScore + Math.floor(Math.random() * 3) - 1)),
+      highlights: ['Profile submitted', 'Full analysis pending when Archer is online'],
+      insight: 'Archer will provide a detailed insight once the API is available.'
+    };
+  });
+  return {
+    overall: baseScore,
+    tagline: `${role || 'A professional'} with ${years || 'solid'} experience ready to make an impact.`,
+    assessment: `Archer is currently offline — your profile has been captured and this is a preview assessment.\n\nBased on the information provided, you appear to be a strong candidate for ${role || 'your target role'}. Once Archer comes back online, you'll receive a full AI-powered analysis with specific insights for each dimension.\n\nYour listed skills and experience suggest you bring real value to the table. Keep tracking your applications and come back soon for the full assessment.`,
+    strengths: ['Strong profile submitted', skills || 'Technical skills', years ? `${years} experience` : 'Relevant background', 'Growth mindset', 'Job search focus'],
+    categories: cats,
+    _offline: true
+  };
+}
+
+// ---- Render results ----
+function renderResults(result) {
+  // Overall score
+  const overall = result.overall || 7;
+  document.getElementById('overallScore').textContent = overall.toFixed(1);
+
+  // Tagline
+  document.getElementById('taglineCard').textContent = result.tagline || '';
+
+  // Assessment text
+  const body = document.getElementById('assessmentBody');
+  body.innerHTML = '';
+  if (result._offline) {
+    const note = document.createElement('div');
+    note.style.cssText = 'background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.2);border-radius:6px;padding:0.6rem 0.9rem;margin-bottom:1rem;font-size:0.78rem;color:#92400e;';
+    note.textContent = '⚠️ Archer is temporarily offline. This is a preview assessment — return for a full AI analysis.';
+    body.appendChild(note);
+  }
+  const paras = (result.assessment || '').split(/\n+/).filter(p => p.trim());
+  paras.forEach(p => {
+    const el = document.createElement('p');
+    el.textContent = p;
+    el.style.marginBottom = '0.85rem';
+    body.appendChild(el);
+  });
+
+  // Strengths
+  const strengthsList = document.getElementById('strengthsList');
+  strengthsList.innerHTML = '';
+  (result.strengths || []).forEach(s => {
+    const pill = document.createElement('span');
+    pill.className = 'strength-pill';
+    pill.textContent = s;
+    strengthsList.appendChild(pill);
+  });
+
+  // Build quiver
+  const quiverEl = document.getElementById('quiverArrows');
+  quiverEl.innerHTML = '';
+  const cats = result.categories || {};
+  CATEGORIES.forEach((cat, i) => {
+    const cData = cats[cat.id] || { score: 5, highlights: [], insight: '' };
+    const score = cData.score || 5;
+    const pct = (score / 10) * 100;
+    const div = document.createElement('div');
+    div.className = 'quiver-arrow';
+    div.style.animationDelay = (i * 0.07) + 's';
+    div.innerHTML = `
+      <div class="quiver-arrow-header">
+        <div class="quiver-arrow-name">
+          <span class="quiver-arrow-icon">${cat.icon}</span>
+          ${cat.name}
+        </div>
+        <span class="quiver-arrow-score" style="color:${cat.color}">${score}/10</span>
+      </div>
+      <div class="quiver-bar-track">
+        <div class="quiver-bar-fill" style="width:0%;background:${cat.color}" data-pct="${pct}"></div>
+      </div>
+      <div class="quiver-highlight">${cData.insight || ''}</div>
+    `;
+    quiverEl.appendChild(div);
+  });
+
+  // Animate bars after paint
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.querySelectorAll('.quiver-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.pct + '%';
+      });
+    }, 100);
+  });
+
+  // Build SVG target with arrows
+  buildTargetSvg(result);
+}
+
+// ---- SVG Target Builder ----
+function buildTargetSvg(result) {
+  const SIZE = 600;
+  const CX = SIZE / 2, CY = SIZE / 2;
+  const RINGS = [
+    { r: 255, fill: '#f8fafc', stroke: '#e2e8f0' },
+    { r: 204, fill: '#e2e8f0', stroke: '#cbd5e1' },
+    { r: 153, fill: '#93c5fd', stroke: '#60a5fa' },
+    { r: 102, fill: '#dc2626', stroke: '#b91c1c' },
+    { r: 51,  fill: '#f59e0b', stroke: '#d97706' }
+  ];
+
+  const cats = result.categories || {};
+
+  // Score → tip radius: score 10 = r≈5, score 1 = r≈240
+  // tipR = (1 - score/10) * 235 + 5
+  function scoreToTipR(score) {
+    return Math.round((1 - Math.min(10, Math.max(1, score)) / 10) * 235 + 5);
+  }
+
+  let svgParts = [`<svg viewBox="0 0 ${SIZE} ${SIZE}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">`];
+
+  // Drop shadow filter
+  svgParts.push(`<defs>
+    <filter id="arrowShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.18"/>
+    </filter>
+    <filter id="targetGlow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feComposite in="blur" in2="SourceGraphic" operator="over"/>
+    </filter>
+  </defs>`);
+
+  // Rings
+  RINGS.forEach(ring => {
+    svgParts.push(`<circle cx="${CX}" cy="${CY}" r="${ring.r}" fill="${ring.fill}" stroke="${ring.stroke}" stroke-width="1.5"/>`);
+  });
+  // Cross-hairs
+  svgParts.push(`<line x1="${CX}" y1="${CY - 260}" x2="${CX}" y2="${CY + 260}" stroke="#cbd5e1" stroke-width="0.8" stroke-dasharray="4,4" opacity="0.5"/>`);
+  svgParts.push(`<line x1="${CX - 260}" y1="${CY}" x2="${CX + 260}" y2="${CY}" stroke="#cbd5e1" stroke-width="0.8" stroke-dasharray="4,4" opacity="0.5"/>`);
+  // Bullseye dot
+  svgParts.push(`<circle cx="${CX}" cy="${CY}" r="6" fill="#fff" stroke="#d97706" stroke-width="2"/>`);
+
+  // Arrows
+  CATEGORIES.forEach((cat, i) => {
+    const cData = cats[cat.id] || { score: 5 };
+    const score = cData.score || 5;
+    const angleDeg = -90 + i * (360 / CATEGORIES.length);
+    const angleRad = angleDeg * Math.PI / 180;
+
+    const tipR = scoreToTipR(score);
+    const tailR = 295;
+    const labelR = 330;
+    const nockR = tailR + 12;
+
+    const tipX = CX + Math.cos(angleRad) * tipR;
+    const tipY = CY + Math.sin(angleRad) * tipR;
+    const tailX = CX + Math.cos(angleRad) * tailR;
+    const tailY = CY + Math.sin(angleRad) * tailR;
+    const nockX = CX + Math.cos(angleRad) * nockR;
+    const nockY = CY + Math.sin(angleRad) * nockR;
+    const labelX = CX + Math.cos(angleRad) * labelR;
+    const labelY = CY + Math.sin(angleRad) * labelR;
+
+    // Perpendicular for fletching
+    const perpX = -Math.sin(angleRad);
+    const perpY = Math.cos(angleRad);
+
+    const color = cat.color;
+
+    // Shaft
+    svgParts.push(`<line x1="${tipX.toFixed(1)}" y1="${tipY.toFixed(1)}" x2="${tailX.toFixed(1)}" y2="${tailY.toFixed(1)}"
+      stroke="${color}" stroke-width="2.5" stroke-linecap="round" filter="url(#arrowShadow)"/>`);
+
+    // Arrowhead (triangle pointing in direction of tip)
+    const headLen = 12;
+    const headWidth = 5;
+    const hx = CX + Math.cos(angleRad) * (tipR - headLen);
+    const hy = CY + Math.sin(angleRad) * (tipR - headLen);
+    const p1x = (hx + perpX * headWidth).toFixed(1);
+    const p1y = (hy + perpY * headWidth).toFixed(1);
+    const p2x = (hx - perpX * headWidth).toFixed(1);
+    const p2y = (hy - perpY * headWidth).toFixed(1);
+    svgParts.push(`<polygon points="${tipX.toFixed(1)},${tipY.toFixed(1)} ${p1x},${p1y} ${p2x},${p2y}" fill="${color}"/>`);
+
+    // Fletching (feathers at nock end)
+    const fl = 14, fw = 6;
+    const f1ax = (tailX - Math.cos(angleRad) * 0 + perpX * fw).toFixed(1);
+    const f1ay = (tailY - Math.sin(angleRad) * 0 + perpY * fw).toFixed(1);
+    const f1bx = (tailX - Math.cos(angleRad) * fl).toFixed(1);
+    const f1by = (tailY - Math.sin(angleRad) * fl).toFixed(1);
+    const f2ax = (tailX - Math.cos(angleRad) * 0 - perpX * fw).toFixed(1);
+    const f2ay = (tailY - Math.sin(angleRad) * 0 - perpY * fw).toFixed(1);
+    svgParts.push(`<line x1="${tailX.toFixed(1)}" y1="${tailY.toFixed(1)}" x2="${f1ax}" y2="${f1ay}" stroke="${color}" stroke-width="1.5" opacity="0.7"/>`);
+    svgParts.push(`<line x1="${f1ax}" y1="${f1ay}" x2="${f1bx}" y2="${f1by}" stroke="${color}" stroke-width="1.5" opacity="0.7"/>`);
+    svgParts.push(`<line x1="${tailX.toFixed(1)}" y1="${tailY.toFixed(1)}" x2="${f2ax}" y2="${f2ay}" stroke="${color}" stroke-width="1.5" opacity="0.7"/>`);
+    svgParts.push(`<line x1="${f2ax}" y1="${f2ay}" x2="${f1bx}" y2="${f1by}" stroke="${color}" stroke-width="1.5" opacity="0.7"/>`);
+
+    // Label background pill
+    const labelBgW = 70, labelBgH = 28;
+    svgParts.push(`<rect x="${(labelX - labelBgW/2).toFixed(1)}" y="${(labelY - labelBgH/2).toFixed(1)}"
+      width="${labelBgW}" height="${labelBgH}" rx="6"
+      fill="white" stroke="${color}" stroke-width="1.5" opacity="0.95"/>`);
+    svgParts.push(`<text x="${labelX.toFixed(1)}" y="${(labelY - 3).toFixed(1)}" class="arrow-label-text">${cat.shortName}</text>`);
+    svgParts.push(`<text x="${labelX.toFixed(1)}" y="${(labelY + 10).toFixed(1)}" class="arrow-score-text" fill="${color}">${score}/10</text>`);
+  });
+
+  svgParts.push(`</svg>`);
+
+  document.getElementById('targetSvgWrap').innerHTML = svgParts.join('\n');
+}
+</script>
+</body>
+</html>
