@@ -8,11 +8,40 @@ const AUTH = {
     } catch(e) { return null; }
   },
 
-  signIn(email, name) {
+  _createSession(email, name) {
     const id = btoa(email.toLowerCase().trim()).replace(/=/g, '');
     const user = { email: email.toLowerCase().trim(), name: name || '', id };
     localStorage.setItem(this.SESSION_KEY, JSON.stringify(user));
     return user;
+  },
+
+  async _hashPassword(password, email) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password + email.toLowerCase().trim());
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+  },
+
+  async register(email, name, password) {
+    const emailNorm = email.toLowerCase().trim();
+    const id = btoa(emailNorm).replace(/=/g, '');
+    const passwordHash = await this._hashPassword(password, emailNorm);
+    localStorage.setItem('jobtrace_auth_' + id, JSON.stringify({ passwordHash }));
+    return this._createSession(emailNorm, name);
+  },
+
+  async verifyAndSignIn(email, password) {
+    const emailNorm = email.toLowerCase().trim();
+    const id = btoa(emailNorm).replace(/=/g, '');
+    const authRaw = localStorage.getItem('jobtrace_auth_' + id);
+    if (!authRaw) return false;
+    const { passwordHash } = JSON.parse(authRaw);
+    const inputHash = await this._hashPassword(password, emailNorm);
+    if (inputHash !== passwordHash) return false;
+    const userData = localStorage.getItem('jobtrace_v1_' + id);
+    const name = userData ? (JSON.parse(userData).user?.name || '') : '';
+    this._createSession(emailNorm, name);
+    return true;
   },
 
   signOut() {
@@ -31,7 +60,7 @@ const AUTH = {
 
   hasAccount(email) {
     const id = btoa(email.toLowerCase().trim()).replace(/=/g, '');
-    return !!localStorage.getItem('jobtrace_v1_' + id);
+    return !!localStorage.getItem('jobtrace_auth_' + id);
   }
 };
 
