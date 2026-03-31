@@ -34,12 +34,21 @@ const AUTH = {
     const emailNorm = email.toLowerCase().trim();
     const id = btoa(emailNorm).replace(/=/g, '');
     const authRaw = localStorage.getItem('jobtrace_auth_' + id);
-    if (!authRaw) return false;
+    const userData = localStorage.getItem('jobtrace_v1_' + id);
+    const name = userData ? (JSON.parse(userData).user?.name || '') : '';
+
+    if (!authRaw) {
+      // Legacy account — no password hash yet. Sign them in and save their password going forward.
+      if (!userData) return false;
+      const passwordHash = await this._hashPassword(password, emailNorm);
+      localStorage.setItem('jobtrace_auth_' + id, JSON.stringify({ passwordHash }));
+      this._createSession(emailNorm, name);
+      return true;
+    }
+
     const { passwordHash } = JSON.parse(authRaw);
     const inputHash = await this._hashPassword(password, emailNorm);
     if (inputHash !== passwordHash) return false;
-    const userData = localStorage.getItem('jobtrace_v1_' + id);
-    const name = userData ? (JSON.parse(userData).user?.name || '') : '';
     this._createSession(emailNorm, name);
     return true;
   },
@@ -60,7 +69,7 @@ const AUTH = {
 
   hasAccount(email) {
     const id = btoa(email.toLowerCase().trim()).replace(/=/g, '');
-    return !!localStorage.getItem('jobtrace_auth_' + id);
+    return !!(localStorage.getItem('jobtrace_auth_' + id) || localStorage.getItem('jobtrace_v1_' + id));
   }
 };
 
