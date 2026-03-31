@@ -485,7 +485,7 @@
       <div class="archer-dot"></div>
       <span>ARCHER IS READY</span>
     </div>
-    <p>You have <strong>1 application</strong> pending follow up. Want me to draft an outreach message?</p>
+    <p id="archerWidgetMsg">Loading your job search stats...</p>
     <button class="archer-ask-btn" onclick="document.getElementById('archerMessages').scrollIntoView({behavior:'smooth'})">ASK ARCHER 🏹</button>
   </div>
 </aside>
@@ -514,12 +514,12 @@
       </div>
       <div class="stat-card">
         <div class="stat-label">// RESUME VERSIONS</div>
-        <div class="stat-value">3</div>
+        <div class="stat-value" id="statResumes">0</div>
         <div class="stat-sub">Across all roles</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">// COVER LETTERS</div>
-        <div class="stat-value">3</div>
+        <div class="stat-value" id="statCoverLetters">0</div>
         <div class="stat-sub">Versions tracked</div>
       </div>
       <div class="stat-card">
@@ -644,12 +644,25 @@
     document.getElementById('userName').textContent = displayName;
     document.getElementById('userStatus').textContent = '🟢 ' + (user.status || 'ACTIVELY HUNTING');
 
-    // Personalize Archer's greeting
+    // Load stats
     const apps = DB.getApplications();
     const contacts = DB.getContacts();
     document.getElementById('statApps').textContent = apps.length;
     document.getElementById('statContacts').textContent = contacts.length;
+    document.getElementById('statResumes').textContent = 0;
+    document.getElementById('statCoverLetters').textContent = 0;
     document.getElementById('appCount').textContent = apps.length;
+
+    // Archer widget message
+    const pending = apps.filter(a => a.status === 'applied').length;
+    const widgetMsg = document.getElementById('archerWidgetMsg');
+    if (apps.length === 0) {
+      widgetMsg.innerHTML = `Ready when you are. <strong>Add your first application</strong> and I'll help you craft the perfect cover letter.`;
+    } else if (pending > 0) {
+      widgetMsg.innerHTML = `You have <strong>${pending} application${pending !== 1 ? 's' : ''}</strong> pending follow-up. Want me to draft an outreach message?`;
+    } else {
+      widgetMsg.innerHTML = `You have <strong>${apps.length} application${apps.length !== 1 ? 's' : ''}</strong> tracked. Ask me anything about your search.`;
+    }
 
     const list = document.getElementById('dashAppList');
     const recent = apps.slice(0, 3);
