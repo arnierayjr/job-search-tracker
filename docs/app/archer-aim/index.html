@@ -103,6 +103,97 @@
   .btn-aim:hover { background: var(--blue-dark); transform: translateY(-1px); }
   .btn-aim:active { transform: translateY(0); }
 
+  /* ---- AUTOCOMPLETE ---- */
+  .ac-wrap { position: relative; }
+  .ac-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: var(--surface);
+    border: 1px solid var(--blue);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(59,125,216,0.12);
+    z-index: 200;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .ac-dropdown.open { display: block; }
+  .ac-item {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.85rem;
+    color: var(--text);
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  .ac-item:last-child { border-bottom: none; }
+  .ac-item:hover, .ac-item.active { background: var(--blue-light); color: var(--blue); }
+  .ac-item mark { background: none; color: var(--blue); font-weight: 700; }
+
+  /* ---- TAG INPUT ---- */
+  .tag-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.45rem 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+    cursor: text;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    min-height: 42px;
+    position: relative;
+  }
+  .tag-wrap:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.08); }
+  .tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--blue-light);
+    border: 1px solid rgba(59,125,216,0.25);
+    border-radius: 100px;
+    padding: 0.2rem 0.5rem 0.2rem 0.7rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--blue);
+    white-space: nowrap;
+  }
+  .tag-chip button {
+    background: none; border: none; color: var(--blue);
+    cursor: pointer; font-size: 0.7rem; line-height: 1;
+    padding: 0; opacity: 0.6; transition: opacity 0.1s;
+  }
+  .tag-chip button:hover { opacity: 1; }
+  .tag-input-field {
+    border: none; outline: none; background: transparent;
+    font-family: 'Inter', sans-serif; font-size: 0.85rem;
+    color: var(--text); min-width: 120px; flex: 1;
+    padding: 0.2rem 0.3rem;
+  }
+  .tag-input-field::placeholder { color: var(--muted); }
+
+  /* Years select */
+  .years-select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.65rem 0.9rem;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    transition: border-color 0.15s;
+  }
+  .years-select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.08); }
+
   /* ---- LOADING PHASE ---- */
   .loading-scene {
     display: flex;
@@ -433,38 +524,85 @@
       <div class="form-card">
         <div class="form-card-title">📋 Your Profile</div>
         <div class="form-grid">
+
+          <!-- Target Role — autocomplete -->
           <div class="field">
             <label>Target Role</label>
-            <input type="text" id="fRole" placeholder="e.g. Senior Software Engineer" />
+            <div class="ac-wrap" id="acWrapRole">
+              <input type="text" id="fRole" placeholder="e.g. Senior Software Engineer" autocomplete="off" />
+              <div class="ac-dropdown" id="acRole"></div>
+            </div>
           </div>
+
+          <!-- Years of Experience — select -->
           <div class="field">
             <label>Years of Experience</label>
-            <input type="text" id="fYears" placeholder="e.g. 5 years" />
+            <select class="years-select" id="fYears">
+              <option value="">— Select —</option>
+              <option value="Less than 1 year">Less than 1 year</option>
+              <option value="1–2 years">1–2 years</option>
+              <option value="3–5 years">3–5 years</option>
+              <option value="5–7 years">5–7 years</option>
+              <option value="7–10 years">7–10 years</option>
+              <option value="10–15 years">10–15 years</option>
+              <option value="15+ years">15+ years</option>
+            </select>
           </div>
+
+          <!-- Industry — autocomplete -->
           <div class="field">
             <label>Industry / Field</label>
-            <input type="text" id="fIndustry" placeholder="e.g. FinTech, Healthcare, SaaS" />
+            <div class="ac-wrap" id="acWrapIndustry">
+              <input type="text" id="fIndustry" placeholder="e.g. FinTech, Healthcare, SaaS" autocomplete="off" />
+              <div class="ac-dropdown" id="acIndustry"></div>
+            </div>
           </div>
+
+          <!-- Education — autocomplete -->
           <div class="field">
             <label>Education</label>
-            <input type="text" id="fEducation" placeholder="e.g. B.S. Computer Science, UCLA" />
+            <div class="ac-wrap" id="acWrapEdu">
+              <input type="text" id="fEducation" placeholder="e.g. B.S. Computer Science" autocomplete="off" />
+              <div class="ac-dropdown" id="acEdu"></div>
+            </div>
           </div>
+
+          <!-- Core Skills — tag input with autocomplete -->
           <div class="field field-full">
-            <label>Core Skills</label>
-            <input type="text" id="fSkills" placeholder="e.g. Python, React, AWS, Team Leadership, Agile" />
+            <label>Core Skills <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:0.68rem;">(type and press Enter or pick a suggestion)</span></label>
+            <div class="ac-wrap">
+              <div class="tag-wrap" id="skillTagWrap" onclick="document.getElementById('skillTagInput').focus()">
+                <input type="text" id="skillTagInput" class="tag-input-field" placeholder="Add a skill…" autocomplete="off" />
+              </div>
+              <div class="ac-dropdown" id="acSkills"></div>
+            </div>
+            <input type="hidden" id="fSkills" />
           </div>
+
+          <!-- Professional Accomplishments — free text -->
           <div class="field field-full">
             <label>Professional Accomplishments</label>
-            <textarea id="fAccomplishments" rows="3" placeholder="e.g. Led migration that cut infrastructure costs 40%, shipped mobile app with 50K+ downloads, managed a team of 8..."></textarea>
+            <textarea id="fAccomplishments" rows="3" placeholder="e.g. Led migration that cut infrastructure costs 40%, shipped mobile app with 50K+ downloads, managed a team of 8…"></textarea>
           </div>
+
+          <!-- Leadership & Soft Skills — tag input with autocomplete -->
           <div class="field field-full">
-            <label>Leadership &amp; Soft Skills</label>
-            <input type="text" id="fLeadership" placeholder="e.g. Cross-functional collaboration, mentoring junior devs, stakeholder communication" />
+            <label>Leadership &amp; Soft Skills <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:0.68rem;">(type and press Enter or pick a suggestion)</span></label>
+            <div class="ac-wrap">
+              <div class="tag-wrap" id="leadTagWrap" onclick="document.getElementById('leadTagInput').focus()">
+                <input type="text" id="leadTagInput" class="tag-input-field" placeholder="Add a skill…" autocomplete="off" />
+              </div>
+              <div class="ac-dropdown" id="acLead"></div>
+            </div>
+            <input type="hidden" id="fLeadership" />
           </div>
+
+          <!-- What Makes You Stand Out — free text -->
           <div class="field field-full">
             <label>What Makes You Stand Out?</label>
-            <textarea id="fStandout" rows="2" placeholder="e.g. I bridge the gap between engineering and product — I speak both languages fluently..."></textarea>
+            <textarea id="fStandout" rows="2" placeholder="e.g. I bridge the gap between engineering and product — I speak both languages fluently…"></textarea>
           </div>
+
         </div>
         <div class="form-actions">
           <button class="btn-aim" onclick="runAimAssessment()">
@@ -556,6 +694,226 @@
 </main>
 
 <script>
+// ======================================================
+// PRESET DATA
+// ======================================================
+const ROLES = [
+  'Software Engineer','Senior Software Engineer','Staff Engineer','Principal Engineer',
+  'Frontend Engineer','Backend Engineer','Full Stack Engineer','Mobile Engineer',
+  'iOS Engineer','Android Engineer','DevOps Engineer','Site Reliability Engineer',
+  'Platform Engineer','Data Engineer','Data Scientist','Machine Learning Engineer',
+  'AI Engineer','Cloud Architect','Solutions Architect','Engineering Manager',
+  'VP of Engineering','CTO','Product Manager','Senior Product Manager',
+  'Director of Product','VP of Product','UX Designer','Product Designer',
+  'UI Designer','UX Researcher','Graphic Designer','Creative Director',
+  'Marketing Manager','Digital Marketing Manager','Content Strategist',
+  'SEO Specialist','Growth Manager','Brand Manager','Sales Manager',
+  'Account Executive','Sales Development Representative','Business Development Manager',
+  'Customer Success Manager','Account Manager','Operations Manager',
+  'Business Analyst','Data Analyst','Financial Analyst','Project Manager',
+  'Program Manager','Scrum Master','Agile Coach','HR Manager','Recruiter',
+  'Technical Recruiter','Talent Acquisition Manager','Legal Counsel',
+  'Compliance Officer','Cybersecurity Analyst','Security Engineer',
+  'Network Engineer','Database Administrator','QA Engineer','Test Engineer',
+  'Technical Writer','Developer Advocate','Solutions Engineer','Pre-Sales Engineer'
+];
+
+const INDUSTRIES = [
+  'Technology','Software / SaaS','FinTech','Healthcare','Health Tech',
+  'BioTech','MedTech','E-commerce','Retail Tech','EdTech','Education',
+  'AI / Machine Learning','Cybersecurity','Cloud Computing','Big Data / Analytics',
+  'Gaming','Media & Entertainment','Digital Media','Advertising & Marketing',
+  'Finance & Banking','Insurance','Real Estate / PropTech','LegalTech',
+  'HRTech','Supply Chain / Logistics','Transportation','Automotive','Aerospace',
+  'Manufacturing','Energy / CleanTech','GovTech / Government','Non-Profit',
+  'Consulting','Management Consulting','Telecommunications','Social Media',
+  'Travel & Hospitality','Food & Beverage','Agriculture / AgriTech','Sports Tech',
+  'Fashion & Apparel','Construction / ConTech'
+];
+
+const EDUCATIONS = [
+  'High School Diploma / GED','Some College','Associate\'s Degree',
+  'B.S. Computer Science','B.S. Information Technology','B.S. Engineering',
+  'B.S. Data Science','B.S. Mathematics','B.A. Business Administration',
+  'B.A. Communications','B.A. Psychology','B.A. Graphic Design',
+  'B.A. Marketing','Bachelor\'s Degree (Other)','M.S. Computer Science',
+  'M.S. Data Science','M.S. Engineering','M.S. Cybersecurity',
+  'MBA','Master\'s Degree (Other)','Ph.D. Computer Science',
+  'Ph.D. Engineering','Ph.D. Data Science','Ph.D. (Other)',
+  'Coding Bootcamp Graduate','Self-Taught / Online Courses',
+  'Google Career Certificate','AWS Certified','Professional Certifications'
+];
+
+const SKILLS_LIST = [
+  // Languages
+  'Python','JavaScript','TypeScript','Java','C++','C#','Go','Rust','Ruby',
+  'Swift','Kotlin','PHP','Scala','R','MATLAB','Bash / Shell',
+  // Frontend
+  'React','Vue.js','Angular','Next.js','Svelte','HTML / CSS','Tailwind CSS',
+  'Redux','GraphQL','REST APIs','WebSockets',
+  // Backend
+  'Node.js','Express','Django','FastAPI','Spring Boot','Rails','Laravel',
+  'gRPC','Microservices','Serverless',
+  // Data / ML
+  'SQL','PostgreSQL','MySQL','MongoDB','Redis','Elasticsearch',
+  'Pandas','NumPy','TensorFlow','PyTorch','Scikit-learn','Spark','dbt',
+  'Airflow','Kafka','Data Pipelines','ETL','Machine Learning','Deep Learning',
+  'NLP','Computer Vision','LLMs / Generative AI','Prompt Engineering',
+  // Cloud / DevOps
+  'AWS','Azure','Google Cloud','Docker','Kubernetes','Terraform','Ansible',
+  'CI/CD','Jenkins','GitHub Actions','Linux','Nginx','Datadog','Grafana',
+  // Mobile
+  'React Native','Flutter','iOS (Swift)','Android (Kotlin)',
+  // Tools
+  'Git','Jira','Confluence','Figma','Postman','Splunk','Tableau','Power BI',
+  // Soft skills that could go here too
+  'Agile / Scrum','Kanban','Test-Driven Development','Code Review','System Design'
+];
+
+const LEADERSHIP_LIST = [
+  'Team Leadership','Cross-Functional Collaboration','Stakeholder Management',
+  'Executive Communication','Mentoring & Coaching','Hiring & Interviewing',
+  'Performance Management','Strategic Planning','Roadmap Planning',
+  'Budget Management','Vendor Management','Change Management',
+  'Conflict Resolution','Negotiation','Public Speaking','Presentation Skills',
+  'Empathy & Emotional Intelligence','Active Listening','Decision Making',
+  'Problem Solving','Critical Thinking','Adaptability','Time Management',
+  'Prioritization','Project Management','Risk Management','Data-Driven Decision Making',
+  'Customer Empathy','User Research','Design Thinking','Innovation',
+  'Entrepreneurial Mindset','Bias for Action','Ownership','Accountability',
+  'Transparency','Inclusive Leadership','Remote Team Management'
+];
+
+// ======================================================
+// AUTOCOMPLETE ENGINE
+// ======================================================
+function setupAutocomplete(inputId, dropdownId, dataset) {
+  const input = document.getElementById(inputId);
+  const dropdown = document.getElementById(dropdownId);
+  let activeIdx = -1;
+
+  function getMatches(q) {
+    if (!q) return dataset.slice(0, 8);
+    const lower = q.toLowerCase();
+    return dataset.filter(d => d.toLowerCase().includes(lower)).slice(0, 8);
+  }
+
+  function highlight(text, q) {
+    if (!q) return text;
+    const idx = text.toLowerCase().indexOf(q.toLowerCase());
+    if (idx < 0) return text;
+    return text.slice(0, idx) + '<mark>' + text.slice(idx, idx + q.length) + '</mark>' + text.slice(idx + q.length);
+  }
+
+  function render(matches) {
+    if (!matches.length) { dropdown.classList.remove('open'); return; }
+    activeIdx = -1;
+    dropdown.innerHTML = matches.map((m, i) =>
+      `<div class="ac-item" data-val="${m}" onmousedown="event.preventDefault()">${highlight(m, input.value)}</div>`
+    ).join('');
+    dropdown.querySelectorAll('.ac-item').forEach((el, i) => {
+      el.addEventListener('mousedown', () => { input.value = el.dataset.val; dropdown.classList.remove('open'); input.dispatchEvent(new Event('input')); });
+    });
+    dropdown.classList.add('open');
+  }
+
+  input.addEventListener('input', () => { render(getMatches(input.value)); });
+  input.addEventListener('focus', () => { render(getMatches(input.value)); });
+  input.addEventListener('blur', () => { setTimeout(() => dropdown.classList.remove('open'), 150); });
+  input.addEventListener('keydown', e => {
+    const items = dropdown.querySelectorAll('.ac-item');
+    if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(activeIdx + 1, items.length - 1); items.forEach((el, i) => el.classList.toggle('active', i === activeIdx)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(activeIdx - 1, 0); items.forEach((el, i) => el.classList.toggle('active', i === activeIdx)); }
+    else if (e.key === 'Enter' && activeIdx >= 0) { e.preventDefault(); input.value = items[activeIdx].dataset.val; dropdown.classList.remove('open'); }
+    else if (e.key === 'Escape') { dropdown.classList.remove('open'); }
+  });
+}
+
+// ======================================================
+// TAG INPUT ENGINE
+// ======================================================
+function setupTagInput(inputId, dropdownId, wrapId, hiddenId, dataset) {
+  const tagInput = document.getElementById(inputId);
+  const dropdown = document.getElementById(dropdownId);
+  const wrap = document.getElementById(wrapId);
+  const hidden = document.getElementById(hiddenId);
+  const tags = [];
+
+  function getMatches(q) {
+    const existing = tags.map(t => t.toLowerCase());
+    if (!q) return dataset.filter(d => !existing.includes(d.toLowerCase())).slice(0, 8);
+    const lower = q.toLowerCase();
+    return dataset.filter(d => d.toLowerCase().includes(lower) && !existing.includes(d.toLowerCase())).slice(0, 8);
+  }
+
+  function highlight(text, q) {
+    if (!q) return text;
+    const idx = text.toLowerCase().indexOf(q.toLowerCase());
+    if (idx < 0) return text;
+    return text.slice(0, idx) + '<mark>' + text.slice(idx, idx + q.length) + '</mark>' + text.slice(idx + q.length);
+  }
+
+  function syncHidden() { hidden.value = tags.join(', '); }
+
+  function addTag(val) {
+    val = val.trim();
+    if (!val || tags.map(t => t.toLowerCase()).includes(val.toLowerCase())) return;
+    tags.push(val);
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${val}<button type="button" aria-label="Remove">✕</button>`;
+    chip.querySelector('button').addEventListener('click', () => {
+      const i = tags.indexOf(val);
+      if (i >= 0) tags.splice(i, 1);
+      chip.remove();
+      syncHidden();
+    });
+    wrap.insertBefore(chip, tagInput);
+    tagInput.value = '';
+    syncHidden();
+    renderDropdown('');
+  }
+
+  function renderDropdown(q) {
+    const matches = getMatches(q);
+    if (!matches.length) { dropdown.classList.remove('open'); return; }
+    dropdown.innerHTML = matches.map(m =>
+      `<div class="ac-item" data-val="${m}" onmousedown="event.preventDefault()">${highlight(m, q)}</div>`
+    ).join('');
+    dropdown.querySelectorAll('.ac-item').forEach(el => {
+      el.addEventListener('mousedown', () => { addTag(el.dataset.val); tagInput.focus(); });
+    });
+    dropdown.classList.add('open');
+  }
+
+  tagInput.addEventListener('input', () => renderDropdown(tagInput.value));
+  tagInput.addEventListener('focus', () => renderDropdown(tagInput.value));
+  tagInput.addEventListener('blur', () => setTimeout(() => dropdown.classList.remove('open'), 150));
+  tagInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const v = tagInput.value.trim().replace(/,$/, '');
+      if (v) addTag(v);
+    } else if (e.key === 'Backspace' && !tagInput.value && tags.length) {
+      const last = wrap.querySelectorAll('.tag-chip');
+      if (last.length) { tags.pop(); last[last.length - 1].remove(); syncHidden(); }
+    } else if (e.key === 'Escape') {
+      dropdown.classList.remove('open');
+    }
+  });
+}
+
+// ======================================================
+// INIT FORM INTERACTIVITY
+// ======================================================
+function initFormControls() {
+  setupAutocomplete('fRole', 'acRole', ROLES);
+  setupAutocomplete('fIndustry', 'acIndustry', INDUSTRIES);
+  setupAutocomplete('fEducation', 'acEdu', EDUCATIONS);
+  setupTagInput('skillTagInput', 'acSkills', 'skillTagWrap', 'fSkills', SKILLS_LIST);
+  setupTagInput('leadTagInput', 'acLead', 'leadTagWrap', 'fLeadership', LEADERSHIP_LIST);
+}
+
 // ---- Auth + sidebar init ----
 const currentUser = AUTH.requireAuth();
 if (!currentUser) throw new Error('Not authenticated');
@@ -569,6 +927,8 @@ if (!currentUser) throw new Error('Not authenticated');
   document.getElementById('userStatus').textContent = '🟢 ' + (user.status || 'ACTIVELY HUNTING');
   document.getElementById('appCount').textContent = DB.getApplications().length;
 })();
+
+initFormControls();
 
 // ---- Category definitions ----
 const CATEGORIES = [
