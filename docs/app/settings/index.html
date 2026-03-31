@@ -8,38 +8,155 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../shared.css">
 <style>
-  .content { padding: 2rem; max-width: 600px; }
-  .settings-group { margin-bottom: 2rem; }
-  .settings-group-label {
+  .content { padding: 2rem; max-width: 640px; }
+
+  .settings-section {
+    margin-bottom: 2.5rem;
+  }
+  .settings-section-label {
     font-size: 0.62rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     color: var(--muted);
     text-transform: uppercase;
-    font-weight: 600;
-    margin-bottom: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
   }
-  .settings-row {
+
+  .settings-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .settings-row {
     padding: 1rem 1.25rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    gap: 1rem;
+    border-bottom: 1px solid var(--border);
   }
-  .settings-row-label { font-size: 0.85rem; font-weight: 500; color: var(--text); margin-bottom: 0.15rem; }
+  .settings-row:last-child { border-bottom: none; }
+
+  .settings-row-left { flex: 1; min-width: 0; }
+  .settings-row-label { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 0.15rem; }
   .settings-row-sub { font-size: 0.72rem; color: var(--muted); }
-  .settings-value { font-size: 0.8rem; color: var(--blue); font-weight: 500; }
+
+  .settings-value {
+    font-size: 0.82rem;
+    color: var(--blue);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  /* Inline editable fields */
+  .settings-input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.45rem 0.75rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    color: var(--text);
+    outline: none;
+    width: 220px;
+    transition: border-color 0.15s;
+  }
+  .settings-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.08); }
+  .settings-input::placeholder { color: var(--muted); }
+
+  select.settings-input { appearance: none; cursor: pointer; }
+
+  /* Save bar */
+  .save-bar {
+    display: none;
+    position: sticky;
+    bottom: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+    z-index: 10;
+  }
+  .save-bar-text { font-size: 0.82rem; color: var(--muted); }
+  .save-bar-actions { display: flex; gap: 0.75rem; }
+
+  /* Password fields */
+  .password-fields {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .pwd-field label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+  }
+  .pwd-field input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .pwd-field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.08); }
+  .pwd-actions { padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .pwd-msg { font-size: 0.78rem; font-weight: 500; }
+  .pwd-msg.success { color: var(--green); }
+  .pwd-msg.error { color: var(--red); }
+
+  /* Sign out row */
+  .danger-row {
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn-danger {
+    background: none;
+    border: 1px solid var(--red);
+    color: var(--red);
+    border-radius: 6px;
+    padding: 0.45rem 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .btn-danger:hover { background: var(--red-soft); }
 </style>
 </head>
 <body>
+
 <aside class="sidebar">
   <div class="sidebar-logo">JOB<span>TRACER</span></div>
   <div class="sidebar-user">
     <div class="user-avatar" id="userInitials">?</div>
-    <div class="user-info"><p id="userName">Loading...</p><span id="userStatus">🟢 ACTIVELY HUNTING</span></div>
+    <div class="user-info">
+      <p id="userName">Loading...</p>
+      <span id="userStatus">🟢 ACTIVELY HUNTING</span>
+    </div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-label">Main</div>
@@ -62,61 +179,280 @@
   <div class="topbar">
     <h1>MY <span>SETTINGS</span></h1>
   </div>
+
   <div class="content">
-    <div class="settings-group">
-      <div class="settings-group-label">// Profile</div>
-      <div class="settings-row">
-        <div><div class="settings-row-label">Name</div><div class="settings-row-sub">Your display name</div></div>
-        <div class="settings-value" id="settingName">—</div>
-      </div>
-      <div class="settings-row">
-        <div><div class="settings-row-label">Email</div><div class="settings-row-sub">Your account email</div></div>
-        <div class="settings-value" id="settingEmail">—</div>
-      </div>
-      <div class="settings-row">
-        <div><div class="settings-row-label">Job Search Status</div><div class="settings-row-sub">Shown in sidebar</div></div>
-        <div class="settings-value" id="settingStatus">🟢 ACTIVELY HUNTING</div>
-      </div>
-      <div class="settings-row">
-        <div><div class="settings-row-label">Target Role</div><div class="settings-row-sub">Your primary job target</div></div>
-        <div class="settings-value" id="settingRole">—</div>
+
+    <!-- PROFILE -->
+    <div class="settings-section">
+      <div class="settings-section-label">// Profile</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">Full Name</div>
+            <div class="settings-row-sub">Your display name across the app</div>
+          </div>
+          <input class="settings-input" id="fName" type="text" placeholder="Your name" oninput="markDirty()" />
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">Email</div>
+            <div class="settings-row-sub">Your account email — cannot be changed</div>
+          </div>
+          <div class="settings-value" id="settingEmail">—</div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">Job Search Status</div>
+            <div class="settings-row-sub">Shown in your sidebar</div>
+          </div>
+          <select class="settings-input" id="fStatus" oninput="markDirty()">
+            <option value="ACTIVELY HUNTING">🟢 Actively Hunting</option>
+            <option value="OPEN TO OPPORTUNITIES">🟡 Open to Opportunities</option>
+            <option value="CASUALLY LOOKING">🔵 Casually Looking</option>
+            <option value="NOT LOOKING">⚫ Not Looking</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">Target Role</div>
+            <div class="settings-row-sub">Your primary job target</div>
+          </div>
+          <input class="settings-input" id="fRole" type="text" placeholder="e.g. Senior Engineer" oninput="markDirty()" />
+        </div>
       </div>
     </div>
-    <div class="settings-group">
-      <div class="settings-group-label">// Archer</div>
-      <div class="settings-row">
-        <div><div class="settings-row-label">Archer AI</div><div class="settings-row-sub">Powered by Claude</div></div>
-        <div class="settings-value">ENABLED</div>
+
+    <!-- CONTACT INFORMATION -->
+    <div class="settings-section">
+      <div class="settings-section-label">// Contact Information</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">Email</div>
+            <div class="settings-row-sub">Your primary contact email</div>
+          </div>
+          <div class="settings-value" id="contactEmail">—</div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">Phone</div>
+            <div class="settings-row-sub">Primary contact number</div>
+          </div>
+          <input class="settings-input" id="fPhone" type="tel" placeholder="e.g. (555) 867-5309" oninput="markDirty()" />
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">Secondary Phone</div>
+            <div class="settings-row-sub">Alternative number (optional)</div>
+          </div>
+          <input class="settings-input" id="fPhone2" type="tel" placeholder="e.g. (555) 000-0000" oninput="markDirty()" />
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">Location</div>
+            <div class="settings-row-sub">City, State or Remote</div>
+          </div>
+          <input class="settings-input" id="fLocation" type="text" placeholder="e.g. New York, NY" oninput="markDirty()" />
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">LinkedIn</div>
+            <div class="settings-row-sub">LinkedIn profile URL</div>
+          </div>
+          <input class="settings-input" id="fLinkedin" type="url" placeholder="linkedin.com/in/yourname" oninput="markDirty()" />
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">Portfolio / Website</div>
+            <div class="settings-row-sub">Personal site or portfolio</div>
+          </div>
+          <input class="settings-input" id="fWebsite" type="url" placeholder="yoursite.com" oninput="markDirty()" />
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">GitHub</div>
+            <div class="settings-row-sub">GitHub profile URL</div>
+          </div>
+          <input class="settings-input" id="fGithub" type="url" placeholder="github.com/yourname" oninput="markDirty()" />
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">X / Twitter</div>
+            <div class="settings-row-sub">X (Twitter) handle or URL</div>
+          </div>
+          <input class="settings-input" id="fTwitter" type="text" placeholder="@yourhandle" oninput="markDirty()" />
+        </div>
       </div>
     </div>
-    <div class="settings-group">
-      <div class="settings-group-label">// Account</div>
-      <div class="settings-row">
-        <div><div class="settings-row-label">Sign Out</div><div class="settings-row-sub">Sign out of your account on this device</div></div>
-        <button onclick="AUTH.signOut()" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:0.35rem 0.9rem;border-radius:4px;font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:500;letter-spacing:0.06em;cursor:pointer;">SIGN OUT</button>
+
+    <!-- SECURITY / CHANGE PASSWORD -->
+    <div class="settings-section">
+      <div class="settings-section-label">// Security</div>
+      <div class="settings-card">
+        <div class="password-fields">
+          <div class="pwd-field">
+            <label>Current Password</label>
+            <input type="password" id="pwdCurrent" placeholder="Enter your current password" autocomplete="current-password" />
+          </div>
+          <div class="pwd-field">
+            <label>New Password</label>
+            <input type="password" id="pwdNew" placeholder="At least 8 characters" autocomplete="new-password" />
+          </div>
+          <div class="pwd-field">
+            <label>Confirm New Password</label>
+            <input type="password" id="pwdConfirm" placeholder="Re-enter new password" autocomplete="new-password" />
+          </div>
+        </div>
+        <div class="pwd-actions">
+          <span class="pwd-msg" id="pwdMsg"></span>
+          <button class="btn-primary" onclick="changePassword()">UPDATE PASSWORD</button>
+        </div>
       </div>
+    </div>
+
+    <!-- ARCHER -->
+    <div class="settings-section">
+      <div class="settings-section-label">// Archer AI</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-row-label">Archer AI</div>
+            <div class="settings-row-sub">Powered by Claude — your personal career coach</div>
+          </div>
+          <div class="settings-value">ENABLED</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCOUNT -->
+    <div class="settings-section">
+      <div class="settings-section-label">// Account</div>
+      <div class="settings-card">
+        <div class="danger-row">
+          <div>
+            <div class="settings-row-label">Sign Out</div>
+            <div class="settings-row-sub">Sign out of your account on this device</div>
+          </div>
+          <button class="btn-danger" onclick="AUTH.signOut()">SIGN OUT</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- STICKY SAVE BAR -->
+  <div class="save-bar" id="saveBar">
+    <span class="save-bar-text">You have unsaved changes</span>
+    <div class="save-bar-actions">
+      <button class="btn-ghost" onclick="discardChanges()">Discard</button>
+      <button class="btn-primary" onclick="saveProfile()">SAVE CHANGES</button>
     </div>
   </div>
+
 </main>
 
 <script>
   const currentUser = AUTH.requireAuth();
   if (!currentUser) throw new Error('Not authenticated');
 
-  (function() {
+  let dirty = false;
+
+  function init() {
     const user = DB.getUser();
     const displayName = user.name || currentUser.name || 'User';
     const initials = user.initials || displayName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || 'U';
+
     document.getElementById('userInitials').textContent = initials;
     document.getElementById('userName').textContent = displayName;
     document.getElementById('userStatus').textContent = '🟢 ' + (user.status || 'ACTIVELY HUNTING');
     document.getElementById('appCount').textContent = DB.getApplications().length;
-
-    document.getElementById('settingName').textContent = displayName;
     document.getElementById('settingEmail').textContent = currentUser.email || '—';
-    document.getElementById('settingStatus').textContent = '🟢 ' + (user.status || 'ACTIVELY HUNTING');
-    document.getElementById('settingRole').textContent = user.targetRole || '—';
-  })();
+    document.getElementById('contactEmail').textContent = currentUser.email || '—';
+
+    // Populate form fields
+    document.getElementById('fName').value = user.name || '';
+    document.getElementById('fRole').value = user.targetRole || '';
+    document.getElementById('fPhone').value = user.phone || '';
+    document.getElementById('fPhone2').value = user.phone2 || '';
+    document.getElementById('fLocation').value = user.location || '';
+    document.getElementById('fLinkedin').value = user.linkedin || '';
+    document.getElementById('fWebsite').value = user.website || '';
+    document.getElementById('fGithub').value = user.github || '';
+    document.getElementById('fTwitter').value = user.twitter || '';
+
+    const statusEl = document.getElementById('fStatus');
+    const savedStatus = user.status || 'ACTIVELY HUNTING';
+    [...statusEl.options].forEach(o => { if (o.value === savedStatus) o.selected = true; });
+  }
+
+  function markDirty() {
+    dirty = true;
+    document.getElementById('saveBar').style.display = 'flex';
+  }
+
+  function discardChanges() {
+    dirty = false;
+    document.getElementById('saveBar').style.display = 'none';
+    init();
+  }
+
+  function saveProfile() {
+    const name = document.getElementById('fName').value.trim();
+    const status = document.getElementById('fStatus').value;
+    const role = document.getElementById('fRole').value.trim();
+    const phone = document.getElementById('fPhone').value.trim();
+    const phone2 = document.getElementById('fPhone2').value.trim();
+    const location = document.getElementById('fLocation').value.trim();
+    const linkedin = document.getElementById('fLinkedin').value.trim();
+    const website = document.getElementById('fWebsite').value.trim();
+    const github = document.getElementById('fGithub').value.trim();
+    const twitter = document.getElementById('fTwitter').value.trim();
+
+    const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || 'U';
+
+    DB.saveUser({ name, initials, status, targetRole: role, phone, phone2, location, linkedin, website, github, twitter });
+
+    // Update sidebar live
+    document.getElementById('userName').textContent = name || 'User';
+    document.getElementById('userInitials').textContent = initials;
+    document.getElementById('userStatus').textContent = '🟢 ' + status;
+
+    dirty = false;
+    document.getElementById('saveBar').style.display = 'none';
+  }
+
+  async function changePassword() {
+    const current = document.getElementById('pwdCurrent').value;
+    const next = document.getElementById('pwdNew').value;
+    const confirm = document.getElementById('pwdConfirm').value;
+    const msg = document.getElementById('pwdMsg');
+
+    msg.className = 'pwd-msg';
+    msg.textContent = '';
+
+    if (!current) { msg.classList.add('error'); msg.textContent = 'Enter your current password.'; return; }
+    if (!next || next.length < 8) { msg.classList.add('error'); msg.textContent = 'New password must be at least 8 characters.'; return; }
+    if (next !== confirm) { msg.classList.add('error'); msg.textContent = 'Passwords do not match.'; return; }
+
+    // Verify current password
+    const ok = await AUTH.verifyAndSignIn(currentUser.email, current);
+    if (!ok) { msg.classList.add('error'); msg.textContent = 'Current password is incorrect.'; return; }
+
+    // Save new password hash
+    const emailNorm = currentUser.email.toLowerCase().trim();
+    const id = btoa(emailNorm).replace(/=/g, '');
+    const newHash = await AUTH._hashPassword(next, emailNorm);
+    localStorage.setItem('jobtrace_auth_' + id, JSON.stringify({ passwordHash: newHash }));
+
+    document.getElementById('pwdCurrent').value = '';
+    document.getElementById('pwdNew').value = '';
+    document.getElementById('pwdConfirm').value = '';
+    msg.classList.add('success');
+    msg.textContent = '✓ Password updated successfully.';
+    setTimeout(() => { msg.textContent = ''; }, 4000);
+  }
+
+  init();
 </script>
 </body>
 </html>
