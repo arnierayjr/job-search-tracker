@@ -569,7 +569,7 @@
 
           <!-- Core Skills — tag input with autocomplete -->
           <div class="field field-full">
-            <label>Core Skills <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:0.68rem;">(type and press Enter or pick a suggestion)</span></label>
+            <label>Core Skills <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:0.68rem;">(type and press Enter or pick a suggestion)</span> <span id="skillsHint" style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--blue);font-size:0.68rem;margin-left:0.5rem;"></span></label>
             <div class="ac-wrap">
               <div class="tag-wrap" id="skillTagWrap" onclick="document.getElementById('skillTagInput').focus()">
                 <input type="text" id="skillTagInput" class="tag-input-field" placeholder="Add a skill…" autocomplete="off" />
@@ -697,77 +697,422 @@
 // ======================================================
 // PRESET DATA
 // ======================================================
+
+// --- Target Roles (generic, diverse across all career fields) ---
 const ROLES = [
-  'Software Engineer','Senior Software Engineer','Staff Engineer','Principal Engineer',
-  'Frontend Engineer','Backend Engineer','Full Stack Engineer','Mobile Engineer',
-  'iOS Engineer','Android Engineer','DevOps Engineer','Site Reliability Engineer',
-  'Platform Engineer','Data Engineer','Data Scientist','Machine Learning Engineer',
-  'AI Engineer','Cloud Architect','Solutions Architect','Engineering Manager',
-  'VP of Engineering','CTO','Product Manager','Senior Product Manager',
-  'Director of Product','VP of Product','UX Designer','Product Designer',
-  'UI Designer','UX Researcher','Graphic Designer','Creative Director',
-  'Marketing Manager','Digital Marketing Manager','Content Strategist',
-  'SEO Specialist','Growth Manager','Brand Manager','Sales Manager',
-  'Account Executive','Sales Development Representative','Business Development Manager',
-  'Customer Success Manager','Account Manager','Operations Manager',
-  'Business Analyst','Data Analyst','Financial Analyst','Project Manager',
-  'Program Manager','Scrum Master','Agile Coach','HR Manager','Recruiter',
-  'Technical Recruiter','Talent Acquisition Manager','Legal Counsel',
-  'Compliance Officer','Cybersecurity Analyst','Security Engineer',
-  'Network Engineer','Database Administrator','QA Engineer','Test Engineer',
-  'Technical Writer','Developer Advocate','Solutions Engineer','Pre-Sales Engineer'
+  // Technology
+  'Software Developer','Web Developer','Mobile Developer','Frontend Developer',
+  'Backend Developer','Full Stack Developer','Software Engineer','Data Analyst',
+  'Data Scientist','IT Support Specialist','Network Administrator','Cybersecurity Analyst',
+  'Cloud Engineer','DevOps Engineer','QA Tester','Technical Project Manager',
+  'Product Manager','UX / UI Designer','Systems Administrator','Database Administrator',
+  // Healthcare & Medicine
+  'Registered Nurse','Licensed Practical Nurse','Medical Assistant','Physician Assistant',
+  'Physical Therapist','Occupational Therapist','Speech-Language Pathologist',
+  'Pharmacist','Pharmacy Technician','Dental Hygienist','Radiologic Technologist',
+  'Respiratory Therapist','Healthcare Administrator','Medical Billing Specialist',
+  'EMT / Paramedic','Surgical Technologist','Home Health Aide','Clinical Research Coordinator',
+  'Patient Care Coordinator','Medical Coder',
+  // Finance & Accounting
+  'Accountant','Bookkeeper','Financial Analyst','Auditor','Tax Specialist',
+  'Financial Advisor','Investment Analyst','Credit Analyst','Loan Officer',
+  'Insurance Agent','Actuary','Compliance Officer','Controller','Payroll Specialist',
+  'Budget Analyst','Treasury Analyst',
+  // Education & Training
+  'Teacher','Substitute Teacher','School Counselor','Instructional Designer',
+  'Corporate Trainer','Academic Advisor','Principal','Curriculum Developer',
+  'Professor / Lecturer','Tutor','Library Specialist','Special Education Teacher',
+  'Early Childhood Educator','Coach / Athletic Director',
+  // Business & Operations
+  'Operations Manager','Business Analyst','Project Manager','Program Manager',
+  'Administrative Assistant','Executive Assistant','Office Manager',
+  'Operations Coordinator','Business Development Manager','Strategy Analyst',
+  'Process Improvement Specialist','Logistics Coordinator','Supply Chain Analyst',
+  // Sales
+  'Sales Representative','Account Executive','Sales Manager','Inside Sales Rep',
+  'Outside Sales Rep','Business Development Rep','Retail Sales Associate',
+  'Customer Success Manager','Account Manager','Sales Coordinator',
+  // Marketing & Communications
+  'Marketing Coordinator','Marketing Manager','Content Creator','Social Media Manager',
+  'SEO Specialist','Brand Manager','Public Relations Specialist','Copywriter',
+  'Digital Marketing Specialist','Email Marketing Specialist','Communications Manager',
+  'Graphic Designer','Event Coordinator',
+  // Human Resources
+  'HR Coordinator','HR Manager','Recruiter','Talent Acquisition Specialist',
+  'Compensation & Benefits Analyst','Training & Development Specialist',
+  'HR Business Partner','People Operations Manager','Workforce Planner',
+  // Legal
+  'Paralegal','Legal Assistant','Contract Specialist','Compliance Specialist',
+  'Attorney / Lawyer','Legal Operations Manager',
+  // Creative & Design
+  'Graphic Designer','Video Editor','Photographer','Videographer',
+  'Interior Designer','Fashion Designer','Art Director','Animator',
+  'Motion Graphics Designer','Illustrator','Creative Director','Architect',
+  // Trades & Technical
+  'Electrician','Plumber','HVAC Technician','Carpenter','Welder',
+  'Mechanic / Auto Technician','Construction Manager','Civil Engineer',
+  'Mechanical Engineer','Electrical Engineer','Project Superintendent',
+  'Heavy Equipment Operator','Maintenance Technician',
+  // Hospitality & Service
+  'Hotel Manager','Restaurant Manager','Chef / Cook','Server / Bartender',
+  'Event Planner','Travel Agent','Customer Service Representative',
+  'Front Desk Agent','Catering Manager','Housekeeping Supervisor',
+  // Retail & Consumer
+  'Retail Store Manager','Retail Associate','Buyer / Merchandiser',
+  'Visual Merchandiser','Loss Prevention Specialist','Inventory Manager',
+  'E-Commerce Specialist',
+  // Nonprofit & Government
+  'Social Worker','Case Manager','Community Outreach Coordinator','Grant Writer',
+  'Policy Analyst','City / Urban Planner','Program Director','Nonprofit Manager',
+  'Government Relations Specialist','Public Affairs Officer',
+  // Science & Research
+  'Research Scientist','Lab Technician','Chemist','Biologist',
+  'Environmental Scientist','Geologist','Clinical Trials Manager','Statistician',
+  'Quality Control Specialist','Regulatory Affairs Specialist',
+  // Media & Journalism
+  'Journalist / Reporter','News Anchor','Podcast Producer','Content Strategist',
+  'Technical Writer','Editor','Broadcast Technician','Publicist',
+  // Real Estate
+  'Real Estate Agent','Real Estate Broker','Property Manager',
+  'Leasing Consultant','Mortgage Broker','Appraiser',
+  // Transportation & Logistics
+  'Truck Driver','Warehouse Associate','Logistics Manager',
+  'Fleet Manager','Delivery Driver','Dispatcher','Freight Broker',
+  // Fitness & Wellness
+  'Personal Trainer','Yoga Instructor','Physical Education Teacher',
+  'Nutritionist / Dietitian','Wellness Coach','Athletic Trainer',
+  // Leadership / Executive
+  'Director','Senior Manager','Vice President','C-Suite Executive',
+  'Chief Executive Officer','Chief Operating Officer','Chief Financial Officer',
+  'Department Head','Team Lead'
 ];
 
+// --- Industries (broad, generic, diverse) ---
 const INDUSTRIES = [
-  'Technology','Software / SaaS','FinTech','Healthcare','Health Tech',
-  'BioTech','MedTech','E-commerce','Retail Tech','EdTech','Education',
-  'AI / Machine Learning','Cybersecurity','Cloud Computing','Big Data / Analytics',
-  'Gaming','Media & Entertainment','Digital Media','Advertising & Marketing',
-  'Finance & Banking','Insurance','Real Estate / PropTech','LegalTech',
-  'HRTech','Supply Chain / Logistics','Transportation','Automotive','Aerospace',
-  'Manufacturing','Energy / CleanTech','GovTech / Government','Non-Profit',
-  'Consulting','Management Consulting','Telecommunications','Social Media',
-  'Travel & Hospitality','Food & Beverage','Agriculture / AgriTech','Sports Tech',
-  'Fashion & Apparel','Construction / ConTech'
+  'Technology & Software',
+  'Healthcare & Medicine',
+  'Finance & Banking',
+  'Education & Training',
+  'Government & Public Sector',
+  'Nonprofit & Social Services',
+  'Retail & Consumer Goods',
+  'Hospitality & Tourism',
+  'Real Estate & Construction',
+  'Legal Services',
+  'Media & Entertainment',
+  'Marketing & Advertising',
+  'Manufacturing & Engineering',
+  'Transportation & Logistics',
+  'Energy & Utilities',
+  'Agriculture & Food Services',
+  'Sports & Recreation',
+  'Arts & Design',
+  'Human Resources & Recruiting',
+  'Sales & Business Development',
+  'Science & Research',
+  'Military & Defense',
+  'Insurance',
+  'Telecommunications',
+  'Automotive',
+  'Aerospace & Aviation',
+  'Fashion & Apparel',
+  'Pharmaceuticals & Biotech',
+  'Environmental & Sustainability',
+  'Mental Health & Social Work'
 ];
 
+// --- Education levels only (no majors) ---
 const EDUCATIONS = [
-  'High School Diploma / GED','Some College','Associate\'s Degree',
-  'B.S. Computer Science','B.S. Information Technology','B.S. Engineering',
-  'B.S. Data Science','B.S. Mathematics','B.A. Business Administration',
-  'B.A. Communications','B.A. Psychology','B.A. Graphic Design',
-  'B.A. Marketing','Bachelor\'s Degree (Other)','M.S. Computer Science',
-  'M.S. Data Science','M.S. Engineering','M.S. Cybersecurity',
-  'MBA','Master\'s Degree (Other)','Ph.D. Computer Science',
-  'Ph.D. Engineering','Ph.D. Data Science','Ph.D. (Other)',
-  'Coding Bootcamp Graduate','Self-Taught / Online Courses',
-  'Google Career Certificate','AWS Certified','Professional Certifications'
+  'High School Diploma / GED',
+  'Some College (No Degree)',
+  'Vocational / Trade Certificate',
+  'Apprenticeship',
+  'Associate\'s Degree',
+  'Bachelor\'s Degree',
+  'Master\'s Degree',
+  'MBA',
+  'Doctoral Degree (Ph.D.)',
+  'Professional Degree (J.D., M.D., etc.)',
+  'Bootcamp / Certification Program',
+  'Self-Taught / Online Courses',
+  'Military Training & Experience',
+  'Currently Enrolled'
 ];
 
-const SKILLS_LIST = [
-  // Languages
-  'Python','JavaScript','TypeScript','Java','C++','C#','Go','Rust','Ruby',
-  'Swift','Kotlin','PHP','Scala','R','MATLAB','Bash / Shell',
-  // Frontend
-  'React','Vue.js','Angular','Next.js','Svelte','HTML / CSS','Tailwind CSS',
-  'Redux','GraphQL','REST APIs','WebSockets',
-  // Backend
-  'Node.js','Express','Django','FastAPI','Spring Boot','Rails','Laravel',
-  'gRPC','Microservices','Serverless',
-  // Data / ML
-  'SQL','PostgreSQL','MySQL','MongoDB','Redis','Elasticsearch',
-  'Pandas','NumPy','TensorFlow','PyTorch','Scikit-learn','Spark','dbt',
-  'Airflow','Kafka','Data Pipelines','ETL','Machine Learning','Deep Learning',
-  'NLP','Computer Vision','LLMs / Generative AI','Prompt Engineering',
-  // Cloud / DevOps
-  'AWS','Azure','Google Cloud','Docker','Kubernetes','Terraform','Ansible',
-  'CI/CD','Jenkins','GitHub Actions','Linux','Nginx','Datadog','Grafana',
-  // Mobile
-  'React Native','Flutter','iOS (Swift)','Android (Kotlin)',
-  // Tools
-  'Git','Jira','Confluence','Figma','Postman','Splunk','Tableau','Power BI',
-  // Soft skills that could go here too
-  'Agile / Scrum','Kanban','Test-Driven Development','Code Review','System Design'
+// --- Skills by industry ---
+const SKILLS_BY_INDUSTRY = {
+  'Technology & Software': [
+    'Python','JavaScript','TypeScript','Java','C++','C#','Go','Rust','Ruby','Swift','Kotlin','PHP','R','SQL',
+    'React','Vue.js','Angular','Next.js','Node.js','Django','FastAPI','Spring Boot',
+    'HTML / CSS','REST APIs','GraphQL','Microservices','Serverless',
+    'AWS','Azure','Google Cloud','Docker','Kubernetes','Terraform','CI/CD',
+    'Machine Learning','Deep Learning','Data Pipelines','Spark','Kafka',
+    'PostgreSQL','MongoDB','Redis','Elasticsearch',
+    'Git','Linux','Agile / Scrum','System Design','Code Review','Technical Writing',
+    'Cybersecurity','Network Security','Cloud Architecture','DevOps'
+  ],
+  'Healthcare & Medicine': [
+    'Patient Care','Clinical Assessment','Vital Signs Monitoring','Medication Administration',
+    'Electronic Health Records (EHR)','HIPAA Compliance','IV Therapy','Wound Care',
+    'CPR / BLS Certified','ACLS Certified','Phlebotomy','Medical Coding (ICD-10)',
+    'Medical Billing','Epic EHR','Cerner','Care Coordination','Patient Education',
+    'Triage','Surgical Assist','Sterilization Techniques','Radiology','Pharmacology',
+    'Case Management','Care Planning','Infection Control','OSHA Compliance',
+    'Mental Health Support','Behavioral Health','Telehealth','Palliative Care'
+  ],
+  'Finance & Banking': [
+    'Financial Analysis','Accounting','Bookkeeping','GAAP','Financial Modeling',
+    'Excel / Google Sheets','QuickBooks','SAP','Oracle Financials','Bloomberg Terminal',
+    'Budgeting & Forecasting','Risk Management','Audit','Tax Preparation',
+    'Investment Analysis','Portfolio Management','Credit Analysis','Underwriting',
+    'Compliance & Regulatory Reporting','Anti-Money Laundering (AML)','KYC',
+    'Financial Planning','Derivatives','Equity Research','Fixed Income',
+    'Accounts Payable / Receivable','Payroll Processing','Cost Accounting'
+  ],
+  'Education & Training': [
+    'Curriculum Development','Lesson Planning','Classroom Management',
+    'Student Assessment','Differentiated Instruction','Special Education',
+    'Instructional Design','Learning Management Systems (LMS)','Canvas','Blackboard',
+    'Google Classroom','Microsoft Teams','Educational Technology','eLearning',
+    'Articulate 360','ADDIE Model','Training Facilitation','Coaching',
+    'Academic Advising','Student Engagement','IEP Development',
+    'Early Childhood Education','STEM Education','Adult Learning Principles',
+    'Data-Driven Instruction','Parent Communication','Behavior Management'
+  ],
+  'Government & Public Sector': [
+    'Policy Analysis','Public Administration','Legislative Research','Grant Writing',
+    'Community Outreach','Public Speaking','Budget Management','Regulatory Compliance',
+    'Federal Acquisition Regulation (FAR)','Government Contracting','FOIA',
+    'Emergency Management','Urban Planning','Environmental Policy',
+    'Public Health Administration','Social Services','Case Management',
+    'Records Management','GIS / Mapping','Stakeholder Engagement',
+    'Program Evaluation','Performance Management','Data Analysis'
+  ],
+  'Nonprofit & Social Services': [
+    'Grant Writing','Fundraising','Donor Relations','Community Outreach',
+    'Volunteer Management','Program Development','Case Management',
+    'Social Work','Advocacy','Event Planning','Nonprofit Finance',
+    'Government Grants','Corporate Partnerships','Impact Measurement',
+    'Logic Model Development','Community Needs Assessment','Crisis Intervention',
+    'Trauma-Informed Care','Cultural Competency','Public Health',
+    'Database Management (Salesforce, Raiser\'s Edge)','Storytelling & Communications'
+  ],
+  'Retail & Consumer Goods': [
+    'Customer Service','Sales Techniques','Inventory Management','POS Systems',
+    'Visual Merchandising','Loss Prevention','Cash Handling','Upselling',
+    'Product Knowledge','Store Operations','Planogram Execution',
+    'Retail Analytics','Shopify','Salesforce Commerce','E-Commerce',
+    'Order Fulfillment','Supply Chain Basics','Vendor Relations',
+    'Trend Analysis','Buying & Merchandising','Category Management',
+    'Customer Retention','CRM Systems','Social Commerce'
+  ],
+  'Hospitality & Tourism': [
+    'Customer Service','Front Desk Operations','Property Management Systems (PMS)',
+    'Opera PMS','Event Planning','Food & Beverage Management','Menu Development',
+    'Catering','Banquet Operations','Housekeeping Management','Revenue Management',
+    'OTA Management (Expedia, Booking.com)','Reservation Systems',
+    'Travel Planning','Tour Operations','Concierge Services',
+    'MICROS POS','Food Safety / ServSafe','Alcohol Service Compliance',
+    'Hospitality Management','Guest Relations','Upselling & Cross-Selling'
+  ],
+  'Real Estate & Construction': [
+    'Real Estate Sales','Property Management','Lease Administration',
+    'MLS / Multiple Listing Service','Zoning & Land Use','Blueprint Reading',
+    'AutoCAD','Revit','Construction Management','Project Scheduling (Primavera, MS Project)',
+    'Cost Estimating','Building Codes & Permits','OSHA Safety',
+    'Contract Negotiation','Title & Escrow','Mortgage Lending',
+    'Real Estate Appraisal','Property Valuation','Tenant Relations',
+    'Facilities Management','Green Building / LEED','BIM (Building Information Modeling)'
+  ],
+  'Legal Services': [
+    'Legal Research (Westlaw, LexisNexis)','Contract Drafting & Review',
+    'Case Management','Litigation Support','Discovery & eDiscovery',
+    'Document Review','Legal Writing','Court Filings & Procedures',
+    'Corporate Law','Employment Law','Intellectual Property','Immigration Law',
+    'Regulatory Compliance','Data Privacy (GDPR, CCPA)','Due Diligence',
+    'Negotiation','Mediation & Arbitration','Paralegal Skills',
+    'Legal Billing (Clio, MyCase)','Client Communication'
+  ],
+  'Media & Entertainment': [
+    'Video Production','Film Editing (Adobe Premiere, Final Cut)','Cinematography',
+    'Audio Production','Sound Design','Broadcast Journalism','Scriptwriting',
+    'Content Creation','YouTube / TikTok / Instagram','Podcast Production',
+    'Photography','Adobe Photoshop / Lightroom','Color Grading',
+    'Animation','Motion Graphics (After Effects)','3D Modeling',
+    'Live Streaming','Social Media Management','Audience Development',
+    'Music Production (Ableton, Pro Tools)','Rights & Licensing'
+  ],
+  'Marketing & Advertising': [
+    'Digital Marketing','Social Media Marketing','Content Marketing','SEO / SEM',
+    'Google Ads','Meta Ads','Email Marketing (Mailchimp, Klaviyo)',
+    'Marketing Automation (HubSpot, Marketo)','Copywriting','Brand Strategy',
+    'Market Research','Consumer Insights','A/B Testing','Conversion Optimization',
+    'Google Analytics / GA4','CRM (Salesforce, HubSpot)','Influencer Marketing',
+    'Public Relations','Event Marketing','Affiliate Marketing',
+    'Graphic Design','Adobe Creative Suite','Campaign Management'
+  ],
+  'Manufacturing & Engineering': [
+    'CAD / CAM','AutoCAD','SolidWorks','Lean Manufacturing','Six Sigma',
+    'Quality Control','ISO Standards','GMP (Good Manufacturing Practice)',
+    'OSHA Safety','Process Engineering','Root Cause Analysis','5S Methodology',
+    'PLC Programming','CNC Machining','Welding','Hydraulics & Pneumatics',
+    'Supply Chain Management','ERP Systems (SAP, Oracle)','Production Planning',
+    'Bill of Materials (BOM)','Failure Mode & Effects Analysis (FMEA)',
+    'Preventive Maintenance','Statistical Process Control (SPC)'
+  ],
+  'Transportation & Logistics': [
+    'Supply Chain Management','Logistics Coordination','Freight Brokerage',
+    'TMS (Transportation Management Systems)','WMS (Warehouse Management Systems)',
+    'Route Optimization','Customs & Import/Export','Inventory Control',
+    'Fleet Management','DOT Compliance','OSHA Safety','Forklift Certified',
+    'SAP','Oracle SCM','Last-Mile Delivery','Cold Chain Logistics',
+    'Demand Planning','Procurement','Vendor Management','Cost Reduction',
+    'Carrier Negotiations','Hazmat Handling','CDL (Commercial Driver\'s License)'
+  ],
+  'Energy & Utilities': [
+    'Electrical Systems','Power Grid Operations','OSHA Safety','NERC Compliance',
+    'Renewable Energy (Solar, Wind)','Energy Efficiency','SCADA Systems',
+    'Substation Operations','High Voltage','Utility Project Management',
+    'Environmental Compliance','GIS Mapping','Natural Gas Operations',
+    'HVAC Systems','Energy Auditing','Smart Grid Technology',
+    'Oil & Gas Operations','Pipeline Management','AutoCAD','PLC / DCS Systems'
+  ],
+  'Agriculture & Food Services': [
+    'Crop Management','Livestock Care','Irrigation Systems','Soil Science',
+    'Pest & Disease Management','Agricultural Equipment Operation',
+    'Food Safety (HACCP, FDA Regulations)','Food Production','Quality Assurance',
+    'Kitchen Operations','Nutrition & Dietetics','Menu Planning',
+    'Food Cost Management','ServSafe Certification','Recipe Development',
+    'Farm Management Software','Sustainable Agriculture','Organic Farming',
+    'Supply Chain (Farm to Table)','Food Labeling & Compliance'
+  ],
+  'Sports & Recreation': [
+    'Athletic Coaching','Personal Training','Strength & Conditioning',
+    'Sports Medicine','Injury Prevention & Rehabilitation',
+    'Nutrition & Sports Dietetics','Exercise Programming','CPR / First Aid',
+    'Sports Analytics','Video Analysis','Athlete Development',
+    'Recreation Programming','Event Management','Facility Management',
+    'Youth Sports Development','Sports Marketing','Community Engagement',
+    'Fitness Assessment','Group Exercise Instruction'
+  ],
+  'Arts & Design': [
+    'Adobe Creative Suite (Photoshop, Illustrator, InDesign)','Figma','Sketch',
+    'Typography','Color Theory','Brand Identity Design','Print Design',
+    'Digital Illustration','UI / UX Design','Prototyping & Wireframing',
+    'Motion Graphics (After Effects)','3D Modeling (Blender, Cinema 4D)',
+    'Photography','Video Editing','Art Direction','Creative Strategy',
+    'Exhibition Design','Interior Design','Fashion Design','Textile Design',
+    'Portfolio Development','Client Presentation','Creative Brief Execution'
+  ],
+  'Human Resources & Recruiting': [
+    'Full-Cycle Recruiting','Applicant Tracking Systems (ATS)','LinkedIn Recruiting',
+    'HRIS (Workday, ADP, BambooHR)','Onboarding & Offboarding',
+    'Benefits Administration','Compensation Analysis','Performance Management',
+    'Employee Relations','Labor Law & Compliance','FMLA / ADA Compliance',
+    'Training & Development','Organizational Development','Workforce Planning',
+    'Diversity, Equity & Inclusion (DEI)','HR Metrics & Analytics',
+    'Job Description Writing','Interview Techniques','Background Checks',
+    'Payroll Processing','Conflict Resolution','Change Management'
+  ],
+  'Sales & Business Development': [
+    'B2B Sales','B2C Sales','CRM (Salesforce, HubSpot)','Pipeline Management',
+    'Lead Generation','Prospecting','Cold Calling / Cold Emailing',
+    'Account Management','Contract Negotiation','Closing Techniques',
+    'Sales Presentations','Product Demonstrations','Customer Needs Analysis',
+    'Territory Management','Channel Sales','Partner Relations',
+    'Revenue Forecasting','Quota Achievement','Sales Enablement',
+    'Customer Retention','Upselling & Cross-Selling','LinkedIn Sales Navigator'
+  ],
+  'Science & Research': [
+    'Research Design','Data Collection & Analysis','Statistical Analysis (SPSS, SAS, R)',
+    'Laboratory Techniques','PCR','Cell Culture','Microscopy',
+    'Scientific Writing','Grant Writing','Literature Review',
+    'Clinical Trials Management','IRB Compliance','GLP / GCP / GMP',
+    'Bioinformatics','CRISPR / Genomics','Mass Spectrometry',
+    'Environmental Sampling','Field Research','Data Visualization',
+    'Python / R for Research','Peer Review','Regulatory Submissions'
+  ],
+  'Military & Defense': [
+    'Military Operations','Leadership Under Pressure','Mission Planning',
+    'Intelligence Analysis','Logistics & Supply Chain','Weapons Systems',
+    'Cybersecurity / SIGINT','Communications Systems','Emergency Response',
+    'Physical Fitness & Endurance','Team Management','Risk Assessment',
+    'Security Clearance','DOD Compliance','Technical Training',
+    'Veteran Transition Skills','Project Management','Strategic Planning'
+  ],
+  'Insurance': [
+    'Underwriting','Claims Processing','Risk Assessment','Policy Administration',
+    'Actuarial Analysis','Insurance Sales','Customer Service',
+    'Property & Casualty (P&C)','Life & Health Insurance',
+    'Commercial Lines','Reinsurance','Compliance & Regulatory',
+    'Insurance CRM Systems','Loss Control','Fraud Investigation',
+    'Benefits Administration','Financial Planning'
+  ],
+  'Telecommunications': [
+    'Network Engineering','Fiber Optics','VoIP Systems','5G Technology',
+    'Network Troubleshooting','RF Engineering','Network Design',
+    'CCNA / CCNP Certifications','NOC Operations','Wireless Technology',
+    'Data Center Operations','Routing & Switching','Network Security',
+    'Cloud Networking','Technical Support','Project Management'
+  ],
+  'Automotive': [
+    'Vehicle Diagnostics (OBD-II)','Engine Repair','Transmission Repair',
+    'Electrical Systems','Brake Systems','Suspension & Steering',
+    'Hybrid / EV Technology','Auto Body Repair','Painting & Refinishing',
+    'Customer Service','Service Writing','Inventory Management',
+    'ASE Certification','Dealership Operations','Fleet Management',
+    'Quality Inspection','Warranty Processing'
+  ],
+  'Aerospace & Aviation': [
+    'Aircraft Maintenance','Avionics','FAA Regulations / Compliance',
+    'Airframe & Powerplant (A&P) Certification','Flight Planning',
+    'Air Traffic Control','Aerospace Engineering','CAD / CAM',
+    'Systems Integration','Quality Assurance','Safety Management Systems',
+    'Project Management','Defense Contracting','DOD Compliance',
+    'Satellite Systems','Space Systems Engineering'
+  ],
+  'Fashion & Apparel': [
+    'Fashion Design','Textile Knowledge','Pattern Making','Garment Construction',
+    'Adobe Illustrator / Photoshop','Trend Forecasting','Visual Merchandising',
+    'Buying & Merchandising','Retail Sales','Brand Development',
+    'Fashion Marketing','Social Media for Fashion','Styling',
+    'E-Commerce (Shopify, ASOS)','Sustainability in Fashion',
+    'Supply Chain Management','Wholesale & Retail Operations'
+  ],
+  'Pharmaceuticals & Biotech': [
+    'Drug Development','Clinical Trials','Regulatory Affairs (FDA, EMA)',
+    'GMP / GLP Compliance','Pharmacology','Formulation Development',
+    'Analytical Chemistry','Quality Assurance / Quality Control',
+    'Laboratory Techniques','Bioinformatics','Molecular Biology',
+    'CRISPR / Gene Editing','Medical Affairs','Pharmacovigilance',
+    'Scientific Writing','Market Access','Healthcare Compliance'
+  ],
+  'Environmental & Sustainability': [
+    'Environmental Science','Environmental Impact Assessment',
+    'Sustainability Reporting (GRI, SASB)','Carbon Footprint Analysis',
+    'Renewable Energy','Environmental Compliance','OSHA / EPA Regulations',
+    'Water & Wastewater Treatment','Soil & Air Quality Testing',
+    'Climate Policy','ESG Strategy','Green Building (LEED)','GIS Mapping',
+    'Wildlife Management','Environmental Consulting','Grant Writing'
+  ],
+  'Mental Health & Social Work': [
+    'Counseling & Therapy','CBT / DBT Techniques','Crisis Intervention',
+    'Case Management','Trauma-Informed Care','Motivational Interviewing',
+    'Substance Abuse Treatment','Behavioral Health','Psychiatric Assessment',
+    'Group Therapy Facilitation','Child & Family Services',
+    'Community Mental Health','Documentation & Treatment Planning',
+    'HIPAA Compliance','Cultural Competency','Social Work (LCSW, LMSW)',
+    'De-escalation Techniques','Advocacy','Community Resources Navigation'
+  ]
+};
+
+// Default skills shown before industry is selected
+const DEFAULT_SKILLS = [
+  'Microsoft Office','Google Workspace','Communication','Teamwork','Time Management',
+  'Problem Solving','Customer Service','Data Entry','Project Management',
+  'Attention to Detail','Multitasking','Organization','Leadership',
+  'Research','Writing','Presentation Skills','Budgeting','Scheduling',
+  'Critical Thinking','Adaptability'
 ];
 
 const LEADERSHIP_LIST = [
@@ -778,10 +1123,12 @@ const LEADERSHIP_LIST = [
   'Conflict Resolution','Negotiation','Public Speaking','Presentation Skills',
   'Empathy & Emotional Intelligence','Active Listening','Decision Making',
   'Problem Solving','Critical Thinking','Adaptability','Time Management',
-  'Prioritization','Project Management','Risk Management','Data-Driven Decision Making',
-  'Customer Empathy','User Research','Design Thinking','Innovation',
-  'Entrepreneurial Mindset','Bias for Action','Ownership','Accountability',
-  'Transparency','Inclusive Leadership','Remote Team Management'
+  'Prioritization','Project Management','Risk Management','Data-Driven Thinking',
+  'Customer Empathy','Design Thinking','Innovation','Entrepreneurial Mindset',
+  'Ownership & Accountability','Transparency','Inclusive Leadership',
+  'Remote Team Management','Coaching & Development','Delegation','Cultural Competency',
+  'Resilience','Self-Motivation','Attention to Detail','Written Communication',
+  'Relationship Building','Networking','Deadline Management'
 ];
 
 // ======================================================
@@ -808,11 +1155,11 @@ function setupAutocomplete(inputId, dropdownId, dataset) {
   function render(matches) {
     if (!matches.length) { dropdown.classList.remove('open'); return; }
     activeIdx = -1;
-    dropdown.innerHTML = matches.map((m, i) =>
+    dropdown.innerHTML = matches.map(m =>
       `<div class="ac-item" data-val="${m}" onmousedown="event.preventDefault()">${highlight(m, input.value)}</div>`
     ).join('');
-    dropdown.querySelectorAll('.ac-item').forEach((el, i) => {
-      el.addEventListener('mousedown', () => { input.value = el.dataset.val; dropdown.classList.remove('open'); input.dispatchEvent(new Event('input')); });
+    dropdown.querySelectorAll('.ac-item').forEach(el => {
+      el.addEventListener('mousedown', () => { input.value = el.dataset.val; dropdown.classList.remove('open'); input.dispatchEvent(new Event('change')); });
     });
     dropdown.classList.add('open');
   }
@@ -824,15 +1171,15 @@ function setupAutocomplete(inputId, dropdownId, dataset) {
     const items = dropdown.querySelectorAll('.ac-item');
     if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(activeIdx + 1, items.length - 1); items.forEach((el, i) => el.classList.toggle('active', i === activeIdx)); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(activeIdx - 1, 0); items.forEach((el, i) => el.classList.toggle('active', i === activeIdx)); }
-    else if (e.key === 'Enter' && activeIdx >= 0) { e.preventDefault(); input.value = items[activeIdx].dataset.val; dropdown.classList.remove('open'); }
+    else if (e.key === 'Enter' && activeIdx >= 0) { e.preventDefault(); input.value = items[activeIdx].dataset.val; dropdown.classList.remove('open'); input.dispatchEvent(new Event('change')); }
     else if (e.key === 'Escape') { dropdown.classList.remove('open'); }
   });
 }
 
 // ======================================================
-// TAG INPUT ENGINE
+// TAG INPUT ENGINE (supports live dataset swap)
 // ======================================================
-function setupTagInput(inputId, dropdownId, wrapId, hiddenId, dataset) {
+function setupTagInput(inputId, dropdownId, wrapId, hiddenId, getDataset) {
   const tagInput = document.getElementById(inputId);
   const dropdown = document.getElementById(dropdownId);
   const wrap = document.getElementById(wrapId);
@@ -840,10 +1187,11 @@ function setupTagInput(inputId, dropdownId, wrapId, hiddenId, dataset) {
   const tags = [];
 
   function getMatches(q) {
+    const dataset = getDataset();
     const existing = tags.map(t => t.toLowerCase());
-    if (!q) return dataset.filter(d => !existing.includes(d.toLowerCase())).slice(0, 8);
+    if (!q) return dataset.filter(d => !existing.includes(d.toLowerCase())).slice(0, 10);
     const lower = q.toLowerCase();
-    return dataset.filter(d => d.toLowerCase().includes(lower) && !existing.includes(d.toLowerCase())).slice(0, 8);
+    return dataset.filter(d => d.toLowerCase().includes(lower) && !existing.includes(d.toLowerCase())).slice(0, 10);
   }
 
   function highlight(text, q) {
@@ -901,6 +1249,9 @@ function setupTagInput(inputId, dropdownId, wrapId, hiddenId, dataset) {
       dropdown.classList.remove('open');
     }
   });
+
+  // Expose refresh so industry change can retrigger dropdown
+  return { refresh: () => { if (document.activeElement === tagInput) renderDropdown(tagInput.value); } };
 }
 
 // ======================================================
@@ -910,8 +1261,24 @@ function initFormControls() {
   setupAutocomplete('fRole', 'acRole', ROLES);
   setupAutocomplete('fIndustry', 'acIndustry', INDUSTRIES);
   setupAutocomplete('fEducation', 'acEdu', EDUCATIONS);
-  setupTagInput('skillTagInput', 'acSkills', 'skillTagWrap', 'fSkills', SKILLS_LIST);
-  setupTagInput('leadTagInput', 'acLead', 'leadTagWrap', 'fLeadership', LEADERSHIP_LIST);
+
+  // Skills dataset is dynamic — determined by selected industry
+  let activeSkillsDataset = DEFAULT_SKILLS;
+  const skillsControl = setupTagInput('skillTagInput', 'acSkills', 'skillTagWrap', 'fSkills', () => activeSkillsDataset);
+  setupTagInput('leadTagInput', 'acLead', 'leadTagWrap', 'fLeadership', () => LEADERSHIP_LIST);
+
+  // When industry changes, swap the skills dataset
+  const industryInput = document.getElementById('fIndustry');
+  function updateSkillsForIndustry(industryVal) {
+    const match = Object.keys(SKILLS_BY_INDUSTRY).find(k => k.toLowerCase() === industryVal.toLowerCase());
+    activeSkillsDataset = match ? SKILLS_BY_INDUSTRY[match] : DEFAULT_SKILLS;
+    // Show a hint label if dataset changed
+    const hint = document.getElementById('skillsHint');
+    if (hint) hint.textContent = match ? `Showing skills for: ${match}` : '';
+    skillsControl.refresh();
+  }
+  industryInput.addEventListener('change', () => updateSkillsForIndustry(industryInput.value));
+  industryInput.addEventListener('blur', () => updateSkillsForIndustry(industryInput.value));
 }
 
 // ---- Auth + sidebar init ----
