@@ -7,6 +7,7 @@
 <script src="../data.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../shared.css">
+<script src="../shared.js" defer></script>
 <style>
   /* ---- PAGE LAYOUT ---- */
   .aim-content {
@@ -259,6 +260,16 @@
     grid-template-columns: 1fr 360px;
     gap: 2rem;
     align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .results-layout { grid-template-columns: 1fr; }
+    .quiver-panel { position: static; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid .field-full { grid-column: 1; }
+    .aim-content { padding: 1rem; }
+    .form-intro { flex-direction: column; gap: 1rem; }
+    .archer-icon { font-size: 2rem; }
   }
 
   /* Target panel */

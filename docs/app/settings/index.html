@@ -7,6 +7,7 @@
 <script src="../data.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../shared.css">
+<script src="../shared.js" defer></script>
 <style>
   .content { padding: 2rem; max-width: 640px; }
 
@@ -145,6 +146,14 @@
     text-transform: uppercase;
   }
   .btn-danger:hover { background: var(--red-soft); }
+
+  @media (max-width: 768px) {
+    .content { padding: 1rem; }
+    .settings-input { width: 100%; max-width: 100%; }
+    .settings-row { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+    .settings-row .settings-value { font-size: 0.85rem; }
+    .save-bar { padding: 0.85rem 1rem; }
+  }
 </style>
 </head>
 <body>
