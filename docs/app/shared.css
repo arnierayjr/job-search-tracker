@@ -151,6 +151,8 @@ body {
 
 .topbar h1 span { color: var(--blue); }
 
+.topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+
 .content { padding: 2rem; }
 
 /* ---- BUTTONS ---- */
