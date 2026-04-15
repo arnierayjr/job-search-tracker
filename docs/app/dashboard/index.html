@@ -298,6 +298,57 @@
 
   .archer-input button:hover { background: var(--blue-dark); }
 
+  /* Upgrade banner in sidebar */
+  .upgrade-banner {
+    margin: 0 1rem 0.75rem;
+    background: linear-gradient(135deg, var(--blue-light) 0%, #e0ecff 100%);
+    border: 1px solid rgba(59,125,216,0.25);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+    text-align: center;
+  }
+
+  .upgrade-banner .upgrade-icon {
+    font-size: 1.3rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .upgrade-banner p {
+    font-size: 0.75rem;
+    color: var(--text);
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+  }
+
+  .upgrade-banner small {
+    display: block;
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-bottom: 0.65rem;
+    line-height: 1.4;
+  }
+
+  .upgrade-btn {
+    display: block;
+    width: 100%;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.45rem 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .upgrade-btn:hover { background: var(--blue-dark); }
+
   /* Archer widget in sidebar */
   .archer-widget {
     margin: 1rem;
@@ -491,6 +542,13 @@
       <span class="icon">⚙️</span> Settings
     </a>
   </nav>
+
+  <div class="upgrade-banner">
+    <div class="upgrade-icon">🚀</div>
+    <p>You're just getting started.</p>
+    <small>Unlock unlimited Archer, the Aim Assessment, and more.</small>
+    <a href="/pricing/" class="upgrade-btn">Level Up →</a>
+  </div>
 
   <div class="archer-widget">
     <div class="archer-widget-header">
