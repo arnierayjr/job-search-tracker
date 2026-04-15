@@ -49,6 +49,22 @@
 
   .nav-logo span { color: var(--blue); }
 
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .nav-link {
+    font-size: 0.78rem; font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.15s;
+  }
+
+  .nav-link:hover { color: var(--blue); }
+
   .nav-signin {
     font-size: 0.78rem; font-weight: 600; color: var(--blue);
     border: 1px solid var(--blue); padding: 0.4rem 0.9rem;
@@ -407,7 +423,10 @@
 
 <nav>
   <div class="nav-logo">JOB<span>TRACER</span></div>
-  <a href="/app/auth/index.html?mode=signin" class="nav-signin">SIGN IN →</a>
+  <div class="nav-right">
+    <a href="/pricing/" class="nav-link">Pricing</a>
+    <a href="/app/auth/index.html?mode=signin" class="nav-signin">SIGN IN →</a>
+  </div>
 </nav>
 
 <!-- HERO -->

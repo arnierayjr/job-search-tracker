@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — Job Tracer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f4f9;
+    --surface: #ffffff;
+    --border: #e1e7f0;
+    --blue: #3b7dd8;
+    --blue-dark: #2563eb;
+    --blue-light: #eff6ff;
+    --blue-glow: rgba(59,125,216,0.12);
+    --text: #111827;
+    --muted: #64748b;
+    --green: #16a34a;
+    --green-light: rgba(22,163,74,0.06);
+    --green-border: rgba(22,163,74,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.1rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(240,244,249,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-size: 1.3rem; font-weight: 700; letter-spacing: 0.04em; color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--blue); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .nav-link {
+    font-size: 0.78rem; font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.15s;
+  }
+
+  .nav-link:hover, .nav-link.active { color: var(--blue); }
+
+  .nav-signin {
+    font-size: 0.78rem; font-weight: 600; color: var(--blue);
+    border: 1px solid var(--blue); padding: 0.4rem 0.9rem;
+    border-radius: 6px; letter-spacing: 0.04em; text-decoration: none;
+    transition: all 0.15s;
+  }
+
+  .nav-signin:hover { background: var(--blue); color: #fff; }
+
+  /* PAGE HEADER */
+  .page-header {
+    padding: 9rem 2rem 4rem;
+    text-align: center;
+  }
+
+  .section-label {
+    font-size: 0.72rem; font-weight: 600;
+    color: var(--blue);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .page-header h1 {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .page-header h1 span { color: var(--blue); }
+
+  .page-header p {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+
+  /* TOGGLE */
+  .billing-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 2rem auto 3.5rem;
+    animation: fadeUp 0.5s ease 0.3s both;
+  }
+
+  .toggle-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .toggle-label.active { color: var(--text); }
+
+  .toggle-switch {
+    width: 44px; height: 24px;
+    background: var(--border);
+    border-radius: 100px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+    border: none;
+    outline: none;
+  }
+
+  .toggle-switch.on { background: var(--blue); }
+
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  .toggle-switch.on::after { transform: translateX(20px); }
+
+  .save-badge {
+    font-size: 0.65rem; font-weight: 700;
+    background: var(--green-light);
+    border: 1px solid var(--green-border);
+    color: var(--green);
+    padding: 0.2rem 0.5rem;
+    border-radius: 100px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* PRICING CARDS */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem 5rem;
+  }
+
+  .plan-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .plan-card:nth-child(1) { animation-delay: 0.1s; }
+  .plan-card:nth-child(2) { animation-delay: 0.2s; }
+  .plan-card:nth-child(3) { animation-delay: 0.3s; }
+
+  .plan-card:hover {
+    border-color: var(--blue);
+    box-shadow: 0 4px 24px var(--blue-glow);
+  }
+
+  .plan-card.featured {
+    border-color: var(--blue);
+    background: var(--surface);
+    position: relative;
+    box-shadow: 0 8px 32px var(--blue-glow);
+  }
+
+  .featured-badge {
+    position: absolute;
+    top: -12px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--blue);
+    color: #fff;
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.9rem;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .plan-name {
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .plan-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.2rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .price-amount {
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .price-period {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .price-annual {
+    font-size: 0.75rem;
+    color: var(--green);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    min-height: 1.2em;
+  }
+
+  .plan-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .plan-features {
+    list-style: none;
+    flex: 1;
+    margin-bottom: 1.75rem;
+  }
+
+  .plan-features li {
+    font-size: 0.85rem;
+    color: var(--text);
+    padding: 0.45rem 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    line-height: 1.4;
+  }
+
+  .plan-features li .check {
+    color: var(--green);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.05em;
+  }
+
+  .plan-features li .dash {
+    color: var(--border);
+    flex-shrink: 0;
+  }
+
+  .plan-features li.locked {
+    color: var(--muted);
+  }
+
+  .plan-btn {
+    display: block;
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem; font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+  }
+
+  .plan-btn.outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .plan-btn.outline:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+
+  .plan-btn.primary {
+    background: var(--blue);
+    color: #fff;
+  }
+
+  .plan-btn.primary:hover { background: var(--blue-dark); }
+
+  /* COMPARISON TABLE */
+  .comparison {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem 5rem;
+  }
+
+  .comparison-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .comparison-header h2 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  thead th {
+    padding: 0.9rem 1rem;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+
+  thead th:not(:first-child) { text-align: center; }
+
+  thead th.col-featured { color: var(--blue); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:hover { background: var(--blue-light); }
+
+  tbody tr.section-row {
+    background: var(--bg);
+  }
+
+  tbody tr.section-row td {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+    padding: 0.8rem 1rem 0.5rem;
+  }
+
+  tbody td {
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  tbody td:not(:first-child) {
+    text-align: center;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .check-icon { color: var(--green); font-weight: 700; font-size: 1rem; }
+  .dash-icon { color: var(--border); font-size: 1.1rem; }
+
+  /* FAQ */
+  .faq-section {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  .faq-section h2 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 0;
+  }
+
+  .faq-q {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    user-select: none;
+  }
+
+  .faq-q::after {
+    content: '+';
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--blue);
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+
+  .faq-item.open .faq-q::after { transform: rotate(45deg); }
+
+  .faq-a {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.2s;
+  }
+
+  .faq-item.open .faq-a {
+    max-height: 300px;
+    padding-top: 0.75rem;
+  }
+
+  /* CTA BOTTOM */
+  .cta-bottom {
+    padding: 5rem 2rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .cta-bottom h2 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+
+  .cta-bottom p {
+    color: var(--muted);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .cta-btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cta-btn {
+    padding: 0.85rem 2rem;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem; font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.15s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .cta-btn.primary {
+    background: var(--blue);
+    color: #fff;
+  }
+
+  .cta-btn.primary:hover { background: var(--blue-dark); }
+
+  .cta-btn.outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .cta-btn.outline:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  footer span { color: var(--blue); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .pricing-grid {
+      grid-template-columns: 1fr;
+      max-width: 420px;
+    }
+
+    .plan-card.featured { margin-top: 0.5rem; }
+
+    table thead th:nth-child(3),
+    table tbody td:nth-child(3) { display: none; }
+
+    .nav-link { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    nav { padding: 1rem 1.25rem; }
+    .page-header { padding: 7rem 1.25rem 3rem; }
+    .pricing-grid, .comparison, .faq-section { padding-left: 1.25rem; padding-right: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">JOB<span>TRACER</span></a>
+  <div class="nav-right">
+    <a href="/pricing/" class="nav-link active">Pricing</a>
+    <a href="/app/auth/index.html?mode=signin" class="nav-signin">SIGN IN →</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <span class="section-label">// Plans &amp; Pricing</span>
+  <h1>SIMPLE PRICING.<br><span>NO SURPRISES.</span></h1>
+  <p>Start free. Upgrade when Archer becomes your secret weapon. Cancel anytime.</p>
+
+  <!-- BILLING TOGGLE -->
+  <div class="billing-toggle">
+    <span class="toggle-label active" id="label-monthly">Monthly</span>
+    <button class="toggle-switch" id="billingToggle" onclick="toggleBilling()" aria-label="Toggle billing period"></button>
+    <span class="toggle-label" id="label-annual">Annual</span>
+    <span class="save-badge">SAVE 20%</span>
+  </div>
+</header>
+
+<!-- PRICING CARDS -->
+<section class="pricing-grid">
+
+  <!-- FREE -->
+  <div class="plan-card">
+    <div class="plan-name">Free</div>
+    <div class="plan-price">
+      <span class="price-amount">$0</span>
+    </div>
+    <div class="price-annual">&nbsp;</div>
+    <p class="plan-desc">The essentials to get your job search organized and off the ground.</p>
+    <ul class="plan-features">
+      <li><span class="check">✓</span> Up to 10 applications</li>
+      <li><span class="check">✓</span> Application status tracking</li>
+      <li><span class="check">✓</span> Contact log</li>
+      <li><span class="check">✓</span> 5 Archer messages / month</li>
+      <li class="locked"><span class="dash">—</span> Aim Assessment</li>
+      <li class="locked"><span class="dash">—</span> Unlimited applications</li>
+      <li class="locked"><span class="dash">—</span> Resume &amp; cover letter storage</li>
+      <li class="locked"><span class="dash">—</span> Analytics dashboard</li>
+    </ul>
+    <a href="/app/auth/index.html?mode=signup" class="plan-btn outline">Get Started Free</a>
+  </div>
+
+  <!-- HUNTER (FEATURED) -->
+  <div class="plan-card featured">
+    <div class="featured-badge">Most Popular</div>
+    <div class="plan-name">Hunter</div>
+    <div class="plan-price">
+      <span class="price-amount" id="hunter-price">$9</span>
+      <span class="price-period">/mo</span>
+    </div>
+    <div class="price-annual" id="hunter-annual">&nbsp;</div>
+    <p class="plan-desc">Unlimited Archer access and the full toolkit for serious job seekers.</p>
+    <ul class="plan-features">
+      <li><span class="check">✓</span> Unlimited applications</li>
+      <li><span class="check">✓</span> Unlimited Archer messages</li>
+      <li><span class="check">✓</span> AI-drafted cover letters</li>
+      <li><span class="check">✓</span> <strong>Aim Assessment</strong> — full target analysis</li>
+      <li><span class="check">✓</span> Contact history &amp; follow-up tracking</li>
+      <li><span class="check">✓</span> Resume version tracking</li>
+      <li class="locked"><span class="dash">—</span> Analytics dashboard</li>
+      <li class="locked"><span class="dash">—</span> Priority support</li>
+    </ul>
+    <a href="/app/auth/index.html?mode=signup&plan=hunter" class="plan-btn primary">Start Hunter Plan</a>
+  </div>
+
+  <!-- PRO -->
+  <div class="plan-card">
+    <div class="plan-name">Pro</div>
+    <div class="plan-price">
+      <span class="price-amount" id="pro-price">$19</span>
+      <span class="price-period">/mo</span>
+    </div>
+    <div class="price-annual" id="pro-annual">&nbsp;</div>
+    <p class="plan-desc">Everything in Hunter plus analytics and priority support for power users.</p>
+    <ul class="plan-features">
+      <li><span class="check">✓</span> Everything in Hunter</li>
+      <li><span class="check">✓</span> Application analytics dashboard</li>
+      <li><span class="check">✓</span> Resume &amp; cover letter storage</li>
+      <li><span class="check">✓</span> Version history export</li>
+      <li><span class="check">✓</span> Priority Archer response</li>
+      <li><span class="check">✓</span> Priority support</li>
+      <li><span class="check">✓</span> Early access to new features</li>
+      <li><span class="check">✓</span> Cancel anytime</li>
+    </ul>
+    <a href="/app/auth/index.html?mode=signup&plan=pro" class="plan-btn outline">Start Pro Plan</a>
+  </div>
+
+</section>
+
+<!-- COMPARISON TABLE -->
+<section class="comparison">
+  <div class="comparison-header">
+    <span class="section-label">// Full Comparison</span>
+    <h2>WHAT'S INCLUDED</h2>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:45%">Feature</th>
+        <th>Free</th>
+        <th class="col-featured">Hunter</th>
+        <th>Pro</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="section-row"><td colspan="4">Applications</td></tr>
+      <tr>
+        <td>Application tracking</td>
+        <td><span class="check-icon">✓</span></td>
+        <td><span class="check-icon">✓</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+      <tr>
+        <td>Max applications</td>
+        <td>10</td>
+        <td>Unlimited</td>
+        <td>Unlimited</td>
+      </tr>
+      <tr>
+        <td>Status pipeline</td>
+        <td><span class="check-icon">✓</span></td>
+        <td><span class="check-icon">✓</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+
+      <tr class="section-row"><td colspan="4">Archer AI</td></tr>
+      <tr>
+        <td>Archer messages</td>
+        <td>5 / month</td>
+        <td>Unlimited</td>
+        <td>Unlimited</td>
+      </tr>
+      <tr>
+        <td>AI cover letter drafting</td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="check-icon">✓</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+      <tr>
+        <td>Aim Assessment</td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="check-icon">✓</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+      <tr>
+        <td>Priority Archer response</td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+
+      <tr class="section-row"><td colspan="4">Contacts &amp; Documents</td></tr>
+      <tr>
+        <td>Contact history</td>
+        <td><span class="check-icon">✓</span></td>
+        <td><span class="check-icon">✓</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+      <tr>
+        <td>Follow-up tracking</td>
+        <td><span class="check-icon">✓</span></td>
+        <td><span class="check-icon">✓</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+      <tr>
+        <td>Resume version tracking</td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="check-icon">✓</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+      <tr>
+        <td>Resume &amp; cover letter storage</td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+
+      <tr class="section-row"><td colspan="4">Analytics &amp; Support</td></tr>
+      <tr>
+        <td>Analytics dashboard</td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+      <tr>
+        <td>Version history export</td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+      <tr>
+        <td>Priority support</td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+      <tr>
+        <td>Early access to new features</td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="dash-icon">—</span></td>
+        <td><span class="check-icon">✓</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <span class="section-label" style="display:block;text-align:center;">// FAQ</span>
+  <h2>QUESTIONS?<br>WE GOT YOU.</h2>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Is there really a free tier?</div>
+    <div class="faq-a">Yes — no credit card required. The Free plan gives you up to 10 applications, basic tracking, and 5 Archer messages per month. It's real, not a trial.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is the Aim Assessment?</div>
+    <div class="faq-a">The Aim Assessment is Job Tracer's signature AI feature. Archer analyzes your target role, experience, and goals and gives you a visual score — like an archery target — showing where your aim is strong and where to sharpen up. It's the most honest resume gap analysis you'll get, and it's gated to Hunter+.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime?</div>
+    <div class="faq-a">Yes. Cancel any time from your settings. If you cancel, you keep access through the end of your billing period. No questions, no runaround.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What happens to my data if I cancel?</div>
+    <div class="faq-a">Your data stays in your account on the Free plan. You can export your application history and documents at any time from the Pro plan. We don't delete your account data when you downgrade.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">How does annual billing work?</div>
+    <div class="faq-a">Annual plans are billed once per year and save you 20% compared to monthly. You can switch between monthly and annual in your billing settings at any time.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Is Archer powered by real AI?</div>
+    <div class="faq-a">Yes. Archer is powered by Claude — built by Anthropic. He's not a chatbot with scripted replies. He reads your actual job history, understands your goals, and gives responses tailored to your specific search.</div>
+  </div>
+</section>
+
+<!-- CTA BOTTOM -->
+<section class="cta-bottom">
+  <h2>READY TO TAKE<br>YOUR SHOT?</h2>
+  <p>Start free. No credit card required.</p>
+  <div class="cta-btn-group">
+    <a href="/app/auth/index.html?mode=signup" class="cta-btn primary">Start For Free</a>
+    <a href="/" class="cta-btn outline">Learn More</a>
+  </div>
+</section>
+
+<footer>
+  © 2026 <span>JOB TRACER</span> — Powered by Archer 🏹 — Built on Claude
+</footer>
+
+<script>
+  // Billing toggle
+  let isAnnual = false;
+
+  const prices = {
+    hunter: { monthly: '$9', annual: '$7' },
+    pro:    { monthly: '$19', annual: '$15' }
+  };
+
+  function toggleBilling() {
+    isAnnual = !isAnnual;
+    const toggle = document.getElementById('billingToggle');
+    const labelM = document.getElementById('label-monthly');
+    const labelA = document.getElementById('label-annual');
+
+    toggle.classList.toggle('on', isAnnual);
+    labelM.classList.toggle('active', !isAnnual);
+    labelA.classList.toggle('active', isAnnual);
+
+    document.getElementById('hunter-price').textContent = isAnnual ? prices.hunter.annual : prices.hunter.monthly;
+    document.getElementById('hunter-annual').textContent = isAnnual ? 'Billed $84/year — save $24' : '';
+
+    document.getElementById('pro-price').textContent = isAnnual ? prices.pro.annual : prices.pro.monthly;
+    document.getElementById('pro-annual').textContent = isAnnual ? 'Billed $180/year — save $48' : '';
+  }
+
+  // FAQ accordion
+  function toggleFaq(el) {
+    const item = el.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+
+</body>
+</html>
