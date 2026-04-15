@@ -79,6 +79,27 @@
   }
   .divider a { color: var(--blue); text-decoration: none; cursor: pointer; font-weight: 500; }
   .divider a:hover { text-decoration: underline; }
+  .remember-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    margin-top: -0.25rem;
+  }
+  .remember-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+  }
+  .remember-label input[type="checkbox"] {
+    width: 15px; height: 15px;
+    accent-color: var(--blue);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
   .back-link {
     display: block; text-align: center; margin-top: 1.5rem;
     font-size: 0.72rem; color: var(--muted); text-decoration: none;
@@ -136,6 +157,12 @@
       <label>Password</label>
       <input type="password" id="signinPassword" placeholder="Your password" autocomplete="current-password" />
     </div>
+    <div class="remember-row">
+      <label class="remember-label">
+        <input type="checkbox" id="rememberMe" />
+        <span>Remember me</span>
+      </label>
+    </div>
     <button class="btn-submit" id="btnSignin" onclick="handleSignin()">SIGN IN →</button>
     <div class="divider">New here? <a onclick="switchTab('signup')">Create an account</a></div>
   </div>
@@ -144,25 +171,27 @@
 <a href="/" class="back-link">← BACK TO JOBTRACER.APP</a>
 
 <script>
-  // If already signed in, go to dashboard
-  (function() {
-    const user = AUTH.getCurrentUser();
-    if (user) window.location.href = '/app/dashboard/index.html';
-  })();
-
-  // Pre-fill email from URL param
+  // Pre-fill email from URL param or remembered email
   const params = new URLSearchParams(window.location.search);
   const preEmail = params.get('email') || '';
   const mode = params.get('mode') || 'signup';
+  const rememberedEmail = AUTH.getRememberedEmail();
 
-  if (preEmail) {
-    document.getElementById('signupEmail').value = preEmail;
-    document.getElementById('signinEmail').value = preEmail;
+  // URL param takes priority, then remembered email
+  const fillEmail = preEmail || rememberedEmail;
 
-    // If they have an existing account, switch to sign-in
-    if (AUTH.hasAccount(preEmail) && mode !== 'signup') {
-      switchTab('signin');
-    }
+  if (fillEmail) {
+    document.getElementById('signupEmail').value = fillEmail;
+    document.getElementById('signinEmail').value = fillEmail;
+  }
+
+  // Pre-check Remember Me if there's a remembered email
+  if (rememberedEmail) {
+    document.getElementById('rememberMe').checked = true;
+  }
+
+  if (preEmail && AUTH.hasAccount(preEmail) && mode !== 'signup') {
+    switchTab('signin');
   }
 
   if (mode === 'signin') switchTab('signin');
@@ -210,6 +239,7 @@
   async function handleSignin() {
     const email = document.getElementById('signinEmail').value.trim();
     const password = document.getElementById('signinPassword').value;
+    const remember = document.getElementById('rememberMe').checked;
 
     if (!email || !email.includes('@')) return showError('Please enter your email address.');
     if (!password) return showError('Please enter your password.');
@@ -219,7 +249,7 @@
     }
 
     setLoading('btnSignin', true);
-    const ok = await AUTH.verifyAndSignIn(email, password);
+    const ok = await AUTH.verifyAndSignIn(email, password, remember);
     if (!ok) {
       setLoading('btnSignin', false);
       return showError('Incorrect password. Please try again.');

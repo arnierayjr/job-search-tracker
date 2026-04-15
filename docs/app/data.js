@@ -1,17 +1,31 @@
 const AUTH = {
   SESSION_KEY: 'jobtrace_session',
+  REMEMBER_KEY: 'jobtrace_remember_email',
 
   getCurrentUser() {
     try {
-      const s = localStorage.getItem(this.SESSION_KEY);
+      const s = sessionStorage.getItem(this.SESSION_KEY) || localStorage.getItem(this.SESSION_KEY);
       return s ? JSON.parse(s) : null;
     } catch(e) { return null; }
   },
 
-  _createSession(email, name) {
+  getRememberedEmail() {
+    return localStorage.getItem(this.REMEMBER_KEY) || '';
+  },
+
+  _createSession(email, name, remember) {
     const id = btoa(email.toLowerCase().trim()).replace(/=/g, '');
     const user = { email: email.toLowerCase().trim(), name: name || '', id };
-    localStorage.setItem(this.SESSION_KEY, JSON.stringify(user));
+    // Always clear both storages first to avoid stale sessions
+    localStorage.removeItem(this.SESSION_KEY);
+    sessionStorage.removeItem(this.SESSION_KEY);
+    if (remember) {
+      localStorage.setItem(this.SESSION_KEY, JSON.stringify(user));
+      localStorage.setItem(this.REMEMBER_KEY, email.toLowerCase().trim());
+    } else {
+      sessionStorage.setItem(this.SESSION_KEY, JSON.stringify(user));
+      localStorage.removeItem(this.REMEMBER_KEY);
+    }
     return user;
   },
 
@@ -27,10 +41,10 @@ const AUTH = {
     const id = btoa(emailNorm).replace(/=/g, '');
     const passwordHash = await this._hashPassword(password, emailNorm);
     localStorage.setItem('jobtrace_auth_' + id, JSON.stringify({ passwordHash }));
-    return this._createSession(emailNorm, name);
+    return this._createSession(emailNorm, name, false);
   },
 
-  async verifyAndSignIn(email, password) {
+  async verifyAndSignIn(email, password, remember) {
     const emailNorm = email.toLowerCase().trim();
     const id = btoa(emailNorm).replace(/=/g, '');
     const authRaw = localStorage.getItem('jobtrace_auth_' + id);
@@ -42,19 +56,20 @@ const AUTH = {
       if (!userData) return false;
       const passwordHash = await this._hashPassword(password, emailNorm);
       localStorage.setItem('jobtrace_auth_' + id, JSON.stringify({ passwordHash }));
-      this._createSession(emailNorm, name);
+      this._createSession(emailNorm, name, remember);
       return true;
     }
 
     const { passwordHash } = JSON.parse(authRaw);
     const inputHash = await this._hashPassword(password, emailNorm);
     if (inputHash !== passwordHash) return false;
-    this._createSession(emailNorm, name);
+    this._createSession(emailNorm, name, remember);
     return true;
   },
 
   signOut() {
     localStorage.removeItem(this.SESSION_KEY);
+    sessionStorage.removeItem(this.SESSION_KEY);
     window.location.href = '/app/auth/index.html';
   },
 
