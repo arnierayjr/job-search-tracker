@@ -79,12 +79,6 @@
   }
   .divider a { color: var(--blue); text-decoration: none; cursor: pointer; font-weight: 500; }
   .divider a:hover { text-decoration: underline; }
-  .remember-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.75rem;
-    margin-top: -0.25rem;
-  }
   .remember-label {
     display: flex;
     align-items: center;
@@ -100,6 +94,36 @@
     cursor: pointer;
     flex-shrink: 0;
   }
+  .forgot-link {
+    font-size: 0.78rem; color: var(--blue); text-decoration: none;
+    cursor: pointer; font-weight: 500; margin-left: auto;
+  }
+  .forgot-link:hover { text-decoration: underline; }
+  .remember-forgot-row {
+    display: flex; align-items: center;
+    margin-bottom: 0.75rem; margin-top: -0.25rem;
+  }
+  .reset-back {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-size: 0.78rem; color: var(--muted); cursor: pointer;
+    margin-bottom: 1.5rem; font-weight: 500;
+    background: none; border: none; padding: 0;
+    transition: color 0.15s;
+  }
+  .reset-back:hover { color: var(--blue); }
+  .reset-header { margin-bottom: 1.5rem; }
+  .reset-header h2 {
+    font-size: 1.15rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--text);
+  }
+  .reset-header p {
+    font-size: 0.82rem; color: var(--muted); line-height: 1.5;
+  }
+  .success-box {
+    display: none; text-align: center; padding: 1.5rem 1rem;
+  }
+  .success-box .success-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .success-box h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text); }
+  .success-box p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
   .back-link {
     display: block; text-align: center; margin-top: 1.5rem;
     font-size: 0.72rem; color: var(--muted); text-decoration: none;
@@ -118,7 +142,7 @@
   <div class="logo">JOB<span>TRACER</span></div>
   <div class="logo-sub">🏹 POWERED BY ARCHER</div>
 
-  <div class="tabs">
+  <div class="tabs" id="tabs">
     <button class="tab active" id="tabSignup" onclick="switchTab('signup')">CREATE ACCOUNT</button>
     <button class="tab" id="tabSignin" onclick="switchTab('signin')">SIGN IN</button>
   </div>
@@ -157,14 +181,57 @@
       <label>Password</label>
       <input type="password" id="signinPassword" placeholder="Your password" autocomplete="current-password" />
     </div>
-    <div class="remember-row">
+    <div class="remember-forgot-row">
       <label class="remember-label">
         <input type="checkbox" id="rememberMe" />
         <span>Remember me</span>
       </label>
+      <a class="forgot-link" onclick="showReset()">Forgot password?</a>
     </div>
     <button class="btn-submit" id="btnSignin" onclick="handleSignin()">SIGN IN →</button>
     <div class="divider">New here? <a onclick="switchTab('signup')">Create an account</a></div>
+  </div>
+
+  <!-- FORGOT PASSWORD PANEL -->
+  <div id="resetPanel" style="display:none">
+    <button class="reset-back" onclick="hideReset()">← Back to sign in</button>
+
+    <!-- Step 1: Email -->
+    <div id="resetStep1">
+      <div class="reset-header">
+        <h2>Reset your password</h2>
+        <p>Enter the email address on your account and we'll get you back in.</p>
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="resetEmail" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <button class="btn-submit" id="btnResetEmail" onclick="handleResetEmail()">CONTINUE →</button>
+    </div>
+
+    <!-- Step 2: New password -->
+    <div id="resetStep2" style="display:none">
+      <div class="reset-header">
+        <h2>Choose a new password</h2>
+        <p id="resetEmailDisplay" style="color:var(--blue);font-weight:600;font-size:0.82rem;"></p>
+      </div>
+      <div class="field">
+        <label>New Password</label>
+        <input type="password" id="resetNewPassword" placeholder="At least 8 characters" autocomplete="new-password" />
+      </div>
+      <div class="field">
+        <label>Confirm New Password</label>
+        <input type="password" id="resetConfirmPassword" placeholder="Re-enter new password" autocomplete="new-password" />
+      </div>
+      <button class="btn-submit" id="btnResetConfirm" onclick="handleResetConfirm()">SET NEW PASSWORD</button>
+    </div>
+
+    <!-- Success state -->
+    <div class="success-box" id="resetSuccess">
+      <div class="success-icon">🎯</div>
+      <h3>Password updated!</h3>
+      <p>Your password has been reset. Taking you back to sign in...</p>
+    </div>
   </div>
 </div>
 
@@ -261,16 +328,80 @@
     const btn = document.getElementById(btnId);
     btn.disabled = loading;
     btn.style.opacity = loading ? '0.6' : '1';
-    btn.textContent = loading ? 'Please wait...' : (btnId === 'btnSignup' ? 'CREATE MY ACCOUNT 🏹' : 'SIGN IN →');
+    const labels = {
+      btnSignup: ['CREATE MY ACCOUNT 🏹', 'Please wait...'],
+      btnSignin: ['SIGN IN →', 'Please wait...'],
+      btnResetEmail: ['CONTINUE →', 'Please wait...'],
+      btnResetConfirm: ['SET NEW PASSWORD', 'Please wait...']
+    };
+    btn.textContent = loading ? labels[btnId][1] : labels[btnId][0];
+  }
+
+  // Forgot password flow
+  let resetEmailValue = '';
+
+  function showReset() {
+    hideError();
+    document.getElementById('tabs').style.display = 'none';
+    document.getElementById('signinForm').style.display = 'none';
+    document.getElementById('signupForm').style.display = 'none';
+    document.getElementById('resetPanel').style.display = 'block';
+    // Pre-fill email if already typed
+    const signinEmail = document.getElementById('signinEmail').value.trim();
+    if (signinEmail) document.getElementById('resetEmail').value = signinEmail;
+    document.getElementById('resetEmail').focus();
+  }
+
+  function hideReset() {
+    hideError();
+    document.getElementById('resetPanel').style.display = 'none';
+    document.getElementById('resetStep1').style.display = 'block';
+    document.getElementById('resetStep2').style.display = 'none';
+    document.getElementById('resetSuccess').style.display = 'none';
+    document.getElementById('tabs').style.display = 'flex';
+    switchTab('signin');
+  }
+
+  function handleResetEmail() {
+    const email = document.getElementById('resetEmail').value.trim();
+    if (!email || !email.includes('@')) return showError('Please enter a valid email address.');
+    if (!AUTH.hasAccount(email)) return showError('No account found for that email address.');
+    hideError();
+    resetEmailValue = email;
+    document.getElementById('resetEmailDisplay').textContent = email;
+    document.getElementById('resetStep1').style.display = 'none';
+    document.getElementById('resetStep2').style.display = 'block';
+    document.getElementById('resetNewPassword').focus();
+  }
+
+  async function handleResetConfirm() {
+    const newPass = document.getElementById('resetNewPassword').value;
+    const confirm = document.getElementById('resetConfirmPassword').value;
+    if (!newPass || newPass.length < 8) return showError('Password must be at least 8 characters.');
+    if (newPass !== confirm) return showError('Passwords do not match.');
+    setLoading('btnResetConfirm', true);
+    await AUTH.resetPassword(resetEmailValue, newPass);
+    setLoading('btnResetConfirm', false);
+    document.getElementById('resetStep2').style.display = 'none';
+    document.getElementById('resetSuccess').style.display = 'block';
+    setTimeout(() => {
+      hideReset();
+      document.getElementById('signinEmail').value = resetEmailValue;
+    }, 2200);
   }
 
   // Enter key support
   document.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      const isSignup = document.getElementById('signupForm').style.display !== 'none';
-      if (isSignup) handleSignup();
-      else handleSignin();
+    if (e.key !== 'Enter') return;
+    const resetPanel = document.getElementById('resetPanel');
+    if (resetPanel.style.display !== 'none') {
+      if (document.getElementById('resetStep1').style.display !== 'none') handleResetEmail();
+      else if (document.getElementById('resetStep2').style.display !== 'none') handleResetConfirm();
+      return;
     }
+    const isSignup = document.getElementById('signupForm').style.display !== 'none';
+    if (isSignup) handleSignup();
+    else handleSignin();
   });
 </script>
 </body>

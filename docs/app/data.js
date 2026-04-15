@@ -67,6 +67,13 @@ const AUTH = {
     return true;
   },
 
+  async resetPassword(email, newPassword) {
+    const emailNorm = email.toLowerCase().trim();
+    const id = btoa(emailNorm).replace(/=/g, '');
+    const passwordHash = await this._hashPassword(newPassword, emailNorm);
+    localStorage.setItem('jobtrace_auth_' + id, JSON.stringify({ passwordHash }));
+  },
+
   signOut() {
     localStorage.removeItem(this.SESSION_KEY);
     sessionStorage.removeItem(this.SESSION_KEY);
