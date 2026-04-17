@@ -60,6 +60,15 @@
   }
   .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.08); }
   .field input::placeholder { color: var(--muted); }
+  .password-wrap { position: relative; }
+  .password-wrap input { padding-right: 2.75rem; }
+  .toggle-pw {
+    position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; padding: 0;
+    color: var(--muted); display: flex; align-items: center;
+    transition: color 0.15s;
+  }
+  .toggle-pw:hover { color: var(--blue); }
   .btn-submit {
     width: 100%; background: var(--blue); color: #000;
     border: none; border-radius: 6px; padding: 0.85rem;
@@ -161,11 +170,17 @@
     </div>
     <div class="field">
       <label>Password</label>
-      <input type="password" id="signupPassword" placeholder="At least 8 characters" autocomplete="new-password" />
+      <div class="password-wrap">
+        <input type="password" id="signupPassword" placeholder="At least 8 characters" autocomplete="new-password" />
+        <button type="button" class="toggle-pw" onclick="togglePassword('signupPassword', this)" aria-label="Show password">👁</button>
+      </div>
     </div>
     <div class="field">
       <label>Confirm Password</label>
-      <input type="password" id="signupPasswordConfirm" placeholder="Re-enter your password" autocomplete="new-password" />
+      <div class="password-wrap">
+        <input type="password" id="signupPasswordConfirm" placeholder="Re-enter your password" autocomplete="new-password" />
+        <button type="button" class="toggle-pw" onclick="togglePassword('signupPasswordConfirm', this)" aria-label="Show password">👁</button>
+      </div>
     </div>
     <button class="btn-submit" id="btnSignup" onclick="handleSignup()">CREATE MY ACCOUNT 🏹</button>
     <div class="divider">Already have an account? <a onclick="switchTab('signin')">Sign in</a></div>
@@ -179,7 +194,10 @@
     </div>
     <div class="field">
       <label>Password</label>
-      <input type="password" id="signinPassword" placeholder="Your password" autocomplete="current-password" />
+      <div class="password-wrap">
+        <input type="password" id="signinPassword" placeholder="Your password" autocomplete="current-password" />
+        <button type="button" class="toggle-pw" onclick="togglePassword('signinPassword', this)" aria-label="Show password">👁</button>
+      </div>
     </div>
     <div class="remember-forgot-row">
       <label class="remember-label">
@@ -217,11 +235,17 @@
       </div>
       <div class="field">
         <label>New Password</label>
-        <input type="password" id="resetNewPassword" placeholder="At least 8 characters" autocomplete="new-password" />
+        <div class="password-wrap">
+          <input type="password" id="resetNewPassword" placeholder="At least 8 characters" autocomplete="new-password" />
+          <button type="button" class="toggle-pw" onclick="togglePassword('resetNewPassword', this)" aria-label="Show password">👁</button>
+        </div>
       </div>
       <div class="field">
         <label>Confirm New Password</label>
-        <input type="password" id="resetConfirmPassword" placeholder="Re-enter new password" autocomplete="new-password" />
+        <div class="password-wrap">
+          <input type="password" id="resetConfirmPassword" placeholder="Re-enter new password" autocomplete="new-password" />
+          <button type="button" class="toggle-pw" onclick="togglePassword('resetConfirmPassword', this)" aria-label="Show password">👁</button>
+        </div>
       </div>
       <button class="btn-submit" id="btnResetConfirm" onclick="handleResetConfirm()">SET NEW PASSWORD</button>
     </div>
@@ -262,6 +286,13 @@
   }
 
   if (mode === 'signin') switchTab('signin');
+
+  function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    btn.textContent = show ? '🙈' : '👁';
+  }
 
   function switchTab(tab) {
     document.getElementById('signupForm').style.display = tab === 'signup' ? 'block' : 'none';
