@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Job Tracer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f4f9; --surface: #ffffff; --border: #e1e7f0;
+    --blue: #3b7dd8; --blue-dark: #2563eb; --blue-light: #eff6ff;
+    --text: #111827; --muted: #64748b; --green: #16a34a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    padding: 1.1rem 2.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(240,244,249,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.04em; color: var(--text); text-decoration: none; }
+  .nav-logo span { color: var(--blue); }
+  .nav-back { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-decoration: none; transition: color 0.15s; }
+  .nav-back:hover { color: var(--blue); }
+
+  .page-wrap { max-width: 780px; margin: 0 auto; padding: 4rem 2rem 6rem; }
+
+  .doc-header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .doc-tag {
+    display: inline-block; font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--blue); background: var(--blue-light);
+    border: 1px solid rgba(59,125,216,0.2); border-radius: 100px;
+    padding: 0.3rem 0.8rem; margin-bottom: 1rem;
+  }
+  .doc-header h1 { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+  .doc-meta { font-size: 0.82rem; color: var(--muted); display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .doc-meta span strong { color: var(--text); font-weight: 600; }
+
+  .notice-box {
+    background: var(--blue-light); border: 1px solid rgba(59,125,216,0.25);
+    border-radius: 8px; padding: 1.1rem 1.25rem; margin-bottom: 2.5rem;
+    font-size: 0.85rem; line-height: 1.6; color: var(--text);
+  }
+  .notice-box strong { color: var(--blue); }
+
+  .placeholder {
+    background: #fff8e1; border: 1px solid #fcd34d; border-radius: 4px;
+    padding: 0.1rem 0.4rem; font-size: 0.85em; font-weight: 600; color: #92400e;
+  }
+
+  .toc {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.5rem; margin-bottom: 3rem;
+  }
+  .toc h3 { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+  .toc ol { padding-left: 1.25rem; }
+  .toc li { font-size: 0.875rem; padding: 0.25rem 0; }
+  .toc a { color: var(--blue); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  .section { margin-bottom: 2.75rem; }
+  .section h2 {
+    font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em;
+    margin-bottom: 1rem; padding-top: 1rem; color: var(--text);
+    border-top: 1px solid var(--border);
+  }
+  .section h3 { font-size: 0.95rem; font-weight: 700; margin: 1.25rem 0 0.5rem; color: var(--text); }
+  .section p { font-size: 0.9rem; color: #374151; line-height: 1.75; margin-bottom: 0.75rem; }
+  .section ul, .section ol { padding-left: 1.4rem; margin-bottom: 0.75rem; }
+  .section li { font-size: 0.9rem; color: #374151; line-height: 1.7; padding: 0.15rem 0; }
+  .section a { color: var(--blue); }
+
+  footer {
+    padding: 2rem; text-align: center; border-top: 1px solid var(--border);
+    font-size: 0.72rem; font-weight: 500; color: var(--muted);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  footer span { color: var(--blue); }
+  footer a { color: var(--muted); text-decoration: none; margin: 0 0.5rem; }
+  footer a:hover { color: var(--blue); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">JOB<span>TRACER</span></a>
+  <a href="/" class="nav-back">← Home</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="doc-header">
+    <div class="doc-tag">Legal</div>
+    <h1>Privacy Policy</h1>
+    <div class="doc-meta">
+      <span><strong>Effective Date:</strong> April 21, 2026</span>
+      <span><strong>Last Updated:</strong> April 21, 2026</span>
+    </div>
+  </div>
+
+  <div class="notice-box">
+    <strong>Plain-English Summary:</strong> Job Tracer collects your name, email, and the job search data you enter. We use it to run the app and power Archer AI. We don't sell your data. Your data is currently stored on your own device. When we migrate to cloud storage, this policy will be updated and you'll be notified.
+  </div>
+
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#who-we-are">Who We Are</a></li>
+      <li><a href="#what-we-collect">What Information We Collect</a></li>
+      <li><a href="#how-we-collect">How We Collect It</a></li>
+      <li><a href="#how-we-use">How We Use Your Information</a></li>
+      <li><a href="#sharing">How We Share Your Information</a></li>
+      <li><a href="#ai-features">AI Features and Third-Party Processing</a></li>
+      <li><a href="#storage">Data Storage and Security</a></li>
+      <li><a href="#cookies">Cookies and Local Storage</a></li>
+      <li><a href="#your-rights">Your Rights</a></li>
+      <li><a href="#retention">Data Retention</a></li>
+      <li><a href="#children">Children's Privacy</a></li>
+      <li><a href="#changes">Changes to This Policy</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ol>
+  </div>
+
+  <!-- 1 -->
+  <div class="section" id="who-we-are">
+    <h2>1. Who We Are</h2>
+    <p>Job Tracer ("Job Tracer," "we," "us," or "our") is a job search tracking platform available at <a href="https://jobtracer.app">jobtracer.app</a>. Job Tracer is operated by <span class="placeholder">YOUR FULL LEGAL NAME / BUSINESS ENTITY</span>, located at <span class="placeholder">YOUR MAILING ADDRESS, CITY, STATE, ZIP</span>.</p>
+    <p>This Privacy Policy explains how we collect, use, disclose, and protect information about you when you use our website and services (collectively, the "Service").</p>
+    <p>By using Job Tracer, you agree to the collection and use of information in accordance with this policy. If you do not agree, do not use the Service.</p>
+  </div>
+
+  <!-- 2 -->
+  <div class="section" id="what-we-collect">
+    <h2>2. What Information We Collect</h2>
+
+    <h3>Information You Provide Directly</h3>
+    <ul>
+      <li><strong>Account information:</strong> Your name and email address when you create an account.</li>
+      <li><strong>Password:</strong> Stored as a one-way cryptographic hash (SHA-256). We cannot recover or read your actual password.</li>
+      <li><strong>Job application data:</strong> Company names, job titles, application dates, statuses, notes, and any other information you enter while tracking applications.</li>
+      <li><strong>Contact information:</strong> Names, email addresses, phone numbers, and notes about recruiters, hiring managers, and professional contacts you log in the app.</li>
+      <li><strong>Resume and cover letter content:</strong> Text and version history you save within the app.</li>
+      <li><strong>Aim Assessment responses:</strong> Your answers to the career assessment questionnaire, including your target role, experience level, industry, and goals.</li>
+      <li><strong>Archer AI conversations:</strong> Messages you send to and receive from Archer, our AI job search companion.</li>
+    </ul>
+
+    <h3>Information Collected Automatically</h3>
+    <ul>
+      <li><strong>Usage data:</strong> Pages visited, features used, and actions taken within the app (e.g., adding an application, running an assessment).</li>
+      <li><strong>Device and browser information:</strong> Browser type, operating system, and screen resolution for compatibility purposes.</li>
+      <li><strong>Log data:</strong> IP address, access times, and referring URLs when you access our website.</li>
+    </ul>
+  </div>
+
+  <!-- 3 -->
+  <div class="section" id="how-we-collect">
+    <h2>3. How We Collect It</h2>
+    <ul>
+      <li><strong>Directly from you</strong> when you create an account, fill out forms, or interact with the app.</li>
+      <li><strong>Through your browser</strong> via local storage (see Section 8) when you use app features.</li>
+      <li><strong>Automatically</strong> through standard web server logs when you access jobtracer.app.</li>
+      <li><strong>Through third-party services</strong> we use to operate the platform (see Section 5).</li>
+    </ul>
+  </div>
+
+  <!-- 4 -->
+  <div class="section" id="how-we-use">
+    <h2>4. How We Use Your Information</h2>
+    <p>We use the information we collect to:</p>
+    <ul>
+      <li>Create and manage your account and authenticate your identity</li>
+      <li>Provide, operate, and improve the Job Tracer service</li>
+      <li>Power Archer AI responses tailored to your job search context</li>
+      <li>Process payments and manage your subscription (when billing is active)</li>
+      <li>Send transactional communications such as account confirmations and billing receipts</li>
+      <li>Respond to your support requests and inquiries</li>
+      <li>Monitor for abuse, fraud, and security threats</li>
+      <li>Comply with legal obligations</li>
+      <li>Analyze aggregate, anonymized usage trends to improve the product</li>
+    </ul>
+    <p>We do <strong>not</strong> use your data to train AI models without your explicit consent. We do <strong>not</strong> use your data for advertising targeting. We do <strong>not</strong> sell your personal information to any third party.</p>
+  </div>
+
+  <!-- 5 -->
+  <div class="section" id="sharing">
+    <h2>5. How We Share Your Information</h2>
+    <p>We do not sell your personal information. We share your information only in the following limited circumstances:</p>
+
+    <h3>Service Providers</h3>
+    <p>We work with third-party vendors who help us operate the Service. These providers are contractually required to use your data only to provide services to us:</p>
+    <ul>
+      <li><strong>Anthropic</strong> — processes the messages you send to Archer to generate AI responses (see Section 6)</li>
+      <li><strong>Supabase</strong> — will provide database and authentication infrastructure when we migrate from local storage <span class="placeholder">[ACTIVATE WHEN LIVE]</span></li>
+      <li><strong>Stripe</strong> — processes subscription payments and billing information <span class="placeholder">[ACTIVATE WHEN BILLING IS LIVE]</span></li>
+      <li><strong>GitHub / Cloudflare</strong> — hosts and delivers the website</li>
+    </ul>
+
+    <h3>Legal Requirements</h3>
+    <p>We may disclose your information if required by law, court order, or government authority, or if we believe disclosure is necessary to protect the rights, property, or safety of Job Tracer, our users, or the public.</p>
+
+    <h3>Business Transfers</h3>
+    <p>If Job Tracer is acquired, merged, or its assets are sold, your information may be transferred as part of that transaction. You will be notified via email and/or a prominent notice on our site before your data becomes subject to a different privacy policy.</p>
+
+    <h3>With Your Consent</h3>
+    <p>We may share your information for any other purpose with your explicit consent.</p>
+  </div>
+
+  <!-- 6 -->
+  <div class="section" id="ai-features">
+    <h2>6. AI Features and Third-Party Processing</h2>
+    <p>Job Tracer's AI companion, Archer, is powered by Claude — a large language model developed by <a href="https://anthropic.com" target="_blank" rel="noopener">Anthropic, PBC</a>. When you interact with Archer or run the Aim Assessment, the content of your messages and relevant context from your job search profile is transmitted to Anthropic's API to generate a response.</p>
+
+    <p>By using Archer, you acknowledge and agree that:</p>
+    <ul>
+      <li>Your messages and associated context are processed by Anthropic in accordance with <a href="https://anthropic.com/privacy" target="_blank" rel="noopener">Anthropic's Privacy Policy</a></li>
+      <li>Archer's responses are AI-generated and should not be treated as professional career, legal, financial, or psychological advice</li>
+      <li>We do not use your Archer conversations to train AI models without your explicit, separate consent</li>
+    </ul>
+    <p>We take reasonable steps to minimize the personal data sent to third-party AI providers and do not transmit your password, payment information, or full contact details as part of AI requests.</p>
+  </div>
+
+  <!-- 7 -->
+  <div class="section" id="storage">
+    <h2>7. Data Storage and Security</h2>
+
+    <h3>Current Storage (Local)</h3>
+    <p>At present, all job application data, contacts, and document content you enter in Job Tracer is stored locally in your browser's <code>localStorage</code>. This means your data lives on your own device and is not transmitted to our servers. The limitation is that your data is tied to the browser and device you use — clearing browser data or switching devices will result in data loss.</p>
+
+    <h3>Planned Cloud Migration</h3>
+    <p>We plan to migrate data storage to a secure cloud database (Supabase) in the future. When this migration occurs, this policy will be updated, and you will be notified before your data is stored server-side. You will have the option to export or delete your data before the transition.</p>
+
+    <h3>Account Credentials</h3>
+    <p>Your password is never stored in plain text. It is hashed using SHA-256 with your email as a salt and stored only in your browser's local storage. We cannot retrieve, read, or transmit your password.</p>
+
+    <h3>Security Measures</h3>
+    <p>We implement reasonable technical and organizational security measures including HTTPS encryption on all web traffic, secure credential hashing, and access controls. However, no method of transmission or storage is 100% secure. We cannot guarantee absolute security and are not responsible for unauthorized access resulting from circumstances beyond our reasonable control.</p>
+  </div>
+
+  <!-- 8 -->
+  <div class="section" id="cookies">
+    <h2>8. Cookies and Local Storage</h2>
+
+    <h3>Local Storage</h3>
+    <p>Job Tracer uses your browser's <code>localStorage</code> and <code>sessionStorage</code> APIs to store your application data, session token, and preferences. This is not the same as cookies — the data stays on your device and is not sent to our servers with each request.</p>
+    <p>You can clear this data at any time through your browser's developer tools or settings. Doing so will log you out and erase your locally stored job search data.</p>
+
+    <h3>Session Storage</h3>
+    <p>If you sign in without checking "Remember Me," your login session is stored in <code>sessionStorage</code>, which is automatically cleared when you close your browser tab.</p>
+
+    <h3>Cookies</h3>
+    <p>Job Tracer may use essential cookies for session management and security. We do not currently use advertising, tracking, or analytics cookies. If we add analytics in the future, this policy will be updated accordingly.</p>
+
+    <h3>Third-Party Cookies</h3>
+    <p>Google Fonts, which we use to load the Inter typeface, may set cookies in accordance with <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</p>
+  </div>
+
+  <!-- 9 -->
+  <div class="section" id="your-rights">
+    <h2>9. Your Rights</h2>
+    <p>Depending on your location, you may have the following rights with respect to your personal data:</p>
+
+    <h3>For All Users</h3>
+    <ul>
+      <li><strong>Access:</strong> Request a copy of the personal data we hold about you</li>
+      <li><strong>Correction:</strong> Request correction of inaccurate or incomplete data</li>
+      <li><strong>Deletion:</strong> Request deletion of your account and associated data</li>
+      <li><strong>Data portability:</strong> Request your data in a machine-readable format</li>
+    </ul>
+
+    <h3>California Residents (CCPA)</h3>
+    <p>Under the California Consumer Privacy Act, California residents have the right to know what personal information is collected, the right to delete it, the right to opt out of its sale (we do not sell data), and the right to non-discrimination for exercising these rights.</p>
+
+    <h3>European / UK Residents (GDPR / UK GDPR)</h3>
+    <p>If you are located in the European Economic Area or the United Kingdom, you have additional rights under the GDPR including the right to object to processing, the right to restrict processing, and the right to lodge a complaint with your local data protection authority. Our lawful basis for processing your data is the performance of a contract (providing the Service you signed up for).</p>
+
+    <h3>How to Exercise Your Rights</h3>
+    <p>To exercise any of these rights, contact us at <a href="mailto:arj325@gmail.com">arj325@gmail.com</a>. We will respond within 30 days. Because data is currently stored locally on your device, most data control is already in your hands — you can delete your data at any time by clearing your browser's local storage or deleting your account from the Settings page.</p>
+  </div>
+
+  <!-- 10 -->
+  <div class="section" id="retention">
+    <h2>10. Data Retention</h2>
+    <p>Because data is currently stored locally in your browser, retention is controlled by you — it persists until you clear your browser data or delete your account.</p>
+    <p>When cloud storage is implemented, we will retain your data for as long as your account is active. If you delete your account, we will delete your personal data within <strong>30 days</strong>, except where retention is required by law (e.g., billing records, which we retain for 7 years per standard accounting requirements).</p>
+    <p>Anonymized, aggregate data (e.g., feature usage statistics with no identifying information) may be retained indefinitely for product improvement purposes.</p>
+  </div>
+
+  <!-- 11 -->
+  <div class="section" id="children">
+    <h2>11. Children's Privacy</h2>
+    <p>Job Tracer is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us at <a href="mailto:arj325@gmail.com">arj325@gmail.com</a> and we will delete that information promptly.</p>
+    <p>Users between the ages of 13 and 18 must have parental or guardian consent to use the Service.</p>
+  </div>
+
+  <!-- 12 -->
+  <div class="section" id="changes">
+    <h2>12. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. When we make material changes, we will notify you by updating the "Last Updated" date at the top of this page and, where feasible, by sending a notification to the email address associated with your account.</p>
+    <p>Your continued use of Job Tracer after any changes become effective constitutes your acceptance of the updated policy. We encourage you to review this page periodically.</p>
+  </div>
+
+  <!-- 13 -->
+  <div class="section" id="contact">
+    <h2>13. Contact Us</h2>
+    <p>If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your data, please contact us:</p>
+    <ul>
+      <li><strong>Email:</strong> <a href="mailto:arj325@gmail.com">arj325@gmail.com</a></li>
+      <li><strong>Mailing Address:</strong> <span class="placeholder">YOUR MAILING ADDRESS, CITY, STATE, ZIP</span></li>
+    </ul>
+    <p>We aim to respond to all privacy-related inquiries within 5 business days.</p>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 <span>JOB TRACER</span>
+  &nbsp;·&nbsp;
+  <a href="/privacy/">Privacy Policy</a>
+  <a href="/terms/">Terms of Service</a>
+  &nbsp;·&nbsp;
+  Powered by Archer 🏹
+</footer>
+
+</body>
+</html>
